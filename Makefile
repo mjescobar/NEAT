@@ -1,6 +1,7 @@
 VPATH=include:src:objects
 COMPILER=g++ -std=c++11
 CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -frtti -O3
+OBJS = ./objects/Life.o ./objects/Niche.o ./objects/ANN.o ./objects/BasicSynapticWeight.o ./objects/BasicNeuron.o ./objects/Input.o ./objects/GlobalInformation.o
 
 Life.o: Life.cpp Niche.o
 	mkdir -p objects
@@ -36,7 +37,19 @@ clean:
 
 # Primero se borran todos los objetos. (no es estrictamente necesario porque se tiene en las reglas del .gitignore a los objetos pero pudiera ser que  los make clean borraran más que sólo los objetos)
 # Luego se agregan los archivos.
-gitAddAll:
+git:
 	./clean.sh
-	git add --all
-	git status
+	git add --all; git commit -e; git status
+
+
+
+install:
+	g++ -shared -Wl,-soname,libneatspikes.so.1 -o libneatspikes.so.1.0 $(OBJS)
+	ln -sf libneatspikes.so.1.0 libneatspikes.so
+	ln -sf libneatspikes.so.1.0 libneatspikes.so.1
+	mv libneatspikes.so.1.0 libneatspikes.so libneatspikes.so.1 /usr/lib
+	mkdir -p /usr/include/NEATSPIKES_include/
+	cp ./include/* /usr/include/NEATSPIKES_include/
+	cp NEATSPIKES /usr/include
+	chmod go+r /usr/include/NEATSPIKES_include/*
+	chmod go+r /usr/include/NEATSPIKES
