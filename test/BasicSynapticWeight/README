@@ -1,0 +1,17 @@
+Descripción
+========
+
+Este programa tiene como finalidad probar el funcionamiento de la clase BasicSynapticWeight. El programa prueba la creación de una conexión sináptica, guardar una conexión y guardar los UserDefinitions luego cargar un organismo desde el recientemente guardado.
+
+Compilar
+=====
+```$ make ```
+
+Ejecutar
+=====
+```$ make run```
+
+Limpiar
+=====
+
+``` $ make clean ```
