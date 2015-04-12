@@ -39,7 +39,7 @@ clean:
 # Luego se agregan los archivos.
 git:
 	./clean.sh
-	git add --all; git commit -e; git status
+	git add --all; git status; git commit -e; git push  
 
 
 
