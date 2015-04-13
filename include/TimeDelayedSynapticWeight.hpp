@@ -133,6 +133,7 @@ namespace NEATSpikes{
 		bool enable;
 		int historicalMarkOfNeuronIn;
 		int historicalMarkOfNeuronOut;
+		int bufferSize;
 		static GlobalInformation * information; 
 
 		// Recordar que, por modelo de programación, la probabilidad de que una conexión sináptica mute es parte de la estructura ANN (redes neuronales) por lo tanto aquí sólo se ven datos respecto a cómo efectuar esta mutación, no a la probabilidad misma de que mute. 

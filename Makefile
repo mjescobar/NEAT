@@ -21,27 +21,27 @@ BasicSynapticWeight.o: BasicSynapticWeight.cpp BasicSynapticWeight.hpp GlobalInf
 BasicNeuron.o: BasicNeuron.cpp
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicNeuron.o
-	@echo Compiling BasicSynapticWeight 
+	@echo Compiling BasicNeuron 
 
 Input.o: Input.cpp
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Input.o
-	@echo Compiling BasicSynapticWeight 
+	@echo Compiling Input 
 
 Niche.o: Niche.cpp ANN.cpp
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Niche.o
-	@echo Compiling BasicSynapticWeight 
+	@echo Compiling Niche 
 
    
 GlobalInformation.o: GlobalInformation.cpp GlobalInformation.hpp
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/GlobalInformation.o
-	@echo Compiling BasicSynapticWeight 
+	@echo Compiling GlobalInformation 
 
 clean:
 	@rm -Rf objects
-	@echo Compiling BasicSynapticWeight 
+	@echo Clean --- Ok
 
 # Primero se borran todos los objetos. (no es estrictamente necesario porque se tiene en las reglas del .gitignore a los objetos pero pudiera ser que  los make clean borraran más que sólo los objetos)
 # Luego se agregan los archivos.

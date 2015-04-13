@@ -58,7 +58,9 @@ namespace NEATSpikes
 		enable = true;
 		input=0.0;
 		output=0.0;
+		bufferSize = rand() % MaxAmountOfTimeDelayed;
 	}
+
 	void TimeDelayedSynapticWeight::mutate()
 	{
 		// El procedimiento que se realiza es un procedimiento genérico el cual realiza 4 pasos importantes.
@@ -114,9 +116,7 @@ namespace NEATSpikes
 		userDefinitions << "probabilityOfEnableADisabledConnection " << probabilityOfEnableADisabledConnection << std::endl;
 		userDefinitions << "ConstantDistanceOfSynapticWeightValue " << ConstantDistanceOfSynapticWeightValue << std::endl;
 		userDefinitions << "MaxAmountOfTimeDelayed " << MaxAmountOfTimeDelayed << std::endl;
-
 		userDefinitions.close();
-		MaxAmountOfTimeDelayed
 	}
 
 
@@ -161,28 +161,24 @@ namespace NEATSpikes
 		//=========================================================================================
 		// Ahora se le da el valor a las variables de usuario y se termina este método. Usando mapas se hace más sencillo y más robusto.
 		//=========================================================================================
-
 		maxWeightValue = UserDefinitions["Max_Weight_Value"];
 		MaxAmountOfTimeDelayed = UserDefinitions["MaxAmountOfTimeDelayed"];
-
 		maximumWeightVariationByMutation = UserDefinitions["Maximum_Weight_Variation_By_Mutation"];
-		
 		probabilityOfWeightRandomMutation = UserDefinitions["Probability_Of_Weight_Random_Mutation"];
-		
-
 		probabilityOfEnableADisabledConnection = UserDefinitions["probabilityOfEnableADisabledConnection"];
-		
 		ConstantDistanceOfSynapticWeightValue = UserDefinitions["ConstantDistanceOfSynapticWeightValue"];
-
-		if(maximumWeightVariationByMutation > 1 || maximumWeightVariationByMutation < 0){
+		if(maximumWeightVariationByMutation > 1 || maximumWeightVariationByMutation < 0)
+		{
 			std::cerr << "Error::TimeDelayedSynapticWeight::SetParametersFromUserDefinitionsPath::Error maximumWeightVariationByMutation must be on interval [0,1]" << std::endl;
 			exit( EXIT_FAILURE );
 		}
-		if(probabilityOfEnableADisabledConnection > 1 || probabilityOfEnableADisabledConnection < 0){
+		if(probabilityOfEnableADisabledConnection > 1 || probabilityOfEnableADisabledConnection < 0)
+		{
 			std::cerr << "Error::TimeDelayedSynapticWeight::SetParametersFromUserDefinitionsPath::Error probabilityOfEnableADisabledConnection must be on interval [0,1]" << std::endl;
 			exit( EXIT_FAILURE );
 		}
-		if(probabilityOfWeightRandomMutation > 1 || probabilityOfWeightRandomMutation < 0){
+		if(probabilityOfWeightRandomMutation > 1 || probabilityOfWeightRandomMutation < 0)
+		{
 			std::cerr << "Error::TimeDelayedSynapticWeight::SetParametersFromUserDefinitionsPath::Error probabilityOfWeightRandomMutation must be on interval [0,1]" << std::endl;
 			exit( EXIT_FAILURE );
 		}
@@ -193,7 +189,7 @@ namespace NEATSpikes
 	void TimeDelayedSynapticWeight::saveState(std::string pathToSave)
 	{
 		// Se crea un archivo con los datos de la conexión sináptica con formato BSW+numero de identificación, por ejemplo, BSW1234
-		std::string finalArchive = pathToSave + "BSW"+ std::to_string(identificator);
+		std::string finalArchive = pathToSave + "TDSW"+ std::to_string(identificator);
 
 		// Se agrega el organismo en el index
 		std::ofstream index;

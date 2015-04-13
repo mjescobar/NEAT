@@ -1175,4 +1175,9 @@ namespace NEATSpikes
 
 		return make_tuple( histoticalMarkNeuronIn , histoticalMarkNeuronOut );
 	}
+
+	int ANN::getOrganismOutputSize()
+	{
+		return outputsAmount;
+	}
 }
