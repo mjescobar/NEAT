@@ -1,6 +1,7 @@
 VPATH=include:src:objects
 COMPILER=g++ -std=c++11
 CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -frtti -O3
+OBJ = Life.o Niche.o ANN.o BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o
 OBJS = ./objects/Life.o ./objects/Niche.o ./objects/ANN.o ./objects/BasicSynapticWeight.o ./objects/BasicNeuron.o ./objects/Input.o ./objects/GlobalInformation.o
 
 Life.o: Life.cpp Niche.cpp
@@ -38,6 +39,8 @@ GlobalInformation.o: GlobalInformation.cpp GlobalInformation.hpp
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/GlobalInformation.o
 	@echo Compiling GlobalInformation 
+
+all: $(OBJ)
 
 clean:
 	@rm -Rf objects
