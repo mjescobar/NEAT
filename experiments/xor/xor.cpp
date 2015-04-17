@@ -69,9 +69,8 @@ int main(int argc, char** argv){
 		{
 			AllNewOrganismToCalculateFiteness.at(i)->setFitness( fitness( AllNewOrganismToCalculateFiteness.at( i ) )  );
 		}
-
+		
 		NeatPopulation.epoch();
 	}
-	
 	return 0;
 }

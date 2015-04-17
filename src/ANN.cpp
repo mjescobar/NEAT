@@ -8,11 +8,11 @@ namespace NEATSpikes
 	double ANN::probabilityOfNeuronMutation=0.0;  // Se tiene que inicializar así porque es una variable estática
 	double ANN::probabilityOfNewNeuronMutation=0.0; // Se tiene que inicializar así porque es una variable estática
 	double ANN::probabilityOfNewSynapticWeightMutation=0.0; // Se tiene que inicializar así porque es una variable estática
-	int ANN::inputsAmount=0;
-	int ANN::outputsAmount=0;
-	double ANN::ConstantOFDiferencesInStructureOfSynapticWeight=0.0;
-	double ANN::ConstantOFDiferencesInStructureOfNeurons=0.0;
-	bool ANN::ANNCanHaveConnectionsBack=false;
+	int ANN::inputsAmount=0; // La cantidad de entradas que posee la red neuronal
+	int ANN::outputsAmount=0; // La cantidad de salidas que posee la red neuronal
+	double ANN::ConstantOFDiferencesInStructureOfSynapticWeight=0.0; // Multiplica a la diferencia de conexiones sinápticas que están en sólo uno de los organismos al calcular su distancia
+	double ANN::ConstantOFDiferencesInStructureOfNeurons=0.0; //Multiplica a la diferencia de neuronas que están en sólo uno de los organismos al calcular su distancia
+	bool ANN::ANNCanHaveConnectionsBack=false; // Si al mutar se puede obtener conexiones recursivas.
 
 
 	ANN::ANN()
@@ -52,10 +52,8 @@ namespace NEATSpikes
 		innovarion_to_localSynapticWeightVectorPosition.insert(ann.innovarion_to_localSynapticWeightVectorPosition.begin(), ann.innovarion_to_localSynapticWeightVectorPosition.end());
 		historicalMark_To_localNeuron.insert(ann.historicalMark_To_localNeuron.begin(), ann.historicalMark_To_localNeuron.end());
 
-
-		neuronsReferencesForCreateNewNeurons=ann.neuronsReferencesForCreateNewNeurons;
-		neuronsReferencesForCreateNewSynapticWeight=ann.neuronsReferencesForCreateNewSynapticWeight;
-
+		neuronsReferencesForCreateNewNeurons = ann.neuronsReferencesForCreateNewNeurons;
+		neuronsReferencesForCreateNewSynapticWeight = ann.neuronsReferencesForCreateNewSynapticWeight;
 
 		for (unsigned int i = 0; i < ann.availableNumberOfNeuronMutationsInRelationToNeuron.size(); ++i)
 		{
@@ -217,7 +215,7 @@ namespace NEATSpikes
 
 		// 3) Se reviza si hay mutación que cree una nueva neurona
 		//=============================================
-			if ( rand()/(double)RAND_MAX <=  probabilityOfNewNeuronMutation)
+			if ( rand()/(double)RAND_MAX <=  probabilityOfNewNeuronMutation )
 			{
 				newNeuronMutation();
 			}
@@ -233,67 +231,82 @@ namespace NEATSpikes
 	}
 
 
+	// ANN * ANN::crossover(ANN * mother)
+	// {
+
+	// 	// El procedimiento que se realiza es:
+	// 	// 1) El hijo copia todo del padre
+	// 	// 2) Se recorren todas las neuronas de la madre, de haber coincidencia de neuronas entonces con 50% de probabilidades la neurona se cambia por la versión de la madre en otro caso se conserva el del padre. 
+	// 	// 3) Lo mismo pero con las conexiones sinápticas.
+	// 	ANN * children = new ANN( *this );
+
+	// 	// Primero se agregan todas las neuronas que posea la madre al padre si este no lo tiene, y si lo tiene 50% de probabilidad de cambiar el existente por el de la madre
+	// 	//==================================================================================
+	// 		for (unsigned int i = 0; i < mother->neuron_vector.size(); ++i)
+	// 		{
+				
+	// 			int historicalMarkMotherNeuron = mother->neuron_vector.at( i )->getHistoricalMark();
+
+	// 			if( historicalMark_To_localNeuron.count( historicalMarkMotherNeuron ) > 0 ) // Si historicalMarkMotherNeuron está en el mapa entonces:
+	// 			{
+					
+	// 				int localNeuronPosition = historicalMark_To_localNeuron.at( historicalMarkMotherNeuron );
+	// 				if( localNeuronPosition == 0 && historicalMarkMotherNeuron != 0 )
+	// 				{
+	// 					std::cerr << "EROR:::::::::: " << historicalMarkMotherNeuron << "\t" << historicalMark_To_localNeuron.count( historicalMarkMotherNeuron ) << std::endl;
+	// 					testPrint();
+	// 					exit( EXIT_FAILURE );
+	// 				}
+
+	// 				if( rand()/(double)RAND_MAX > 0.5 )
+	// 				{ // Entonces cambiar el existente por el de la madre.
+	// 					Neuron * toDelete = children->neuron_vector.at( localNeuronPosition );
+	// 					children->neuron_vector.at( localNeuronPosition ) = mother->neuron_vector.at( i )->duplicate( );
+	// 					delete( toDelete );
+	// 				}
+	// 			}	
+	// 			else
+	// 			{
+	// 				children->addNeuron( mother->neuron_vector.at( i )->duplicate() );
+	// 			}
+	// 		}
+	// 	//==================================================================================
+
+
+	// 	// Se agregan todas las conexiones sinápticas que están sólo en la madre, y las conexiones sinápticas que están en ambos se tiene un 50% de probabilidades que adquiera el del padre o la madre.
+	// 	//==================================================================================
+	// 		for ( unsigned int i = 0; i < mother->synapticWeight_vector.size( ); ++i )
+	// 		{
+	// 			int innovationMother = mother->synapticWeight_vector.at( i )->getInnovation( );
+
+	// 			if( innovarion_to_localSynapticWeightVectorPosition.count( innovationMother ) )
+	// 			{
+	// 				int localInnovationPosition = innovarion_to_localSynapticWeightVectorPosition.at( innovationMother );
+
+	// 				if( rand()/(double)RAND_MAX > 0.5 )
+	// 				{ // Entonces cambiar el existente por el de la madre.
+	// 					SynapticWeight * toDelete;
+	// 					toDelete = children->synapticWeight_vector.at( localInnovationPosition );
+	// 					children->synapticWeight_vector.at( localInnovationPosition )= mother->synapticWeight_vector.at( i )->duplicate();
+	// 					delete( toDelete );
+	// 				}
+	// 			}
+	// 			else // Si el dato no está en el mapa de referencias entocnes es porque no existe en el padre y hay que agregarlo sin más
+	// 			{
+	// 				children->addSynapticWeight( mother->synapticWeight_vector.at( i )->duplicate( ) );
+	// 			}
+	// 		}
+	// 	//==================================================================================
+
+	// 	return children;
+	// }
+
+
 	ANN * ANN::crossover(ANN * mother)
 	{
+		// Probar Opción 2.
 
-		// El procedimiento que se realiza es:
-		// 1) El hijo copia todo del padre
-		// 2) Se recorren todas las neuronas de la madre, de haber coincidencia de neuronas entonces con 50% de probabilidades la neurona se cambia por la versión de la madre en otro caso se conserva el del padre. 
-		// 3) Lo mismo pero con las conexiones sinápticas.
-
-		ANN * children = new ANN( *this );
-
-		// Primero se agregan todas las neuronas que posea la madre al padre si este no lo tiene, y si lo tiene 50% de probabilidad de cambiar el existente por el de la madre
-		//==================================================================================
-			for (unsigned int i = 0; i < mother->neuron_vector.size(); ++i)
-			{
-				int historicalMarkMotherNeuron = mother->neuron_vector.at( i )->getHistoricalMark();
-
-				try
-				{
-					int localNeuronPosition = historicalMark_To_localNeuron.at( historicalMarkMotherNeuron );
-
-					if( rand()/(double)RAND_MAX > 0.5 )
-					{ // Entonces cambiar el existente por el de la madre.
-						Neuron * toDelete = children->neuron_vector.at( localNeuronPosition );
-						children->neuron_vector.at( localNeuronPosition ) = mother->neuron_vector.at( i )->duplicate( );
-						delete( toDelete );
-					}
-				}
-				catch( const std::out_of_range& oor ) // Si el dato no está en el mapa de referencias entocnes es porque no existe en el padre y hay que agregarlo sin más
-				{
-					children->addNeuron( mother->neuron_vector.at( i )->duplicate() );
-					continue;
-				}
-			}
-		//==================================================================================
-
-
-		// Se agregan todas las conexiones sinápticas que están sólo en la madre, y las conexiones sinápticas que están en ambos se tiene un 50% de probabilidades que adquiera el del padre o la madre.
-		//==================================================================================
-			for ( unsigned int i = 0; i < mother->synapticWeight_vector.size( ); ++i )
-			{
-				int innovationMother = mother->synapticWeight_vector.at( i )->getInnovation( );
-				try
-				{
-					int localInnovationPosition = innovarion_to_localSynapticWeightVectorPosition.at( innovationMother );
-
-					if( rand()/(double)RAND_MAX > 0.5 )
-					{ // Entonces cambiar el existente por el de la madre.
-						SynapticWeight * toDelete;
-						toDelete = children->synapticWeight_vector.at( localInnovationPosition );
-						children->synapticWeight_vector.at( localInnovationPosition )= mother->synapticWeight_vector.at( i )->duplicate();
-						delete( toDelete );
-					}
-				}
-				catch( const std::out_of_range& oor ) // Si el dato no está en el mapa de referencias entocnes es porque no existe en el padre y hay que agregarlo sin más
-				{
-					children->addSynapticWeight( mother->synapticWeight_vector.at( i )->duplicate( ) );
-				}
-			}
-		//==================================================================================
-
-		return children;
+		return new ANN(*this);
 	}
 
 	void ANN::testPrint()
@@ -344,7 +357,7 @@ namespace NEATSpikes
 		// Bastante largo, se deja para posterior trabajo.
 	}
 
-	void load(std::string PathWhereIsSaved)
+	void ANN::load(std::string PathWhereIsSaved)
 	{
 
 	}
@@ -435,6 +448,7 @@ namespace NEATSpikes
 
 		// Primero se obtienen las neuronas inicial input e inicial output de forma aleatoria, además la función devuelve todas las formas en que estos datos son guardados; en mapa de referencias, en las listas locales(localNeuron) y en las listas globales(HistoricalMarks)
 		tie( histoticalMarkNeuronIn, histoticalMarkNeuronOut, localNeuronIn, localNeuronOut, neuronReference_1, neuronReference_2 ) = findNeuronsForNewNeuronMutation();
+
 
 		// Se debe deshabilitar la conexión sináptica que conectaba diréctamente las neuronas que antes estaban diréctamente conectadas, SI EXISTE porque no tiene por qué existir. Si no existe, el procedimiento que debería ser es crear una conexión sináptica que esté en la posición dicha y deshabilitarla.
 		if(  neuronsReferencesForCreateNewSynapticWeight.at( neuronReference_1 ).at( neuronReference_2 ) == -1 ) // Si no existe
@@ -544,19 +558,14 @@ namespace NEATSpikes
 
 	void ANN::addSynapticWeight(int historicalNeuronIn, int historicalNeuronOut)
 	{
-		std::cerr << "p1" << std::endl; 
 		SynapticWeight * newSynapticWeight = prototypeSynapticWeight->createNew( historicalNeuronIn , historicalNeuronOut );
-		std::cerr << "p2" << std::endl; 
 		addSynapticWeight(newSynapticWeight);
-		std::cerr << "p3" << std::endl; 
 	}
 
 	void ANN::addNeuron( Neuron * N )
 	{
-
 		// Paso 1: Se obtienen todos los datos necesarios.
 		//================================================================
-			
 			int historicalMark= N->getHistoricalMark();
 			int layer = N->getLayer();
 			 // Se debe agregar la neurona a su layer correspondiente para fácilitar la evaluación después.
@@ -578,11 +587,13 @@ namespace NEATSpikes
 
 		// Paso 2: se analiza un posible caso de error:	
 		//================================================================
-			if( neuronsReferencesForCreateNewNeurons.at( NeuronReference1 ).at( NeuronReference2 ) == -1) 
+			if( neuronsReferencesForCreateNewNeurons.at( NeuronReference1 ).at( NeuronReference2 ) != -1) 
 			{
 				std::cerr << "ANN::addNeuron::Neuron already exist, Neuron->printState():" << std::endl;
 				N->printState();
-				exit(EXIT_FAILURE);
+				std::cerr << "ANN->testPrint() for see neuron reference map:" <<std::endl; 
+				testPrint();
+				exit( EXIT_FAILURE );
 			}
 		//================================================================
 		
@@ -591,7 +602,7 @@ namespace NEATSpikes
 		
 		// Paso 3: se agrega la neurona al vector de neuronas y se asigna en el mapa
 		//================================================================
-			neuron_vector.push_back(N);
+			neuron_vector.push_back( N );
 			int positionNewNeuron = neuron_vector.size()-1;
 			historicalMark_To_localNeuron[ historicalMark ] = positionNewNeuron;
 		//================================================================
@@ -610,8 +621,6 @@ namespace NEATSpikes
 			neuronsReferencesForCreateNewSynapticWeight.push_back( extension_1 );
 			neuronsReferencesForCreateNewNeurons.push_back( extension_2 );
 		//================================================================
-
-		
 
 		// En caso de que no se permitan conexiones hacia atrás 
 		// Se recorrerán todas las neuronas y se verán si son de un layer mayor, menor o igual. De ser de un layer mayor entonces se aceptan las conexiones hacia adelante y no las hacia atrás, de ser un layer menor se aceptan las conexiones hacia atrás pero no hacia adelante y de ser del mismo layer no se aceptan conexiones. (simil con neuronas)
@@ -894,10 +903,10 @@ namespace NEATSpikes
 	
 		// NEURONAS
 		//========================================================================
-		for (int i = 0; i < (int)ann2->neuron_vector.size(); ++i)
+		for ( int i = 0; i < (int)ann2->neuron_vector.size() ; ++i )
 		{
-			int historicalMarkMotherNeuron = ann2->neuron_vector.at(i)->getHistoricalMark();
-			int localNeuronPositionInFather = ann1->historicalMark_To_localNeuron[historicalMarkMotherNeuron];
+			int historicalMarkMotherNeuron = ann2->neuron_vector.at( i )->getHistoricalMark();
+			int localNeuronPositionInFather = ann1->historicalMark_To_localNeuron[ historicalMarkMotherNeuron ];
 			if(  localNeuronPositionInFather == 0 && historicalMarkMotherNeuron != 0) // entonces no existe en el padre.
 			{
 				// Hay una diferencia
@@ -905,14 +914,18 @@ namespace NEATSpikes
 			}
 			else
 			{ 
-				N += ann1->neuron_vector.at( localNeuronPositionInFather )->getDistance( ann2->neuron_vector.at(i) );
+				//ann2->neuron_vector.at( i )->printState();
+				//std::cerr << "localNeuronPositionInFather: " << localNeuronPositionInFather << "\thistoricalMarkMotherNeuron: "<<historicalMarkMotherNeuron << std::endl;
+				//ann1->neuron_vector.at( localNeuronPositionInFather )->printState();
+				N += ann1->neuron_vector.at( localNeuronPositionInFather )->getDistance( ann2->neuron_vector.at( i ) );
 			}
 		}
+
 		// Hay que hacer lo inverso para contabilizar los casos en que la neurona pertenece al padre nada mas.
 		for (int i = 0; i < (int)ann1->neuron_vector.size(); ++i)
 		{
 			int historicalMarkFatherNeuron = ann1->neuron_vector.at( i )->getHistoricalMark();
-			int localNeuronPositionInMother = ann2->historicalMark_To_localNeuron[historicalMarkFatherNeuron];
+			int localNeuronPositionInMother = ann2->historicalMark_To_localNeuron[ historicalMarkFatherNeuron ];
 			if(  localNeuronPositionInMother == 0 && historicalMarkFatherNeuron != 0) // entonces no existe en el padre.
 			{
 				// Hay una diferencia
@@ -969,7 +982,7 @@ namespace NEATSpikes
 			// Se corrobora que el layer sea un layer existente en esta ANN
 			//=======================================================================
 				int currentLayer = layerOrdererList.at( i );
-				if(neuronsAtLayer.at( currentLayer ).at( 0 ) == -1)  //Si es -1 es porque no hay neuronas en aquella capa.
+				if(neuronsAtLayer.at( currentLayer ).at( 0 ) == -1)//Si es -1 es porque no hay neuronas en aquella capa.
 				{
 					continue;
 				}
@@ -1043,11 +1056,12 @@ namespace NEATSpikes
 	{
 		if( vect_1_vect_2.at(0) > vect_1_vect_2.at(1) )
 		{
-			return make_tuple(vect_1_vect_2.at(0),vect_1_vect_2.at(1));
+			return make_tuple( vect_1_vect_2.at(0) , vect_1_vect_2.at(1) );
 		}
+
 		else
 		{
-			return make_tuple( 2*vect_1_vect_2.at(0) - vect_1_vect_2.at(1) , vect_1_vect_2.at(0));
+			return make_tuple( 2*vect_1_vect_2.at(0) - vect_1_vect_2.at(1) , vect_1_vect_2.at(0) );
 		}
 	}
 
@@ -1057,19 +1071,18 @@ namespace NEATSpikes
 			sum,
 			diference,
 			newNeuronIndicator,
-			counter;
+			councroster;
 
 		newNeuronIndicator =  rand()%amountOfPosiblyNeuronMutation + 1; // Con esto definimos completamente cuál será la neurona nueva. 
 		unsigned int j = 0;
 		unsigned int i = 0;
-		counter=0;
+		unsigned int counter=0;
 		sum=0;
 		sum_prev=0;
-
+		std::cerr << "amountOfPosiblyNeuronMutation: "<< amountOfPosiblyNeuronMutation <<std::endl;
 		for ( i = 0; i < neuronsReferencesForCreateNewNeurons.size(); ++i )
 		{
-			sum += availableNumberOfNeuronMutationsInRelationToNeuron.at( i ); 
-			
+			sum += availableNumberOfNeuronMutationsInRelationToNeuron.at( i );
 			if( sum >= newNeuronIndicator ) 
 			{		
 				break;
@@ -1077,6 +1090,11 @@ namespace NEATSpikes
 			sum_prev = sum;
 		}
 
+		if( i == neuronsReferencesForCreateNewNeurons.size() )
+		{
+			std::cerr << "ANN::findNeuronsForNewNeuronMutation:: 1st Component not found" << std::endl;
+			exit( EXIT_FAILURE );
+		}
 		// Ahora que se sabe la primera componente se debe buscar por la segunda para definir completamente la mutación. 
 		diference = newNeuronIndicator - sum_prev;
 		
@@ -1090,16 +1108,21 @@ namespace NEATSpikes
 				}
 			}
 		}
+		if( j == neuronsReferencesForCreateNewNeurons.at( i ).size() )
+		{
+			std::cerr << "ANN::findNeuronsForNewNeuronMutation:: 2nd Component not found" << std::endl;
+			exit( EXIT_FAILURE );
+		}
 		int NeuronRef_1 = i;
 		int NeuronRef_2 = j;
 		int localNeuronIn;
 		int localNeuronOut;
 		
 
-		tie( localNeuronIn , localNeuronOut ) = localNeuronsInOut_TO_referencesNeurons( {NeuronRef_1 , NeuronRef_2 });
+		tie( localNeuronIn , localNeuronOut ) = referencesNeurons_TO_localNeuronsInOut( {NeuronRef_1 , NeuronRef_2 } );
 
-		int histoticalMarkNeuronIn = neuron_vector.at( localNeuronIn )->getHistoricalMark();
-		int histoticalMarkNeuronOut = neuron_vector.at( localNeuronOut )->getHistoricalMark();
+		int histoticalMarkNeuronIn = neuron_vector.at( localNeuronIn )->getHistoricalMark( );
+		int histoticalMarkNeuronOut = neuron_vector.at( localNeuronOut )->getHistoricalMark( );
 
 
 		return make_tuple (histoticalMarkNeuronIn, histoticalMarkNeuronOut, localNeuronIn, localNeuronOut, NeuronRef_1, NeuronRef_2 );
@@ -1163,7 +1186,6 @@ namespace NEATSpikes
 			exit(EXIT_FAILURE);
 		}
 
-		std::cerr << "\t\t\t\t!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << neuronsReferencesForCreateNewSynapticWeight.at( i ).at( j ) << std::endl;
 
 		// Ahora a través de i y j se obtendrán las neuronas inicial input e inicial output que fueron elejidas.
 		tie(localNeuronIn, localNeuronOut) =  referencesNeurons_TO_localNeuronsInOut( { (int)i , (int)j } );

@@ -83,16 +83,17 @@ namespace NEATSpikes{
 			\brief Se obtiene la cantidad de salidas del organismo.
 		*/
 		static int getOrganismOutputSize();
+		/**
+			\brief Se carga una red neuronal a través de una anteriormente guardada.
+		*/
+		void load(std::string PathWhereIsSaved);
 	private:
 		
 		/**
 			\brief Se guarda toda la información necesario para definir esta red neuronal y poder así volver a cargarla perfectamente si se desease volverla a entrenar.
 		*/
 		void saveState(std::string pathToSave);
-		/**
-			\brief Se carga una red neuronal a través de una anteriormente guardada.
-		*/
-		void load(std::string PathWhereIsSaved);
+		
 		/**
 			\brief Se obtienen los datos desde el archivo con definiciones y se guarda en las variables estáticas correspondietes. 
 		*/

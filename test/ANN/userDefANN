@@ -1,8 +1,9 @@
-Probability_Of_Synaptic_Weight_Mutation 0.2
-Probability_Of_Neuron_Mutation 0.99
-Probability_Of_New_Neuron_Mutation 0.99
-Probability_Of_New_Synaptic_Weight_Mutation 0.01
-inputsAmount 3
+Probability_Of_Synaptic_Weight_Mutation 0.1
+Probability_Of_Neuron_Mutation 0.1
+Probability_Of_New_Neuron_Mutation 0.3
+Probability_Of_New_Synaptic_Weight_Mutation 0.3
+inputsAmount 2
 outputsAmount 1
-ConstantOFDiferencesInStructureOfSynapticWeight 0.3
-ConstantOFDiferencesInStructureOfNeurons 0.1
+ConstantOFDiferencesInStructureOfSynapticWeight 1
+ConstantOFDiferencesInStructureOfNeurons 1
+ANNCanHaveConnectionsBack 1

@@ -285,7 +285,7 @@ namespace NEATSpikes
 		return BN;
 	}
 
-	double BasicNeuron::getDistance(Neuron * neuron)
+	double BasicNeuron::getDistance( Neuron * neuron )
 	{
 		// Primero que todo como la entrada no se puede asegurar que sea en realidad un puntero a BasicNeuron, lo primero que se hace es asegurar que en realidad sí sea puntero a BasicNeuron o sino se emite un error.
 		BasicNeuron * BN = NULL;
@@ -297,7 +297,8 @@ namespace NEATSpikes
 		else
 		{ // Si entra aquí es porque neuron no es un puntero de BasicNeuron.
 			std::cerr << "ERROR::BasicNeuron::getDistance::Input must to be a pointer to BasicNeuron wrapped like pointer of Neuron" << std::endl;
-			exit(EXIT_FAILURE);
+			neuron->printState();
+			exit( EXIT_FAILURE );
 		}
 	}
 

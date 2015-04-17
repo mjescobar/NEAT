@@ -1,20 +1,23 @@
 VPATH=include:src:objects
 COMPILER=g++ -std=c++11
-CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -frtti -O3
+CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -frtti -O3 -g
 OBJ = Life.o Niche.o ANN.o BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o
 OBJS = ./objects/Life.o ./objects/Niche.o ./objects/ANN.o ./objects/BasicSynapticWeight.o ./objects/BasicNeuron.o ./objects/Input.o ./objects/GlobalInformation.o
 
-Life.o: Life.cpp Niche.cpp
+all: $(OBJ)
+
+
+Life.o: Life.cpp Niche.cpp Niche.o
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Life.o
 	@echo Compiling Life 
 
-ANN.o: ANN.cpp BasicSynapticWeight.cpp BasicNeuron.cpp Input.cpp GlobalInformation.cpp 
+ANN.o: ANN.cpp BasicSynapticWeight.cpp BasicNeuron.cpp Input.cpp GlobalInformation.cpp BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/ANN.o
 	@echo Compiling ANN 
 
-BasicSynapticWeight.o: BasicSynapticWeight.cpp BasicSynapticWeight.hpp GlobalInformation.cpp 
+BasicSynapticWeight.o: BasicSynapticWeight.cpp BasicSynapticWeight.hpp GlobalInformation.cpp GlobalInformation.o 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicSynapticWeight.o
 	@echo Compiling BasicSynapticWeight 
@@ -40,7 +43,6 @@ GlobalInformation.o: GlobalInformation.cpp GlobalInformation.hpp
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/GlobalInformation.o
 	@echo Compiling GlobalInformation 
 
-all: $(OBJ)
 
 clean:
 	@rm -Rf objects

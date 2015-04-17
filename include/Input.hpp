@@ -67,9 +67,9 @@ namespace NEATSpikes
 			
 			Neuron * duplicate();
 
-			double getDistance(Neuron * neuron){return 0;};
+			double getDistance(Neuron * neuron) { return 0; };
 
-			void changeValuesRandomly(){};
+			void changeValuesRandomly() { };
 
 		private:
 			double inputVoltage;
