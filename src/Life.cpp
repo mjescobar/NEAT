@@ -92,7 +92,7 @@ namespace NEATSpikes
 		
 		for (unsigned int i = 0; i < old_niches_vector.size(); ++i)
 		{
-			TotalFitnessAverageOfAllOldNiches += old_niches_vector.at(i).getFitnessAverage();
+			TotalFitnessAverageOfAllOldNiches += old_niches_vector.at( i ).getFitnessAverage();
 		}
 
 		while(totalOfChildrenInOldNiches < AmountOfTotalOrganismFromAllOldNiches && old_niches_vector.size() >= 1)
@@ -106,17 +106,17 @@ namespace NEATSpikes
 				{
 					niche2++;
 				}
-				Organism * father = old_niches_vector.at(niche1).obtainOneOrganismToCrossoverWithAnotherNicheOrganism();
-				Organism * mother = old_niches_vector.at(niche2).obtainOneOrganismToCrossoverWithAnotherNicheOrganism();
+				Organism * father = old_niches_vector.at( niche1 ).obtainOneOrganismToCrossoverWithAnotherNicheOrganism();
+				Organism * mother = old_niches_vector.at( niche2 ).obtainOneOrganismToCrossoverWithAnotherNicheOrganism();
 
-				Organism * children = father->crossover(mother);
-				if( old_niches_vector.at(niche1).IsAcepted(children) )
+				Organism * children = crossover( father , mother );
+				if( old_niches_vector.at(niche1).IsAcepted( children ) )
 				{ // entonces es aceptado con el nicho padre.
-					old_niches_vector.at(niche1).addOrganism(children);
+					old_niches_vector.at(niche1).addOrganism( children );
 				}
-				else if( old_niches_vector.at(niche2).IsAcepted(children) )
+				else if( old_niches_vector.at(niche2).IsAcepted( children ) )
 				{ // entonces es aceptado con el nicho madre.
-					old_niches_vector.at(niche2).addOrganism(children);
+					old_niches_vector.at(niche2).addOrganism( children );
 				}
 				else
 				{
@@ -125,10 +125,10 @@ namespace NEATSpikes
 					
 					for (j = 0; j < old_niches_vector.size(); ++j)
 					{
-						if( old_niches_vector.at(j).IsAcepted(children) )
+						if( old_niches_vector.at(j).IsAcepted( children ) )
 						{
 							totalOfChildrenInOldNiches++;
-							old_niches_vector.at(j).addOrganism(children);
+							old_niches_vector.at(j).addOrganism( children );
 							break;
 						}
 					}
@@ -136,7 +136,7 @@ namespace NEATSpikes
 					if(j == old_niches_vector.size())
 					{
 						// Si se llega a este punto es porque no fue aceptado en ningun otro nicho entonces debe crear uno propio.
-						organismFIFOWaitingForCreateNewNiches.push_back(children);
+						organismFIFOWaitingForCreateNewNiches.push_back( children );
 					}
 				}
 			}

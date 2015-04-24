@@ -1,6 +1,6 @@
 VPATH=../../include:.:../../src:../../objects
 COMPILER=g++ -std=c++11
-CFLAGS = -Wall -fPIC -I../../include   -I../../objects -I. -frtti
+CFLAGS = -Wall -fPIC -I../../include   -I../../objects -I. -frtti -g
 
 xor: xor.cpp Life.cpp  ANN.cpp 
 	mkdir -p bin

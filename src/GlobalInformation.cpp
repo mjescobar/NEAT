@@ -163,3 +163,13 @@ std::vector <int> GlobalInformation::layerOrdererList()
 	}
 	return _ordererList;
 }
+
+int GlobalInformation::getAmountOfNeurons()
+{
+	return historicalMark;
+}
+
+int GlobalInformation::getAmountOfSynapticWeights()
+{
+	return innovation;
+}

@@ -13,14 +13,27 @@ namespace NEATSpikes
 	double ANN::ConstantOFDiferencesInStructureOfSynapticWeight=0.0; // Multiplica a la diferencia de conexiones sinápticas que están en sólo uno de los organismos al calcular su distancia
 	double ANN::ConstantOFDiferencesInStructureOfNeurons=0.0; //Multiplica a la diferencia de neuronas que están en sólo uno de los organismos al calcular su distancia
 	bool ANN::ANNCanHaveConnectionsBack=false; // Si al mutar se puede obtener conexiones recursivas.
+	Neuron * ANN::prototypeNeuron=NULL; // El prototipo de las neuronas es usado para crear las neuronas nuevas del mismo tipo
+	SynapticWeight *  ANN::prototypeSynapticWeight=NULL; // El prototipo de las conexiones synapticas es usado para crear nuevas conexiones sinápticas del mismo tipo siempre.
 
-
+	
 	ANN::ANN()
 	{
-
+	
 	}
 
+	// Este constructor es creado para nuevos ANN
+	ANN::ANN(GlobalInformation * information)
+	{
+		generalInformation = information; // Así siempre se tiene una copia de la información de todas las redes neuronales.
+		identificator = id++;
 
+		amountOfPosiblyNeuronMutation=0;
+		amountOfPosiblySynapticWeightMutation=0;
+	}
+
+	// Constructor copia.
+	// Aquí simplemente se copia toda la información de ANN. No hay ningún algoritmo que entender.
 	ANN::ANN(const ANN & ann)
 	{
 
@@ -33,9 +46,6 @@ namespace NEATSpikes
 		{
 			synapticWeight_vector.push_back( ann.synapticWeight_vector.at(i)->duplicate() );
 		}
-
-		prototypeNeuron = ann.prototypeNeuron->duplicate();
-		prototypeSynapticWeight = ann.prototypeSynapticWeight->duplicate();
 
 		fitness=ann.fitness;
 
@@ -302,17 +312,129 @@ namespace NEATSpikes
 	// }
 
 
-	ANN * ANN::crossover(ANN * mother)
+	/*
+		Las neuronas del hijo se agregaran en orden, esto quiere decir que primero se les agregarán las neuronas con marcas históricas de menor magnitud, similarmente con las conexiones sinápticas y sus innovaciones.
+	*/
+	ANN * crossover(ANN * father, ANN * mother)
 	{
-		// Probar Opción 2.
+		// Lo primero es crear un hijo vacío. 
+		ANN * children = new ANN( father->generalInformation );
 
-		return new ANN(*this);
+		// Se agregan todas las neuronas iniciales.
+		//==================================================
+			// INPUTS
+			for (int i = 0; i < ANN::inputsAmount; ++i)
+			{
+				children->inputsInNeuron_vector.push_back(i);
+				children->addInitialStructureNeuron( new Input( i ,-1,-1, LAYER_INPUT ) );
+			}
+
+			// OUTPUTS: Con 50% es del padre y 50% es de la madre.
+			for (int i = 0; i < ANN::outputsAmount; ++i)
+			{
+				int position = i+ANN::inputsAmount;
+				children->outputsInNeuron_vector.push_back(position);
+				if ( rand() > RAND_MAX/2.0 )
+				{
+					children->addInitialStructureNeuron( father->neuron_vector.at(position)->duplicate() );
+				}
+				else
+				{
+					children->addInitialStructureNeuron( mother->neuron_vector.at(position)->duplicate() );
+				}
+			}
+		//==================================================
+
+		// Se agergan todas las neuronas restantes que se encuentren en alguno de los progenitores, si se enceuntra en ambos entonces se hereda cualquiera con 50% de probabilidades.
+		//==================================================
+			//Hacerlo de forma ordenada teóricamente no debería atraer problemas porque se suponque que una nurona de historical mark más alto sólo puede conectar dos neuronas de historical mark mas bajo que se suponque que ya fueron creadas.
+			for (int i = ANN::inputsAmount+ANN::outputsAmount; i < children->generalInformation->getAmountOfNeurons() +1 ; ++i)
+			{
+				int fatherLocalNeuron = father->historicalMark_To_localNeuron[ i ];
+				int motherLocalNeuron = mother->historicalMark_To_localNeuron[ i ];
+
+				if( fatherLocalNeuron || motherLocalNeuron )
+				{
+					bool father_flag = false; // Si es true entonces la neurona elejida es del padre.
+					if( fatherLocalNeuron && motherLocalNeuron )
+					{
+						if(rand() > RAND_MAX/2.0) 
+						{
+							father_flag = true;
+						}
+					}
+					else if( fatherLocalNeuron )
+					{
+						father_flag = true;
+					}
+
+					if( father_flag )
+					{
+						children->addNeuron( ( father->neuron_vector.at( fatherLocalNeuron ) )->duplicate()  );
+					}
+					else
+					{
+						children->addNeuron( ( mother->neuron_vector.at( motherLocalNeuron ) )->duplicate()  );
+					}
+				}
+			}
+
+
+		//Se agregan las conexiones sinápticas.
+		//==================================================
+			// Se agrega la conexión 0 manualmente dado que si o si está en ambos organismos y así se simplifica el loop siguiente.
+
+			if(rand() > RAND_MAX/2.0)
+			{
+				children->addSynapticWeight( ( father->synapticWeight_vector.at( 0 ) )->duplicate() );
+			}
+			else
+			{
+				children->addSynapticWeight( ( mother->synapticWeight_vector.at( 0 ) )->duplicate() );
+			}
+
+			for (int i = 1; i < children->generalInformation->getAmountOfSynapticWeights() +1 ; ++i)
+			{
+				int fatherLocalSynapses = father->innovarion_to_localSynapticWeightVectorPosition[ i ];
+				int motherLocalSynapses = mother->innovarion_to_localSynapticWeightVectorPosition[ i ];
+
+				if( fatherLocalSynapses || motherLocalSynapses )
+				{
+					bool father_flag = false; // Si es true entonces la conexión elejida es del padre.
+					if( fatherLocalSynapses && motherLocalSynapses )
+					{
+						if(rand() > RAND_MAX/2.0) 
+						{
+							father_flag = true;
+						}
+					}
+					else if( fatherLocalSynapses )
+					{
+						father_flag = true;
+					}
+
+					if( father_flag )
+					{
+						children->addSynapticWeight( ( father->synapticWeight_vector.at( fatherLocalSynapses ) )->duplicate()  );
+					}
+					else
+					{
+						children->addSynapticWeight( ( mother->synapticWeight_vector.at( motherLocalSynapses ) )->duplicate()  );
+					}
+				}
+			}
+		//==================================================
+
+
+		return children;
+
 	}
 
 	void ANN::testPrint()
 	{
-		std::cout << "Se imprimen neuronsReferencesForCreateNewNeurons \n\n\n";
-
+		
+		std::cout << "===============================================================\n";
+		std::cout << "Se imprimen neuronsReferencesForCreateNewNeurons \n";
 		for (unsigned int i = 0; i < neuronsReferencesForCreateNewNeurons.size(); ++i)
 		{
 			for (unsigned int j = 0; j < neuronsReferencesForCreateNewNeurons.at( i ).size(); ++j)
@@ -321,8 +443,17 @@ namespace NEATSpikes
 			}
 			std::cout << std::endl;
 		}
-
+		std::cout << "\nSe imprimen neuronsReferencesForCreateNewSynapticWeight \n";
+		for (unsigned int i = 0; i < neuronsReferencesForCreateNewSynapticWeight.size(); ++i)
+		{
+			for (unsigned int j = 0; j < neuronsReferencesForCreateNewSynapticWeight.at( i ).size(); ++j)
+			{
+				std::cout << neuronsReferencesForCreateNewSynapticWeight.at( i ).at( j ) << "\t";
+			}
+			std::cout << std::endl;
+		}
 		std::cout << "Total de mutaciones de neurona posible: " << amountOfPosiblyNeuronMutation <<"\tTotal de mutaciones de conexion posible: " << amountOfPosiblySynapticWeightMutation  << std::endl;
+		std::cout << "===============================================================\n";
 	}
 
 	double ANN::getFitness()
@@ -709,6 +840,7 @@ namespace NEATSpikes
 		addNeuron(newNeuron);
 	}
 
+	// Ha diferencia de las otras neuronas, al agregar una neurona de la estructura inicial esta no tiene neurona inicial input o no tiene neurona inicial output, así que en el mapa de referencia de neuronas se debe agregar diferentemente.
 	void ANN::addInitialStructureNeuron( Neuron * N )
 	{
 		// Paso 1: Se obtienen todos los datos necesarios.
@@ -815,8 +947,8 @@ namespace NEATSpikes
 
 	void ANN::createInitialANN()
 	{
+		
 		// Se sabe la cantidad de input y outputs lo que es suficiente para crear una red neuronal inicial.
-
 		// La cantindad total de neuronas al finalizar el proceso será:
 		amountOfPosiblyNeuronMutation=0;
 		amountOfPosiblySynapticWeightMutation=0;
@@ -841,15 +973,16 @@ namespace NEATSpikes
 			addInitialStructureNeuron( prototypeNeuron->createNew(position , -1, -1, LAYER_OUTPUT ) );
 		}
 		
-
 		// SE AGREGAN LAS CONEXIONES
 		for (int i = 0; i < outputsAmount; ++i)
 		{
 			for (int j = 0; j < inputsAmount; ++j)
 			{
+				std::cerr <<  inputsInNeuron_vector.at(j) << "\t" << outputsInNeuron_vector.at(i) << std::endl;
 				addSynapticWeight(  inputsInNeuron_vector.at(j), outputsInNeuron_vector.at(i) );
 			}
 		}
+
 	}
 
 
@@ -1070,8 +1203,7 @@ namespace NEATSpikes
 		int 	sum_prev,
 			sum,
 			diference,
-			newNeuronIndicator,
-			councroster;
+			newNeuronIndicator;
 
 		newNeuronIndicator =  rand()%amountOfPosiblyNeuronMutation + 1; // Con esto definimos completamente cuál será la neurona nueva. 
 		unsigned int j = 0;
@@ -1079,7 +1211,6 @@ namespace NEATSpikes
 		unsigned int counter=0;
 		sum=0;
 		sum_prev=0;
-		std::cerr << "amountOfPosiblyNeuronMutation: "<< amountOfPosiblyNeuronMutation <<std::endl;
 		for ( i = 0; i < neuronsReferencesForCreateNewNeurons.size(); ++i )
 		{
 			sum += availableNumberOfNeuronMutationsInRelationToNeuron.at( i );
@@ -1092,7 +1223,14 @@ namespace NEATSpikes
 
 		if( i == neuronsReferencesForCreateNewNeurons.size() )
 		{
+			testPrint();
 			std::cerr << "ANN::findNeuronsForNewNeuronMutation:: 1st Component not found" << std::endl;
+			std::cerr << "amountOfPosiblyNeuronMutation: "<< amountOfPosiblyNeuronMutation << std::endl;
+			for ( i = 0; i < neuronsReferencesForCreateNewNeurons.size(); ++i )
+			{
+				sum += availableNumberOfNeuronMutationsInRelationToNeuron.at( i );
+				std::cerr << "sum: " << sum << std::endl;
+			}
 			exit( EXIT_FAILURE );
 		}
 		// Ahora que se sabe la primera componente se debe buscar por la segunda para definir completamente la mutación. 
@@ -1102,7 +1240,7 @@ namespace NEATSpikes
 		{
 			if( neuronsReferencesForCreateNewNeurons.at( i ).at( j ) == -1 )
 			{
-				if( ++counter == diference )
+				if( (int)++counter == diference )
 				{
 					break;
 				}
@@ -1162,7 +1300,9 @@ namespace NEATSpikes
 
 		if( i == neuronsReferencesForCreateNewSynapticWeight.size() )
 		{
-			std::cerr << "ERROR::ANN::newSynapticWeightMutation:: No synapticWeight mutation available 1" << std::endl;
+
+			std::cerr << "ERROR::ANN::findNeuronsForNewSynapticMutation:: No synapticWeight mutation available 1" << std::endl;
+			std::cerr << amountOfPosiblySynapticWeightMutation << std::endl;
 			exit(EXIT_FAILURE);
 		}
 		// Ahora que se sabe la primera componente se debe buscar por la segunda para definir completamente la mutación. 
@@ -1182,7 +1322,7 @@ namespace NEATSpikes
 
 		if( j == neuronsReferencesForCreateNewSynapticWeight.at( i ).size() )
 		{
-			std::cerr << "ERROR::ANN::newSynapticWeightMutation:: No synapticWeight mutation available 2" << std::endl;
+			std::cerr << "ERROR::ANN::findNeuronsForNewSynapticMutation:: No synapticWeight mutation available 2" << std::endl;
 			exit(EXIT_FAILURE);
 		}
 

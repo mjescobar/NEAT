@@ -32,6 +32,10 @@ namespace NEATSpikes{
 		*/
 		ANN();
 		/**
+			\brief Se usa para crear nuevos organismos.
+		*/
+		ANN( GlobalInformation * information );
+		/**
 			\brief Constructor copia.
 		*/
 		ANN(const ANN & ann);
@@ -62,7 +66,7 @@ namespace NEATSpikes{
 		/**
 			\brief Este método se encarga de cruzar dos redes neuronales para producir una nueva en memoria con las características de ambas anteriores.
 		*/
-		ANN * crossover(ANN * mother);
+		friend ANN * crossover(ANN * father, ANN * mother);
 		/**
 			\brief Se imprime la ANN de forma alternativa, se imprime sólo el neuronsReferencesForCreateNewNeurons el cuál muestra información importante de la neurona.
 		*/
@@ -88,7 +92,6 @@ namespace NEATSpikes{
 		*/
 		void load(std::string PathWhereIsSaved);
 	private:
-		
 		/**
 			\brief Se guarda toda la información necesario para definir esta red neuronal y poder así volver a cargarla perfectamente si se desease volverla a entrenar.
 		*/
@@ -176,10 +179,8 @@ namespace NEATSpikes{
 			std::vector < std::vector <int> > neuronsReferencesForCreateNewSynapticWeight;
 			std::vector <int> availableNumberOfSynaptinWeightMutationsInRelationToNeuron;
 
-
 			int amountOfPosiblyNeuronMutation;
 			int amountOfPosiblySynapticWeightMutation;
-
 			int amountOfNeurons;
 
 			std::map <int, int> historicalMark_To_localNeuron; 
@@ -200,11 +201,8 @@ namespace NEATSpikes{
 		GlobalInformation * generalInformation;
 		
 
-		Neuron * prototypeNeuron;
-		SynapticWeight *  prototypeSynapticWeight;
-
-
-
+		static Neuron * prototypeNeuron;
+		static SynapticWeight *  prototypeSynapticWeight;
 		static int id; // Se usará para poder guardar las ANN de forma ordenada si se quisieran volver a cargar de nuevo.
 		// ============== DEFINICIONES DE USUARIO =======================================
 		static double probabilityOfSynapticWeightMutation; // Es para cada conexión sináptica existente en la red neuronal.

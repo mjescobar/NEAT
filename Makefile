@@ -1,10 +1,10 @@
 VPATH=include:src:objects
 COMPILER=g++ -std=c++11
 CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -frtti -O3 -g
-OBJ = Life.o Niche.o ANN.o BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o
 OBJS = ./objects/Life.o ./objects/Niche.o ./objects/ANN.o ./objects/BasicSynapticWeight.o ./objects/BasicNeuron.o ./objects/Input.o ./objects/GlobalInformation.o
 
-all: $(OBJ)
+all: Life.o Niche.o ANN.o BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o
+	@echo all NEAT Compiled 
 
 
 Life.o: Life.cpp Niche.cpp Niche.o

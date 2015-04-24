@@ -28,6 +28,8 @@ namespace NEATSpikes{
 		void printLayers();
 		std::vector <int> layerOrdererList();
 		int layerToPlace(int layer);
+		int getAmountOfNeurons();
+		int getAmountOfSynapticWeights();
 	private:
 			//ENCONTRAR UN MEJOR NOMBRE!!!!
 		/*

@@ -12,12 +12,14 @@ namespace NEATSpikes
 		amountOfGenerationsAlive=0;	
 		totalFitness=0;
 	}
+
 	Niche::Niche(std::string PathWhereIsSaved)
 	{
 		identificator=id++;
 		amountOfGenerationsAlive=0;	
 		totalFitness=0;
 	}
+
 	Niche::~Niche()
 	{
 
@@ -89,7 +91,7 @@ namespace NEATSpikes
 		}
 		if(i == organism_vector.size())
 		{
-			std::cerr << "ERROR::Niche::totalFitness is not correct" << std::endl;
+			std::cerr << "ERROR::Niche::obtainAChildren::1::totalFitness is not correct" << std::endl;
 			exit(EXIT_FAILURE);
 		}
 
@@ -113,10 +115,10 @@ namespace NEATSpikes
 		}
 		if( i == organism_vector.size() )
 		{
-			std::cerr << "ERROR::Niche::totalFitness is not correct" << std::endl;
+			std::cerr << "ERROR::Niche::obtainAChildren::2::totalFitness is not correct" << std::endl;
 			exit(EXIT_FAILURE);
 		}
-		ANN * children  = father->crossover( mother );
+		ANN * children  = crossover( father , mother );
 		children->mutate();
 
 		return children;

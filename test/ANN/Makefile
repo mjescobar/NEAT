@@ -1,6 +1,6 @@
 VPATH=../../include:../../objects:.:../../src
 COMPILER=g++ -std=c++11
-CFLAGS = -Wall -fPIC -I../../include   -I../../objects -I. -frtti -O3
+CFLAGS = -Wall -fPIC -I../../include   -I../../objects -I. -frtti -O3 -g
 
 test: test.cpp ANN.cpp  
 	cd ../../; make ANN.o
