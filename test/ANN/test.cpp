@@ -12,9 +12,32 @@ int main(int argc, char ** argv)
 {
 	srand( time( 0 ) ); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
 	
-
-
 	GlobalInformation * ilo = new GlobalInformation();
+	BasicSynapticWeight * BSW = new BasicSynapticWeight(argv[2],ilo);
+	BasicNeuron * BN = new BasicNeuron(argv[1]);
+	Organism * ann1 = new ANN(BN,BSW,argv[3],ilo);
+	Organism * ann2 = new ANN(*ann1);
+	
+	/*ann1->mutate();
+	ann1->mutate();
+	ann1->mutate();
+	ann1->mutate();
+	ann1->mutate();
+	ann1->mutate();
+	cerr << "ANN1.1" << endl;
+	ann1->testPrint();
+	ann2->mutate();
+	ann2->mutate();
+	ann2->mutate();
+	ann2->mutate();
+	ann2->mutate();
+	cerr << "ANN2" << endl;
+	ann2->testPrint();*/
+	ann1->testPrint();
+	Organism * ann3 = crossover(ann1,ann2);
+	ann3->testPrint();
+
+/*	GlobalInformation * ilo = new GlobalInformation();
 	BasicSynapticWeight * BSW = new BasicSynapticWeight(argv[2],ilo);
 	BasicNeuron * BN = new BasicNeuron(argv[1]);
 	Organism * ann1 = new ANN(BN,BSW,argv[3],ilo);
@@ -72,7 +95,7 @@ cerr << "Hijo 3.2" << endl;
 	child3->testPrint();
 cerr << "Hijo 3.3" << endl;
 Organism * child4 = crossover(child3, child2);
-	child4->testPrint();
+	child4->testPrint();*/
 
 	return EXIT_SUCCESS;
 }

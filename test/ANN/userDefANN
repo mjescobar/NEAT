@@ -6,4 +6,4 @@ inputsAmount 2
 outputsAmount 1
 ConstantOFDiferencesInStructureOfSynapticWeight 1
 ConstantOFDiferencesInStructureOfNeurons 1
-ANNCanHaveConnectionsBack 1
+ANNCanHaveConnectionsBack 0

@@ -27,7 +27,6 @@ namespace NEATSpikes
 	{
 		generalInformation = information; // Así siempre se tiene una copia de la información de todas las redes neuronales.
 		identificator = id++;
-
 		amountOfPosiblyNeuronMutation=0;
 		amountOfPosiblySynapticWeightMutation=0;
 	}
@@ -53,7 +52,7 @@ namespace NEATSpikes
 		inputsInNeuron_vector = ann.inputsInNeuron_vector;
 		outputsInNeuron_vector = ann.outputsInNeuron_vector;
 		
-		identificator = ann.identificator;
+		identificator = id++;
 		amountOfPosiblyNeuronMutation = ann.amountOfPosiblyNeuronMutation;
 		amountOfPosiblySynapticWeightMutation = ann.amountOfPosiblySynapticWeightMutation;
 		amountOfNeurons = ann.amountOfNeurons;
@@ -319,7 +318,7 @@ namespace NEATSpikes
 	{
 		// Lo primero es crear un hijo vacío. 
 		ANN * children = new ANN( father->generalInformation );
-
+		std::cerr << "children->amountOfPosiblySynapticWeightMutation: " << children->amountOfPosiblySynapticWeightMutation << std::endl;
 		// Se agregan todas las neuronas iniciales.
 		//==================================================
 			// INPUTS
@@ -855,7 +854,7 @@ namespace NEATSpikes
 		
 		// Paso 2: se agrega la neurona al vector de neuronas y se asigna en el mapa
 		//================================================================
-			neuron_vector.push_back(N);
+			neuron_vector.push_back( N );
 			int positionNewNeuron = neuron_vector.size()-1;
 			historicalMark_To_localNeuron[ historicalMark ] = positionNewNeuron;
 		//================================================================
@@ -863,18 +862,17 @@ namespace NEATSpikes
 		
 		// Finalmente se debe re calcular la cantidad de posibles mutaciones.
 		//================================================================
-			amountOfPosiblyNeuronMutation += (2*positionNewNeuron + 1) ;  // donde (2*positionNewNeuron + 1): es la cantidad de nuevas mutaciones por agregar una neurona 
-			amountOfPosiblySynapticWeightMutation += (2*positionNewNeuron + 1) ;
+			amountOfPosiblyNeuronMutation += 2*positionNewNeuron+1;  // donde 2*positionNewNeuron: es la cantidad de nuevas mutaciones por agregar una neurona y el +1 es consigo mismo
+			amountOfPosiblySynapticWeightMutation += 2*positionNewNeuron+1;
 			availableNumberOfSynaptinWeightMutationsInRelationToNeuron.push_back( 2*positionNewNeuron +1);
 			// Al agregar la nueva neurona neuronsReferencesForCreateNewSynapticWeight y neuronsReferencesForCreateNewNeurons deben agrandarse correspondientemente.
-			std::vector <int> extension_1 ( 2*positionNewNeuron +1, -1 ); // donde (2*positionNewNeuron + 1) son todas las convinaciones con la nueva neurona que pueden haber, y +1 corresponde a que el primer valor del vector dice cuántas mutaciones posibles hay con esa neurona.
-			std::vector <int> extension_2 ( 2*positionNewNeuron +1, -1 );// donde (2*positionNewNeuron + 1) son todas las convinaciones con la nueva neurona que pueden haber, y +1 corresponde a que el primer valor del vector dice cuántas mutaciones posibles hay con esa neurona.
-			availableNumberOfNeuronMutationsInRelationToNeuron.push_back( 2*positionNewNeuron +1 );
+			std::vector <int> extension_1 ( 2*positionNewNeuron +1, -1 ); // donde 2*positionNewNeuron +1  son todas las combinaciones con la nueva neurona que pueden haber (incluida si misma).
+			std::vector <int> extension_2 ( 2*positionNewNeuron +1, -1 );// donde 2*positionNewNeuron +1 son todas las convinaciones con la nueva neurona que pueden haber.
+			availableNumberOfNeuronMutationsInRelationToNeuron.push_back( 2*positionNewNeuron+1 );
 			neuronsReferencesForCreateNewSynapticWeight.push_back( extension_1 );
 			neuronsReferencesForCreateNewNeurons.push_back( extension_2 );
 		//================================================================
 
-		
 
 		// En caso de que no se permitan conexiones hacia atrás 
 		// Se recorrerán todas las neuronas y se verán si son de un layer mayor, menor o igual. De ser de un layer mayor entonces se aceptan las conexiones hacia adelante y no las hacia atrás, de ser un layer menor se aceptan las conexiones hacia atrás pero no hacia adelante y de ser del mismo layer no se aceptan conexiones. (simil con neuronas)
@@ -884,9 +882,25 @@ namespace NEATSpikes
 				for ( unsigned int i = 0; i < neuron_vector.size() ; ++i )
 				{
 					int layerOtherNeuron = neuron_vector.at( i )->getLayer();
-					// En caso de que sean el mismo layer se eliminan todas las posibles conexiones/neuronas entre estas dos neuronas (sea de dirección ida o vuelta).
-					if( generalInformation->layerToPlace( layer ) == generalInformation->layerToPlace( layerOtherNeuron ) )
+					// En caso de que se trate de la misma neurona entonces hay que eliminar la opción
+					if(positionNewNeuron == (int)i)
 					{
+						// En el caso de conexiones desde la neurona nueva hacia la neurona i no se aceptan las conexiones (-2)
+						neuronsReferencesForCreateNewNeurons.at( i ).at( i ) = -2;
+						neuronsReferencesForCreateNewSynapticWeight.at( i ).at( i ) = -2;
+						
+						// Se quitan las posibilidades de conexión.
+						availableNumberOfSynaptinWeightMutationsInRelationToNeuron.at( positionNewNeuron ) -= 1; 
+						availableNumberOfNeuronMutationsInRelationToNeuron.at( positionNewNeuron ) -= 1; 
+
+						//Y se elimina esa opción de la cantidad de mutaciones posibles.
+						amountOfPosiblySynapticWeightMutation -= 1;
+						amountOfPosiblyNeuronMutation -= 1;
+					}
+					// En caso de que sean el mismo layer se eliminan todas las posibles conexiones/neuronas entre estas dos neuronas (sea de dirección ida o vuelta).
+					else if( generalInformation->layerToPlace( layer ) == generalInformation->layerToPlace( layerOtherNeuron ) )
+					{
+
 						int input = positionNewNeuron;
 						int output= i;
 						int ref1,ref2;
@@ -902,11 +916,11 @@ namespace NEATSpikes
 						
 						// Se quitan las posibilidades de conexión.
 						availableNumberOfSynaptinWeightMutationsInRelationToNeuron.at( positionNewNeuron ) -= 2; 
-						availableNumberOfNeuronMutationsInRelationToNeuron.at( positionNewNeuron) -= 2; 
+						availableNumberOfNeuronMutationsInRelationToNeuron.at( positionNewNeuron ) -= 2; 
 						amountOfPosiblySynapticWeightMutation -= 2;
 						amountOfPosiblyNeuronMutation -= 2;
-
 					}
+
 					// En caso de que el layer actual sea menor que el layer de la neurona i entonces se anulan todas las conexiones/neuronas que comiencen en la neurona i y terminen en la nueva.
 					else if( generalInformation->layerToPlace( layer ) < generalInformation->layerToPlace( layerOtherNeuron ) )
 					{
@@ -947,7 +961,6 @@ namespace NEATSpikes
 
 	void ANN::createInitialANN()
 	{
-		
 		// Se sabe la cantidad de input y outputs lo que es suficiente para crear una red neuronal inicial.
 		// La cantindad total de neuronas al finalizar el proceso será:
 		amountOfPosiblyNeuronMutation=0;
@@ -978,7 +991,6 @@ namespace NEATSpikes
 		{
 			for (int j = 0; j < inputsAmount; ++j)
 			{
-				std::cerr <<  inputsInNeuron_vector.at(j) << "\t" << outputsInNeuron_vector.at(i) << std::endl;
 				addSynapticWeight(  inputsInNeuron_vector.at(j), outputsInNeuron_vector.at(i) );
 			}
 		}
@@ -1303,6 +1315,7 @@ namespace NEATSpikes
 
 			std::cerr << "ERROR::ANN::findNeuronsForNewSynapticMutation:: No synapticWeight mutation available 1" << std::endl;
 			std::cerr << amountOfPosiblySynapticWeightMutation << std::endl;
+			testPrint();
 			exit(EXIT_FAILURE);
 		}
 		// Ahora que se sabe la primera componente se debe buscar por la segunda para definir completamente la mutación. 
