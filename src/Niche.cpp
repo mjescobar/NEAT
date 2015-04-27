@@ -24,6 +24,7 @@ namespace NEATSpikes
 	{
 
 	}
+	
 	Organism * Niche::obtainOneOrganismToCrossoverWithAnotherNicheOrganism()
 	{
 		double random = rand()/(double)RAND_MAX;

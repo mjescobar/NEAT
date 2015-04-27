@@ -650,7 +650,7 @@ namespace NEATSpikes
 		// Si no se ha agregado antes entonces en el mapa neuronsReferencesForCreateNewSynapticWeight en su posición debería haber un valor -1
 		// Paso 2: se analiza un posible caso de error:	
 		//================================================================
-			if( neuronsReferencesForCreateNewSynapticWeight.at( NeuronReference1 ).at( NeuronReference2 ) != -1) 
+			if( neuronsReferencesForCreateNewSynapticWeight.at( NeuronReference1 ).at( NeuronReference2 ) !=  -1) 
 			{
 				std::cerr << "ANN::addSynapticWeight::SynapticWeight already exist    " << neuronsReferencesForCreateNewSynapticWeight.at( NeuronReference1 ).at( NeuronReference2 ) << std::endl;
 				exit( EXIT_FAILURE );
