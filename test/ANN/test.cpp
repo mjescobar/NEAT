@@ -18,24 +18,29 @@ int main(int argc, char ** argv)
 	Organism * ann1 = new ANN(BN,BSW,argv[3],ilo);
 	Organism * ann2 = new ANN(*ann1);
 	
-	/*ann1->mutate();
 	ann1->mutate();
-	ann1->mutate();
-	ann1->mutate();
-	ann1->mutate();
-	ann1->mutate();
-	cerr << "ANN1.1" << endl;
 	ann1->testPrint();
-	ann2->mutate();
+	ann1->mutate();
+	ann1->testPrint();
+	ann1->mutate();
+	ann1->testPrint();
+	ann1->mutate();
+	ann1->testPrint();
+	ann1->mutate();
+	ann1->testPrint();
+	ann1->mutate();
+	/*ann2->mutate();
 	ann2->mutate();
 	ann2->mutate();
 	ann2->mutate();
 	ann2->mutate();
 	cerr << "ANN2" << endl;
-	ann2->testPrint();*/
+	ann2->testPrint();
+	cerr << "ANN1" << endl;
 	ann1->testPrint();
-	Organism * ann3 = crossover(ann1,ann2);
-	ann3->testPrint();
+	cerr << "HIJO" << endl;*/
+	/*Organism * ann3 = crossover(ann1,ann2);
+	ann3->testPrint();*/
 
 /*	GlobalInformation * ilo = new GlobalInformation();
 	BasicSynapticWeight * BSW = new BasicSynapticWeight(argv[2],ilo);

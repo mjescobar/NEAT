@@ -318,7 +318,6 @@ namespace NEATSpikes
 	{
 		// Lo primero es crear un hijo vacío. 
 		ANN * children = new ANN( father->generalInformation );
-		std::cerr << "children->amountOfPosiblySynapticWeightMutation: " << children->amountOfPosiblySynapticWeightMutation << std::endl;
 		// Se agregan todas las neuronas iniciales.
 		//==================================================
 			// INPUTS
@@ -742,11 +741,11 @@ namespace NEATSpikes
 		//================================================================
 			availableNumberOfNeuronMutationsInRelationToNeuron.at(NeuronReference1)--; // Ahora hay una opción menos de mutación con relación a la neurona i (según el if de arriba se desifra la neurona i)
 			 amountOfPosiblyNeuronMutation += (2*positionNewNeuron + 1) - 1;  // donde (2*positionNewNeuron + 1): es la cantidad de nuevas mutaciones por agregar una neurona y -1 es por haber usado una opción.
-			 amountOfPosiblySynapticWeightMutation += (2*positionNewNeuron + 1) - 1;
+			 amountOfPosiblySynapticWeightMutation += (2*positionNewNeuron + 1);
 			availableNumberOfSynaptinWeightMutationsInRelationToNeuron.push_back( 2*positionNewNeuron +1);
 			// Al agregar la nueva neurona neuronsReferencesForCreateNewSynapticWeight y neuronsReferencesForCreateNewNeurons deben agrandarse correspondientemente.
-			std::vector <int> extension_1 ( 2*positionNewNeuron +1, -1 ); // donde (2*positionNewNeuron + 1) son todas las convinaciones con la nueva neurona que pueden haber, y +1 corresponde a que el primer valor del vector dice cuántas mutaciones posibles hay con esa neurona.
-			std::vector <int> extension_2 ( 2*positionNewNeuron +1, -1 );// donde (2*positionNewNeuron + 1) son todas las convinaciones con la nueva neurona que pueden haber, y +1 corresponde a que el primer valor del vector dice cuántas mutaciones posibles hay con esa neurona.
+			std::vector <int> extension_1 ( 2*positionNewNeuron +1, -1 ); // donde (2*positionNewNeuron + 1) son todas las convinaciones con la nueva neurona que pueden haber.
+			std::vector <int> extension_2 ( 2*positionNewNeuron +1, -1 );// donde (2*positionNewNeuron + 1) son todas las combinaciones con la nueva neurona que pueden haber.
 			availableNumberOfNeuronMutationsInRelationToNeuron.push_back( 2*positionNewNeuron +1 );
 			neuronsReferencesForCreateNewSynapticWeight.push_back( extension_1 );
 			neuronsReferencesForCreateNewNeurons.push_back( extension_2 );
@@ -760,8 +759,25 @@ namespace NEATSpikes
 				for ( unsigned int i = 0; i < neuron_vector.size() ; ++i )
 				{
 					int layerOtherNeuron = neuron_vector.at( i )->getLayer();
+
+					// Primero se reviza si es exactamente la misma neurona, entonces se elimina la conexión consigo misma.
+					if(positionNewNeuron == (int)i)
+					{
+						// En el caso de conexiones desde la neurona nueva hacia la neurona i no se aceptan las conexiones (-2)
+						neuronsReferencesForCreateNewNeurons.at( i ).at( i ) = -2;
+						neuronsReferencesForCreateNewSynapticWeight.at( i ).at( i ) = -2;
+						
+						// Se quitan las posibilidades de conexión.
+						availableNumberOfSynaptinWeightMutationsInRelationToNeuron.at( positionNewNeuron ) -= 1; 
+						availableNumberOfNeuronMutationsInRelationToNeuron.at( positionNewNeuron ) -= 1; 
+
+						//Y se elimina esa opción de la cantidad de mutaciones posibles.
+						amountOfPosiblySynapticWeightMutation -= 1;
+						amountOfPosiblyNeuronMutation -= 1;
+					}
+
 					// En caso de que sean el mismo layer se eliminan todas las posibles conexiones/neuronas entre estas dos neuronas (sea de dirección ida o vuelta).
-					if( generalInformation->layerToPlace( layer ) == generalInformation->layerToPlace(layerOtherNeuron) )
+					else if( generalInformation->layerToPlace( layer ) == generalInformation->layerToPlace(layerOtherNeuron) )
 					{
 						int input = positionNewNeuron;
 						int output= i;
@@ -1291,7 +1307,7 @@ namespace NEATSpikes
 			counter;
 
 		unsigned int i,j;
-
+		std:: cerr << "amountOfPosiblySynapticWeightMutation: " << amountOfPosiblySynapticWeightMutation << std::endl;
 		newSynapticWeightIndicator =  ( rand()%amountOfPosiblySynapticWeightMutation ) + 1; // Con esto definimos completamente cuál será la neurona nueva. 
 		j=0;
 		counter=0;
@@ -1313,7 +1329,7 @@ namespace NEATSpikes
 		if( i == neuronsReferencesForCreateNewSynapticWeight.size() )
 		{
 
-			std::cerr << "ERROR::ANN::findNeuronsForNewSynapticMutation:: No synapticWeight mutation available 1" << std::endl;
+			std::cerr << "ERROR::ANN::findNeuronsForNewSynapticMutation::1:: No synapticWeight mutation available" << std::endl;
 			std::cerr << amountOfPosiblySynapticWeightMutation << std::endl;
 			testPrint();
 			exit(EXIT_FAILURE);
@@ -1335,7 +1351,7 @@ namespace NEATSpikes
 
 		if( j == neuronsReferencesForCreateNewSynapticWeight.at( i ).size() )
 		{
-			std::cerr << "ERROR::ANN::findNeuronsForNewSynapticMutation:: No synapticWeight mutation available 2" << std::endl;
+			std::cerr << "ERROR::ANN::findNeuronsForNewSynapticMutation::2:: No synapticWeight mutation available" << std::endl;
 			exit(EXIT_FAILURE);
 		}
 
