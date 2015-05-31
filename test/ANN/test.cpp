@@ -16,19 +16,20 @@ int main(int argc, char ** argv)
 	BasicSynapticWeight * BSW = new BasicSynapticWeight(argv[2],ilo);
 	BasicNeuron * BN = new BasicNeuron(argv[1]);
 	Organism * ann1 = new ANN(BN,BSW,argv[3],ilo);
-	Organism * ann2 = new ANN(*ann1);
+	//Organism * ann2 = new ANN(*ann1);
 	
 	ann1->mutate();
-	ann1->testPrint();
 	ann1->mutate();
-	ann1->testPrint();
 	ann1->mutate();
-	ann1->testPrint();
 	ann1->mutate();
-	ann1->testPrint();
 	ann1->mutate();
-	ann1->testPrint();
 	ann1->mutate();
+
+	ann1->mutate();
+	ann1->mutate();
+
+	ann1->testPrint();
+	ilo->printLayers();
 	/*ann2->mutate();
 	ann2->mutate();
 	ann2->mutate();

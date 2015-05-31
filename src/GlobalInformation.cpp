@@ -24,10 +24,13 @@ int GlobalInformation::getInnovation( int historicalMarkNeuronInput, int histori
 // Se puede optimizar fácil, por tiempo lo dejo para después. Mas que nada se puede optimizar cuando sí existe el layer.
 int GlobalInformation::getLayer( int layer_input_neuron, int layer_output_neuron)
 {	
+/*
+
+
 	for (int i = 0; i < (int)LayersWithReferences.size(); ++i)
 	{
 		// primero se compara el layer input que tiene cada uno.
-		if(  layerToPlace(LayersWithReferences.at(i).at(1) ) > layerToPlace(layer_input_neuron)) // Si el layer input de la referencia es mayor entonces el nuevo layer debe agregarse justo antes que este.
+		if(  layerToPlace(LayersWithReferences.at(i).at(1) ) > layerToPlace(layer_input_neuron) ) // Si el layer input de la referencia es mayor entonces el nuevo layer debe agregarse justo antes que este.
 		{
 			LayersWithReferences.insert(LayersWithReferences.begin() + i, {layer,layer_input_neuron,layer_output_neuron});
 			return layer++;
@@ -45,6 +48,44 @@ int GlobalInformation::getLayer( int layer_input_neuron, int layer_output_neuron
 			}
 		}
 	}
+
+	
+
+*/
+
+	if(layer_input_neuron == layer_output_neuron)
+	{
+		return layer_input_neuron;
+	}
+
+	// Lo primero es que para obtener simetría en conexiones hacia atrás estará pensado para layer menor y layer mayor sin pensar si es input u output
+	// ==============================================================================
+		int placeSmaller;
+
+		if(layerToPlace(layer_input_neuron) > layerToPlace(layer_output_neuron) )
+		{
+			placeSmaller = layerToPlace(layer_output_neuron);
+		}
+		else
+		{
+			placeSmaller = layerToPlace(layer_input_neuron);
+		}
+	// ==============================================================================
+
+	for (unsigned int i = 0; i < LayersWithReferences.size(); ++i)
+	{
+		if(LayersWithReferences.at(i).at(1) == layer_input_neuron && LayersWithReferences.at(i).at(2) == layer_output_neuron)
+		{
+			return LayersWithReferences.at(i).at(0);
+		}
+
+		if( layerToPlace( LayersWithReferences.at(i).at(0) ) > placeSmaller )
+		{
+			LayersWithReferences.insert(LayersWithReferences.begin() + i, {layer,layer_input_neuron,layer_output_neuron});
+			return layer++;
+		}
+	}
+
 	std::cerr << "ERROR::GlobalInformation::getLayer::Error with argumens of getLayer( int layer_input_neuron, int layer_output_neuron) " << "layer_input_neuron: "  << layer_input_neuron << "\tlayer_output_neuron: " << layer_output_neuron<< std::endl;
 	exit(EXIT_FAILURE);
 }

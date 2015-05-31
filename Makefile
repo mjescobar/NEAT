@@ -7,7 +7,7 @@ all: Life.o Niche.o ANN.o BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInfo
 	@echo all NEAT Compiled 
 
 
-Life.o: Life.cpp Niche.cpp Niche.o
+Life.o: Life.cpp Niche.cpp Niche.o GlobalInformation.o
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Life.o
 	@echo Compiling Life 

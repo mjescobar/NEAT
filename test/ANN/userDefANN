@@ -1,6 +1,6 @@
 Probability_Of_Synaptic_Weight_Mutation 0.1
 Probability_Of_Neuron_Mutation 0.1
-Probability_Of_New_Neuron_Mutation 0.3
+Probability_Of_New_Neuron_Mutation 0.999
 Probability_Of_New_Synaptic_Weight_Mutation 0.8
 inputsAmount 2
 outputsAmount 1

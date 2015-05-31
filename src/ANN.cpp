@@ -195,6 +195,7 @@ namespace NEATSpikes
 
 	void ANN::mutate()
 	{
+		std::cerr << "Entro a mutate" << std::endl;
 		// 1) Primero se revizará neurona a neurona si es que debe o no mutar.
 		// 2) Se revizarán todas las conexiones sinápticas para ver si deben mutar.
 		// 3) Se reviza si hay mutación que cree una nueva neurona
@@ -206,6 +207,7 @@ namespace NEATSpikes
 			{
 				if ( rand()/(double)RAND_MAX <=  probabilityOfNeuronMutation)
 				{	
+		std::cerr << "Entro a mutate2" << std::endl;
 					neuron_vector.at(i)->mutate();
 				}
 			}	
@@ -217,6 +219,7 @@ namespace NEATSpikes
 			{
 				if ( rand()/(double)RAND_MAX <=  probabilityOfSynapticWeightMutation)
 				{
+		std::cerr << "Entro a mutate3" << std::endl;
 					synapticWeight_vector.at(i)->mutate();
 				}
 			}
@@ -226,17 +229,19 @@ namespace NEATSpikes
 		//=============================================
 			if ( rand()/(double)RAND_MAX <=  probabilityOfNewNeuronMutation )
 			{
+		std::cerr << "Entro a mutate4" << std::endl;
 				newNeuronMutation();
 			}
 		//=============================================
-
 		// 4) Se reviza si hay mutación que cree una nueva conexión sináptica.
 		//=============================================
 			if ( rand()/(double)RAND_MAX <=  probabilityOfNewSynapticWeightMutation)
 			{
+		std::cerr << "Entro a mutate5" << std::endl;
 				newSynapticWeightMutation();
 			}
 		//=============================================
+		std::cerr << "salió de mutate" << std::endl;
 	}
 
 
@@ -316,6 +321,7 @@ namespace NEATSpikes
 	*/
 	ANN * crossover(ANN * father, ANN * mother)
 	{
+		std::cerr << "crossover entra" << std::endl;
 		// Lo primero es crear un hijo vacío. 
 		ANN * children = new ANN( father->generalInformation );
 		// Se agregan todas las neuronas iniciales.
@@ -376,7 +382,7 @@ namespace NEATSpikes
 					}
 				}
 			}
-
+			std::cerr << "crossover entra 2" << std::endl;
 
 		//Se agregan las conexiones sinápticas.
 		//==================================================
@@ -423,6 +429,7 @@ namespace NEATSpikes
 			}
 		//==================================================
 
+		std::cerr << "crossover sale" << std::endl;
 
 		return children;
 
@@ -596,8 +603,14 @@ namespace NEATSpikes
 
 		// Ahora se deben crear 2 conexiones sinápticas, la primera desde la neurona que inicialmente es la input hacia la neurona nueva y otro desde la neurona haica la neurona que es inicialmente la salida.
 		// Ahora sí se agregan las conexiones sinápticas.
+		std::cerr << "OPCIÓN 1" << "  neuronReference_1: " << neuronReference_1 << "\tneuronReference_2: "<< neuronReference_2 << std::endl;
+		generalInformation->printLayers();
+		std::cerr << neuron_vector.at(localNeuronIn)->getLayer() << " , " << neuron_vector.at(localNeuronOut)->getLayer() << std::endl;
+
 		addSynapticWeight( histoticalMarkNeuronIn , historicalMark );
+		std::cerr << "OPCIÓN 2\t" << "" << std::endl;
 		addSynapticWeight( historicalMark , histoticalMarkNeuronOut );
+		std::cerr << "salio de OPCIÓN" << std::endl;
 	}
 
 	void ANN::addNeuronToLayer(int layer, int historicalMark)
@@ -627,6 +640,11 @@ namespace NEATSpikes
 
 	void ANN::addSynapticWeight( SynapticWeight * SW )
 	{
+
+		
+		
+
+
 		// Paso 1: Se obtienen todos los datos necesarios.
 		//================================================================
 			// Se obtiene la innovación de la conexión sináptica que se va a agregar.
@@ -653,6 +671,10 @@ namespace NEATSpikes
 			if( neuronsReferencesForCreateNewSynapticWeight.at( NeuronReference1 ).at( NeuronReference2 ) != -1) 
 			{
 				std::cerr << "ANN::addSynapticWeight::SynapticWeight already exist    " << neuronsReferencesForCreateNewSynapticWeight.at( NeuronReference1 ).at( NeuronReference2 ) << std::endl;
+				cerr << "NeuronReference1: " << NeuronReference1 << "\tNeuronReference2: " << NeuronReference2 << std::endl;
+				generalInformation->printLayers();
+		std::cerr << neuron_vector.at(localNeuronIn)->getLayer() << " , " << neuron_vector.at(localNeuronOut)->getLayer() << std::endl;
+				testPrint();
 				exit( EXIT_FAILURE );
 			}
 		//================================================================
