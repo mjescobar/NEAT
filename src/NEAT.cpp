@@ -130,6 +130,73 @@ Genetic_Encoding Population::mutation_change_weight(Genetic_Encoding organism){
 
 
 
+/*Population::Population(string path1,string path2, string _name, string _save_path){
+
+	name = (char *)malloc(strlen(_name.c_str())+1);
+	save_path = (char *)malloc(strlen(_save_path.c_str())+1);
+	strcpy(name,_name.c_str());
+	strcpy(save_path,_save_path.c_str());
+
+	current_generation=0;
+
+	load_user_definitions(path1);
+	lenght = POPULATION_MAX;
+	Genetic_Encoding _organism;
+	_organism.load(path2);
+
+	expectative_iterations = 1;
+	_organism.niche=0;
+	fitness_champion = 0;
+	last_innovation=0;
+	row_orderer_list = _organism.row_orderer_list;
+	last_row = _organism.row_orderer_list.size();
+	champion = _organism;
+	Niche niche_temp;
+
+	for (int i = 0; i < 5; ++i)
+	{
+		fitness_mean_of_past_generation.push_back(0.0);
+	}
+	
+
+	// ================FOR REDUNDANCE ============
+	for (int i = 0; i < (int)_organism.Lconnection_genes.size(); ++i){
+		int in = _organism.Lconnection_genes.at(i).in;
+		int out = _organism.Lconnection_genes.at(i).out;
+		while((int)historical_innovation.size()-1 < in)
+		{
+			vector <int> temp;
+			historical_innovation.push_back(temp);
+		}
+		while((int)historical_innovation.at(in).size()-1 < out)
+		{
+			historical_innovation.at(in).push_back(-1);
+		}
+		if(historical_innovation.at(in).at(out) < 0){
+			historical_innovation.at(in).at(out) = _organism.Lconnection_genes.at(i).innovation;
+			if(last_innovation < _organism.Lconnection_genes.at(i).innovation)
+				last_innovation = _organism.Lconnection_genes.at(i).innovation;
+		}
+	}
+	last_innovation++;
+	//============================================
+
+	last_node = (int)_organism.Lnode_genes.size()-1;
+
+	for (int i = 0; i < POPULATION_MAX; ++i)
+		organisms.push_back( put_randoms_weight(_organism) );
+
+	cerr << "organisms.size(): " << organisms.size() << "\tPOPULATION_MAX:" << POPULATION_MAX  << endl;
+
+	prev_organisms.push_back(_organism);
+	niche_temp.organism_position.push_back(0);
+	niche_temp.exist=true;
+	niche_temp.niche_champion_position=0;
+	current_niches.push_back(niche_temp);
+	spatiation();
+
+}*/
+
 
 
 Population::Population(char path1[],char path2[], char _name[], char _save_path[]){
@@ -142,6 +209,71 @@ Population::Population(char path1[],char path2[], char _name[], char _save_path[
 	current_generation=0;
 
 	load_user_definitions(path1);
+	lenght = POPULATION_MAX;
+	Genetic_Encoding _organism;
+	_organism.load(path2);
+
+	expectative_iterations = 1;
+	_organism.niche=0;
+	fitness_champion = 0;
+	last_innovation=0;
+	row_orderer_list = _organism.row_orderer_list;
+	last_row = _organism.row_orderer_list.size();
+	champion = _organism;
+	Niche niche_temp;
+
+	for (int i = 0; i < 5; ++i)
+	{
+		fitness_mean_of_past_generation.push_back(0.0);
+	}
+	
+
+	// ================FOR REDUNDANCE ============
+	for (int i = 0; i < (int)_organism.Lconnection_genes.size(); ++i){
+		int in = _organism.Lconnection_genes.at(i).in;
+		int out = _organism.Lconnection_genes.at(i).out;
+		while((int)historical_innovation.size()-1 < in)
+		{
+			vector <int> temp;
+			historical_innovation.push_back(temp);
+		}
+		while((int)historical_innovation.at(in).size()-1 < out)
+		{
+			historical_innovation.at(in).push_back(-1);
+		}
+		if(historical_innovation.at(in).at(out) < 0){
+			historical_innovation.at(in).at(out) = _organism.Lconnection_genes.at(i).innovation;
+			if(last_innovation < _organism.Lconnection_genes.at(i).innovation)
+				last_innovation = _organism.Lconnection_genes.at(i).innovation;
+		}
+	}
+	last_innovation++;
+	//============================================
+
+	last_node = (int)_organism.Lnode_genes.size()-1;
+
+	for (int i = 0; i < POPULATION_MAX; ++i)
+		organisms.push_back( put_randoms_weight(_organism) );
+
+	cerr << "organisms.size(): " << organisms.size() << "\tPOPULATION_MAX:" << POPULATION_MAX  << endl;
+
+	prev_organisms.push_back(_organism);
+	niche_temp.organism_position.push_back(0);
+	niche_temp.exist=true;
+	niche_temp.niche_champion_position=0;
+	current_niches.push_back(niche_temp);
+	spatiation();
+}
+Population::Population(char path1[],char path2[], char _name[], char _save_path[], int simulatorsAmount){
+
+	name = (char *)malloc(strlen(_name)+1);
+	save_path = (char *)malloc(strlen(_save_path)+1);
+	strcpy(name,_name);
+	strcpy(save_path,_save_path);
+
+	current_generation=0;
+
+	load_user_definitions(path1, simulatorsAmount);
 	lenght = POPULATION_MAX;
 	Genetic_Encoding _organism;
 	_organism.load(path2);
@@ -1589,6 +1721,157 @@ void Population::load_user_definitions(char address[]){
 
 }
 
+
+
+
+
+void Population::load_user_definitions(char address[], int simulatorsAmount){
+	ifstream file (address);
+	file.seekg (0, file.end);
+    int length = file.tellg();
+    file.seekg (0, file.beg);
+	char buffer[length]; // In JSON format
+	file.read (buffer,length);
+	file.close();
+	char * pch;
+
+	char delimiters[] = " \n\":\t{},[";
+	pch = strtok (buffer,delimiters);
+	pch = strtok (NULL,delimiters);
+	POPULATION_MAX =  simulatorsAmount - atoi(pch)%simulatorsAmount + atoi(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	ORGANISM_DISTANCE_1 = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	ORGANISM_DISTANCE_2 = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	ORGANISM_DISTANCE_3 = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	DISTANCE_THRESHOLD = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	PERCENTAGE_OFFSPRING_WITHOUT_CROSSOVER = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	PROBABILITY_INTERSPACIES_MATING = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	SMALLER_POPULATIONS_PROBABILITY_ADDING_NEW_NODE = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	SMALLER_POPULATIONS_PROBABILITY_ADDING_NEW_CONNECTION = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	LARGER_POPULATIONS_PROBABILITY_ADDING_NEW_NODE = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	LARGER_POPULATIONS_PROBABILITY_ADDING_NEW_CONNECTION = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	PROB_ENABLE_AN_DISABLE_CONNECTION = atof(pch);
+	/* Lnodes.size() comparation */
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	LARGE_POPULATION_DISCRIMINATOR = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	GENERATIONS = atoi(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	PROBABILITY_CHANGE_WEIGHT = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	PROBABILITY_CHANGE_NODE_FUNCTION_PER_NODE = atof(pch);
+
+	//cerr << "POPULATION_MAX" << POPULATION_MAX << endl;
+	//cerr << "PROBABILITY_INTERSPACIES_MATING: " << PROBABILITY_INTERSPACIES_MATING << endl;
+	//cerr << "SMALLER_POPULATIONS_PROBABILITY_ADDING_NEW_NODE: " <<SMALLER_POPULATIONS_PROBABILITY_ADDING_NEW_NODE << endl;
+	//cerr << "SMALLER_POPULATIONS_PROBABILITY_ADDING_NEW_CONNECTION: " << SMALLER_POPULATIONS_PROBABILITY_ADDING_NEW_CONNECTION<< endl;
+	//cerr << "LARGER_POPULATIONS_PROBABILITY_ADDING_NEW_NODE: " <<LARGER_POPULATIONS_PROBABILITY_ADDING_NEW_NODE << endl;
+	//cerr << "LARGER_POPULATIONS_PROBABILITY_ADDING_NEW_CONNECTION: " <<LARGER_POPULATIONS_PROBABILITY_ADDING_NEW_CONNECTION << endl;
+	//cerr << "PROB_ENABLE_AN_DISABLE_CONNECTION: " << PROB_ENABLE_AN_DISABLE_CONNECTION << endl;
+	//cerr << "GENERATIONS" << GENERATIONS << endl;
+	//cerr << "PROBABILITY_CHANGE_WEIGHT" << PROBABILITY_CHANGE_WEIGHT << endl;
+	//cerr << "PROBABILITY_CHANGE_NODE_FUNCTION_PER_NODE" << PROBABILITY_CHANGE_NODE_FUNCTION_PER_NODE << endl;
+
+}
+
+void Population::load_user_definitions(string address){
+	ifstream file (address.c_str());
+	file.seekg (0, file.end);
+    int length = file.tellg();
+    file.seekg (0, file.beg);
+	char buffer[length]; // In JSON format
+	file.read (buffer,length);
+	file.close();
+	char * pch;
+
+	char delimiters[] = " \n\":\t{},[";
+	pch = strtok (buffer,delimiters);
+	pch = strtok (NULL,delimiters);
+	POPULATION_MAX =  atoi(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	ORGANISM_DISTANCE_1 = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	ORGANISM_DISTANCE_2 = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	ORGANISM_DISTANCE_3 = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	DISTANCE_THRESHOLD = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	PERCENTAGE_OFFSPRING_WITHOUT_CROSSOVER = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	PROBABILITY_INTERSPACIES_MATING = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	SMALLER_POPULATIONS_PROBABILITY_ADDING_NEW_NODE = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	SMALLER_POPULATIONS_PROBABILITY_ADDING_NEW_CONNECTION = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	LARGER_POPULATIONS_PROBABILITY_ADDING_NEW_NODE = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	LARGER_POPULATIONS_PROBABILITY_ADDING_NEW_CONNECTION = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	PROB_ENABLE_AN_DISABLE_CONNECTION = atof(pch);
+	/* Lnodes.size() comparation */
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	LARGE_POPULATION_DISCRIMINATOR = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	GENERATIONS = atoi(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	PROBABILITY_CHANGE_WEIGHT = atof(pch);
+	pch = strtok (NULL,delimiters);
+	pch = strtok (NULL,delimiters);
+	PROBABILITY_CHANGE_NODE_FUNCTION_PER_NODE = atof(pch);
+
+	//cerr << "POPULATION_MAX" << POPULATION_MAX << endl;
+	//cerr << "PROBABILITY_INTERSPACIES_MATING: " << PROBABILITY_INTERSPACIES_MATING << endl;
+	//cerr << "SMALLER_POPULATIONS_PROBABILITY_ADDING_NEW_NODE: " <<SMALLER_POPULATIONS_PROBABILITY_ADDING_NEW_NODE << endl;
+	//cerr << "SMALLER_POPULATIONS_PROBABILITY_ADDING_NEW_CONNECTION: " << SMALLER_POPULATIONS_PROBABILITY_ADDING_NEW_CONNECTION<< endl;
+	//cerr << "LARGER_POPULATIONS_PROBABILITY_ADDING_NEW_NODE: " <<LARGER_POPULATIONS_PROBABILITY_ADDING_NEW_NODE << endl;
+	//cerr << "LARGER_POPULATIONS_PROBABILITY_ADDING_NEW_CONNECTION: " <<LARGER_POPULATIONS_PROBABILITY_ADDING_NEW_CONNECTION << endl;
+	//cerr << "PROB_ENABLE_AN_DISABLE_CONNECTION: " << PROB_ENABLE_AN_DISABLE_CONNECTION << endl;
+	//cerr << "GENERATIONS" << GENERATIONS << endl;
+	//cerr << "PROBABILITY_CHANGE_WEIGHT" << PROBABILITY_CHANGE_WEIGHT << endl;
+	//cerr << "PROBABILITY_CHANGE_NODE_FUNCTION_PER_NODE" << PROBABILITY_CHANGE_NODE_FUNCTION_PER_NODE << endl;
+
+}
 
 
 /**

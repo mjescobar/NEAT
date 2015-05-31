@@ -144,6 +144,7 @@ namespace ANN_USM{
 			* \param path: Is where the file is stored.
 			*/
 			void 				load(char path[]); // Load an genetic_encoding from a file.
+			void 				load(string path); // Load an genetic_encoding from a file.
 			/**
 			* /brief return a string with the entire genome write like JSON format.
 			*/

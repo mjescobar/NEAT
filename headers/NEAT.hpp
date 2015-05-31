@@ -28,9 +28,9 @@ namespace ANN_USM{
 
 	class Population{
 		public:
-
+			Population(string path1,string path2, string _name, string _save_path);
 			Population(char user_definitions[],char genetic_encoder[], char _name[], char _save_path[]);
-			
+			Population(char user_definitions[],char genetic_encoder[], char _name[], char _save_path[], int simulatorsAmount);
 			//	The order of the functions is the same that the time ocurrence.
 
 
@@ -76,7 +76,10 @@ namespace ANN_USM{
 			void 				save(char path[]);
 			void 				print_niches();
 			void 				load_user_definitions(char address[]);
+			void 				load_user_definitions(string address);
+			void 				load_user_definitions(char address[],int simulatorsAmount);
 			double 				obtain_while_limit(int amount_of_times);
+
 			double 				obtain_while_limit(double amount_of_times);
 			void 				change_window_of_fitness_generation(double fitness_mean_current_generation);
 			/**
