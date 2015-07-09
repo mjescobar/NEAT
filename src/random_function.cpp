@@ -25,7 +25,7 @@ double node_cos(double x){ // becose the node entry is in [-1,1] and the cos dom
 }
 
 double identity(double x){
-	return x;
+	return ((fabs(x)>1)?1:x);
 }
 
 static int RANDOM_f_iterator = 0;
