@@ -3,20 +3,8 @@
 
 namespace NEATSpikes
 {
-	int ANN::id=0; // Se tiene que inicializar así porque es una variable estática
-	double ANN::probabilityOfSynapticWeightMutation=0.0;  // Se tiene que inicializar así porque es una variable estática
-	double ANN::probabilityOfNeuronMutation=0.0;  // Se tiene que inicializar así porque es una variable estática
-	double ANN::probabilityOfNewNeuronMutation=0.0; // Se tiene que inicializar así porque es una variable estática
-	double ANN::probabilityOfNewSynapticWeightMutation=0.0; // Se tiene que inicializar así porque es una variable estática
-	int ANN::inputsAmount=0; // La cantidad de entradas que posee la red neuronal
-	int ANN::outputsAmount=0; // La cantidad de salidas que posee la red neuronal
-	double ANN::ConstantOFDiferencesInStructureOfSynapticWeight=0.0; // Multiplica a la diferencia de conexiones sinápticas que están en sólo uno de los organismos al calcular su distancia
-	double ANN::ConstantOFDiferencesInStructureOfNeurons=0.0; //Multiplica a la diferencia de neuronas que están en sólo uno de los organismos al calcular su distancia
-	bool ANN::ANNCanHaveConnectionsBack=false; // Si al mutar se puede obtener conexiones recursivas.
-	Neuron * ANN::prototypeNeuron=NULL; // El prototipo de las neuronas es usado para crear las neuronas nuevas del mismo tipo
-	SynapticWeight *  ANN::prototypeSynapticWeight=NULL; // El prototipo de las conexiones synapticas es usado para crear nuevas conexiones sinápticas del mismo tipo siempre.
+	int ANN::id = 0;
 
-	
 	ANN::ANN()
 	{
 	
@@ -205,7 +193,7 @@ namespace NEATSpikes
 		//=============================================
 			for (unsigned int i = 0; i < neuron_vector.size() ; ++i)
 			{
-				if ( rand()/(double)RAND_MAX <=  probabilityOfNeuronMutation)
+				if ( rand()/(double)RAND_MAX <=  *probabilityOfNeuronMutation)
 				{	
 		std::cerr << "Entro a mutate2" << std::endl;
 					neuron_vector.at(i)->mutate();
@@ -217,7 +205,7 @@ namespace NEATSpikes
 		//=============================================
 			for (unsigned int i = 0; i < synapticWeight_vector.size() ; ++i)
 			{
-				if ( rand()/(double)RAND_MAX <=  probabilityOfSynapticWeightMutation)
+				if ( rand()/(double)RAND_MAX <=  *probabilityOfSynapticWeightMutation)
 				{
 		std::cerr << "Entro a mutate3" << std::endl;
 					synapticWeight_vector.at(i)->mutate();
@@ -227,7 +215,7 @@ namespace NEATSpikes
 
 		// 3) Se reviza si hay mutación que cree una nueva neurona
 		//=============================================
-			if ( rand()/(double)RAND_MAX <=  probabilityOfNewNeuronMutation )
+			if ( rand()/(double)RAND_MAX <=  *probabilityOfNewNeuronMutation )
 			{
 		std::cerr << "Entro a mutate4" << std::endl;
 				newNeuronMutation();
@@ -235,7 +223,7 @@ namespace NEATSpikes
 		//=============================================
 		// 4) Se reviza si hay mutación que cree una nueva conexión sináptica.
 		//=============================================
-			if ( rand()/(double)RAND_MAX <=  probabilityOfNewSynapticWeightMutation)
+			if ( rand()/(double)RAND_MAX <=  *probabilityOfNewSynapticWeightMutation)
 			{
 		std::cerr << "Entro a mutate5" << std::endl;
 				newSynapticWeightMutation();
@@ -327,16 +315,16 @@ namespace NEATSpikes
 		// Se agregan todas las neuronas iniciales.
 		//==================================================
 			// INPUTS
-			for (int i = 0; i < ANN::inputsAmount; ++i)
+			for (int i = 0; i < *father->inputsAmount; ++i)
 			{
 				children->inputsInNeuron_vector.push_back(i);
 				children->addInitialStructureNeuron( new Input( i ,-1,-1, LAYER_INPUT ) );
 			}
 
 			// OUTPUTS: Con 50% es del padre y 50% es de la madre.
-			for (int i = 0; i < ANN::outputsAmount; ++i)
+			for (int i = 0; i < *father->outputsAmount; ++i)
 			{
-				int position = i+ANN::inputsAmount;
+				int position = i + * father->inputsAmount;
 				children->outputsInNeuron_vector.push_back(position);
 				if ( rand() > RAND_MAX/2.0 )
 				{
@@ -352,7 +340,7 @@ namespace NEATSpikes
 		// Se agergan todas las neuronas restantes que se encuentren en alguno de los progenitores, si se enceuntra en ambos entonces se hereda cualquiera con 50% de probabilidades.
 		//==================================================
 			//Hacerlo de forma ordenada teóricamente no debería atraer problemas porque se suponque que una nurona de historical mark más alto sólo puede conectar dos neuronas de historical mark mas bajo que se suponque que ya fueron creadas.
-			for (int i = ANN::inputsAmount+ANN::outputsAmount; i < children->generalInformation->getAmountOfNeurons() +1 ; ++i)
+			for (int i = *father->inputsAmount + *father->outputsAmount; i < children->generalInformation->getAmountOfNeurons() +1 ; ++i)
 			{
 				int fatherLocalNeuron = father->historicalMark_To_localNeuron[ i ];
 				int motherLocalNeuron = mother->historicalMark_To_localNeuron[ i ];
@@ -535,35 +523,35 @@ namespace NEATSpikes
 		// Ahora se le da el valor a las variables de usuario y se termina este método. Usando mapas se hace más sencillo y más robusto.
 		//=========================================================================================
 		
-			probabilityOfSynapticWeightMutation = UserDefinitions[ "Probability_Of_Synaptic_Weight_Mutation" ];
-			probabilityOfNeuronMutation = UserDefinitions[ "Probability_Of_Neuron_Mutation" ];
-			probabilityOfNewNeuronMutation = UserDefinitions[ "Probability_Of_New_Neuron_Mutation" ];
-			probabilityOfNewSynapticWeightMutation = UserDefinitions["Probability_Of_New_Synaptic_Weight_Mutation"];
-			inputsAmount = UserDefinitions[ "inputsAmount" ];
-			outputsAmount= UserDefinitions[ "outputsAmount" ];
-			ConstantOFDiferencesInStructureOfSynapticWeight=UserDefinitions[ "ConstantOFDiferencesInStructureOfSynapticWeight" ];
-			ConstantOFDiferencesInStructureOfNeurons=UserDefinitions[ "ConstantOFDiferencesInStructureOfNeurons" ];
-			ANNCanHaveConnectionsBack = UserDefinitions[ "ANNCanHaveConnectionsBack" ];
+			probabilityOfSynapticWeightMutation = new double(UserDefinitions[ "Probability_Of_Synaptic_Weight_Mutation" ]);
+			probabilityOfNeuronMutation = new double(UserDefinitions[ "Probability_Of_Neuron_Mutation" ]);
+			probabilityOfNewNeuronMutation = new double(UserDefinitions[ "Probability_Of_New_Neuron_Mutation" ]);
+			probabilityOfNewSynapticWeightMutation = new double(UserDefinitions["Probability_Of_New_Synaptic_Weight_Mutation"]);
+			inputsAmount = new int(UserDefinitions[ "inputsAmount" ]);
+			outputsAmount= new int(UserDefinitions[ "outputsAmount" ]);
+			ConstantOFDiferencesInStructureOfSynapticWeight = new double(UserDefinitions[ "ConstantOFDiferencesInStructureOfSynapticWeight" ]);
+			ConstantOFDiferencesInStructureOfNeurons = new double(UserDefinitions[ "ConstantOFDiferencesInStructureOfNeurons" ]);
+			ANNCanHaveConnectionsBack = new bool(UserDefinitions[ "ANNCanHaveConnectionsBack" ]);
 		//=========================================================================================
 		
 		// =========================================================================================
 		// Se reviza si estan todos los datos en sus correspondientes intervalos
-			if(probabilityOfNewSynapticWeightMutation > 1 || probabilityOfNewSynapticWeightMutation < 0)
+			if(*probabilityOfNewSynapticWeightMutation > 1 || *probabilityOfNewSynapticWeightMutation < 0)
 			{
 				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error probabilityOfNewSynapticWeightMutation must be on interval [0,1]" << std::endl;
 				exit(EXIT_FAILURE);
 			}
-			if(probabilityOfNewNeuronMutation > 1 || probabilityOfNewNeuronMutation < 0)
+			if(*probabilityOfNewNeuronMutation > 1 || *probabilityOfNewNeuronMutation < 0)
 			{
 				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error probabilityOfNewNeuronMutation must be on interval [0,1]" << std::endl;
 				exit(EXIT_FAILURE);
 			}
-			if(probabilityOfNeuronMutation > 1 || probabilityOfNeuronMutation < 0)
+			if(*probabilityOfNeuronMutation > 1 || *probabilityOfNeuronMutation < 0)
 			{
 				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error probabilityOfNeuronMutation must be on interval [0,1]" << std::endl;
 				exit(EXIT_FAILURE);
 			}
-			if(probabilityOfSynapticWeightMutation > 1 || probabilityOfSynapticWeightMutation < 0)
+			if(*probabilityOfSynapticWeightMutation > 1 || *probabilityOfSynapticWeightMutation < 0)
 			{
 				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error probabilityOfSynapticWeightMutation must be on interval [0,1]" << std::endl;
 				exit(EXIT_FAILURE);
@@ -776,7 +764,7 @@ namespace NEATSpikes
 		// En caso de que no se permitan conexiones hacia atrás 
 		// Se recorrerán todas las neuronas y se verán si son de un layer mayor, menor o igual. De ser de un layer mayor entonces se aceptan las conexiones hacia adelante y no las hacia atrás, de ser un layer menor se aceptan las conexiones hacia atrás pero no hacia adelante y de ser del mismo layer no se aceptan conexiones. (simil con neuronas)
 		//================================================================
-			if( !ANNCanHaveConnectionsBack )
+			if( !*ANNCanHaveConnectionsBack )
 			{
 				for ( unsigned int i = 0; i < neuron_vector.size() ; ++i )
 				{
@@ -915,7 +903,7 @@ namespace NEATSpikes
 		// En caso de que no se permitan conexiones hacia atrás 
 		// Se recorrerán todas las neuronas y se verán si son de un layer mayor, menor o igual. De ser de un layer mayor entonces se aceptan las conexiones hacia adelante y no las hacia atrás, de ser un layer menor se aceptan las conexiones hacia atrás pero no hacia adelante y de ser del mismo layer no se aceptan conexiones. (simil con neuronas)
 		//================================================================
-			if( !ANNCanHaveConnectionsBack )
+			if( !*ANNCanHaveConnectionsBack )
 			{
 				for ( unsigned int i = 0; i < neuron_vector.size() ; ++i )
 				{
@@ -1005,11 +993,11 @@ namespace NEATSpikes
 		amountOfPosiblySynapticWeightMutation=0;
 
 		// Se inicializan las listas de mutaciones de informationBetweenOrganismAndLife
-		generalInformation->initialize(inputsAmount,outputsAmount);
+		generalInformation->initialize(*inputsAmount,*outputsAmount);
 
 		// Las primeras neuronas en ser agregadas serán los inputs, que rigurosamente hablando no son neuronas, pero en la implementación derivan de neurona para simplificar la programación.
 		// Estarán en el layer 0;
-		for (int i = 0; i < inputsAmount; ++i)
+		for (int i = 0; i < *inputsAmount; ++i)
 		{
 			int position = neuron_vector.size();
 			inputsInNeuron_vector.push_back(position);
@@ -1017,7 +1005,7 @@ namespace NEATSpikes
 		}
 
 		//Ahora se agregan las neuronas output
-		for (int i = 0; i < outputsAmount; ++i)
+		for (int i = 0; i < *outputsAmount; ++i)
 		{
 			int position = neuron_vector.size();
 			outputsInNeuron_vector.push_back(position);
@@ -1025,9 +1013,9 @@ namespace NEATSpikes
 		}
 		
 		// SE AGREGAN LAS CONEXIONES
-		for (int i = 0; i < outputsAmount; ++i)
+		for (int i = 0; i < *outputsAmount; ++i)
 		{
-			for (int j = 0; j < inputsAmount; ++j)
+			for (int j = 0; j < *inputsAmount; ++j)
 			{
 				addSynapticWeight(  inputsInNeuron_vector.at(j), outputsInNeuron_vector.at(i) );
 			}
@@ -1143,7 +1131,7 @@ namespace NEATSpikes
 			}
 		}
 	
-		double distance =W + N + DW * ann1->ConstantOFDiferencesInStructureOfSynapticWeight + DN * ann1->ConstantOFDiferencesInStructureOfNeurons;
+		double distance =W + N + DW * (* (ann1->ConstantOFDiferencesInStructureOfSynapticWeight)) + DN * (* (ann1->ConstantOFDiferencesInStructureOfNeurons));
 		return distance;
 	}
 
@@ -1391,6 +1379,6 @@ namespace NEATSpikes
 
 	int ANN::getOrganismOutputSize()
 	{
-		return outputsAmount;
+		return *outputsAmount;
 	}
 }

@@ -4,14 +4,6 @@ namespace NEATSpikes
 {
 
 	//Dado que son variables estáticas DEBEN ser inicializadas siempre en el cpp o pueden ser en otra parte pero DEBEN ser inicializadas.
-	int BasicNeuron::id=0;
-	double BasicNeuron::maximumBiasVariationByMutation=-1;
-	double BasicNeuron::maximumSigmoidConstantVariationByMutation=-1;
-	double BasicNeuron::maxBias=-1;
-	double BasicNeuron::probabilityOfBiasRandomMutation=-1;
-	double BasicNeuron::probabilityOfSigmoidConstantRandomMutation=-1;
-	double BasicNeuron::ConstantDistanceOfBias=0.0;
-	double BasicNeuron::ConstantDistanceOfSigmoidConstant=0.0;
 
 	
 	BasicNeuron::BasicNeuron(int _historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int _layer)
@@ -57,7 +49,7 @@ namespace NEATSpikes
 		// ===================== SIGMOID CONSTANT ==========================
 		max = 1;
 		min = 0;
-		if( rand()/(double)RAND_MAX < probabilityOfSigmoidConstantRandomMutation )
+		if( rand()/(double)RAND_MAX < *probabilityOfSigmoidConstantRandomMutation )
 		{
 			sigmoidConstant = (max - min)*(rand()/(double)RAND_MAX) + min;
 		}
@@ -68,21 +60,21 @@ namespace NEATSpikes
 			// paso 2
 			random_normalized = rand()/(double)RAND_MAX;
 			// paso 3
-			sigmoidConstant_normalized = sigmoidConstant_normalized *(1-maximumSigmoidConstantVariationByMutation) + random_normalized*maximumSigmoidConstantVariationByMutation;
+			sigmoidConstant_normalized = sigmoidConstant_normalized *(1-*maximumSigmoidConstantVariationByMutation) + random_normalized*(*maximumSigmoidConstantVariationByMutation);
 		 	// paso 4
 		 	sigmoidConstant = (max - min) * sigmoidConstant_normalized + min;	
 		}
 
 
 		// ========================BIAS==================================
-	 	// los valores límites del bias son obtenidos a través de las definiciones del usuario.
+	 	// los valores límites del bias son obtenidos y se usan las definiciones del usuario para calcularlos.
 	 	
-		if( maxBias != 0.0 )
+		if( *maxBias != 0.0 )
 		{
-		 	max = maxBias;
-			min = -maxBias;
+		 	max = *maxBias;
+			min = -*maxBias;
 
-			if( rand()/(double) RAND_MAX < probabilityOfBiasRandomMutation )
+			if( rand()/(double) RAND_MAX < *probabilityOfBiasRandomMutation )
 			{
 				bias = (max - min)*(rand()/(double) RAND_MAX) + min;
 			}
@@ -93,7 +85,7 @@ namespace NEATSpikes
 				// paso 2
 				random_normalized = (rand()/(double)RAND_MAX);
 				// paso 3
-				bias_normalized = bias_normalized *(1-maximumBiasVariationByMutation) + random_normalized*maximumBiasVariationByMutation;
+				bias_normalized = bias_normalized *(1 - *maximumBiasVariationByMutation) + random_normalized*(*maximumBiasVariationByMutation);
 				// paso 4
 			 	bias = (max - min) * bias_normalized + min;
 		 	}
@@ -112,12 +104,17 @@ namespace NEATSpikes
 		return result;
 	}
 
+	/*
+		Al momento de evaluar se calculan ordenadamente todas las entradas a la neurona, y se deben ir sumando las entradas para luego de finalizado ese proceso tener el voltaje total de entrada a la neurona.
+	*/
 	void BasicNeuron::sumIncomingConnectionsOutputs(double incomingOneConnectionOutput)
 	{
 		inputVoltage += incomingOneConnectionOutput;
 	}
 
-
+	/*
+		Se guardan las caracteriscicas especiales de la neurona para luego poder volver a cargala en el mismo estado actual.
+	*/
 	void BasicNeuron::saveState(std::string pathToSave)
 	{
 		// Se crea un archivo con los datos de la conexión sináptica con formato BSW+numero de identificación, por ejemplo, BSW1234
@@ -185,13 +182,13 @@ namespace NEATSpikes
 	{
 		std::ofstream userDefinitions;
 		userDefinitions.open(pathToSave+"userDefinitions", std::ios::out);
-		userDefinitions << "Max_Bias " << maxBias << std::endl;
-		userDefinitions << "Maximum_Bias_Variation_By_Mutation " << maximumBiasVariationByMutation << std::endl;
-		userDefinitions << "Maximum_Sigmoid_Constant_Variation_By_Mutation " << maximumSigmoidConstantVariationByMutation << std::endl;
-		userDefinitions << "Probability_Of_Bias_Random_Mutation " << probabilityOfBiasRandomMutation << std::endl;
-		userDefinitions << "Probability_Of_Sigmoid_Constant_Random_Mutation " << probabilityOfSigmoidConstantRandomMutation << std::endl;
-		userDefinitions << "ConstantDistanceOfSigmoidConstant " << ConstantDistanceOfSigmoidConstant << std::endl;
-		userDefinitions << "ConstantDistanceOfBias " << ConstantDistanceOfBias << std::endl;
+		userDefinitions << "Max_Bias " << *maxBias << std::endl;
+		userDefinitions << "Maximum_Bias_Variation_By_Mutation " << *maximumBiasVariationByMutation << std::endl;
+		userDefinitions << "Maximum_Sigmoid_Constant_Variation_By_Mutation " << *maximumSigmoidConstantVariationByMutation << std::endl;
+		userDefinitions << "Probability_Of_Bias_Random_Mutation " << *probabilityOfBiasRandomMutation << std::endl;
+		userDefinitions << "Probability_Of_Sigmoid_Constant_Random_Mutation " << *probabilityOfSigmoidConstantRandomMutation << std::endl;
+		userDefinitions << "ConstantDistanceOfSigmoidConstant " << *ConstantDistanceOfSigmoidConstant << std::endl;
+		userDefinitions << "ConstantDistanceOfBias " << *ConstantDistanceOfBias << std::endl;
 		userDefinitions.close();
 	}
 
@@ -221,7 +218,6 @@ namespace NEATSpikes
 		BasicNeuron * BN = new BasicNeuron(historicalMark, historicalMark_inicial_input, historicalMark_inicial_output, layer);
 		return BN;
 	}
-
 	
 
 	int BasicNeuron::getInitialNeuronInHistoricalMark()
@@ -287,15 +283,15 @@ namespace NEATSpikes
 
 	double BasicNeuron::getDistance( Neuron * neuron )
 	{
-		// Primero que todo como la entrada no se puede asegurar que sea en realidad un puntero a BasicNeuron, lo primero que se hace es asegurar que en realidad sí sea puntero a BasicNeuron o sino se emite un error.
+		// Primero que todo como la entrada no se puede asegurar que sea en realidad un puntero a BasicNeuron, lo primero que se hace es asegurar que en realidad si sea puntero a BasicNeuron o sino se emite un error.
 		BasicNeuron * BN = NULL;
-		BN = dynamic_cast<BasicNeuron *> (neuron);
+		BN = dynamic_cast< BasicNeuron * > (neuron);
 		if(BN != NULL)
 		{
-			return fabs( sigmoidConstant - BN->sigmoidConstant )  * ConstantDistanceOfSigmoidConstant +  fabs( bias - BN->bias )  * ConstantDistanceOfBias;
+			return fabs( sigmoidConstant - BN->sigmoidConstant )  * (*ConstantDistanceOfSigmoidConstant) +  fabs( bias - BN->bias )  * (*ConstantDistanceOfBias);
 		}
 		else
-		{ // Si entra aquí es porque neuron no es un puntero de BasicNeuron.
+		{ // Si entra aqui es porque neuron no es un puntero de BasicNeuron.
 			std::cerr << "ERROR::BasicNeuron::getDistance::Input must to be a pointer to BasicNeuron wrapped like pointer of Neuron" << std::endl;
 			neuron->printState();
 			exit( EXIT_FAILURE );
@@ -308,8 +304,8 @@ namespace NEATSpikes
 		max = 1;
 		min = 0;
 		sigmoidConstant = (max - min)*(rand()/(double)RAND_MAX) + min;
-		max = maxBias;
-		min = -maxBias;
+		max = *maxBias;
+		min = -*maxBias;
 		bias = (max - min)*(rand()/(double)RAND_MAX) + min;
 	}
 
@@ -348,39 +344,37 @@ namespace NEATSpikes
 		//=========================================================================================
 		// Ahora se le da el valor a las variables de usuario y se termina este método. Usando mapas se hace más sencillo y más robusto.
 		//=========================================================================================
-		maxBias = UserDefinitions["Max_Bias"];
-		maximumBiasVariationByMutation = UserDefinitions["Maximum_Bias_Variation_By_Mutation"];
-		if(maximumBiasVariationByMutation > 1 || maximumBiasVariationByMutation < 0)
+		maxBias = new double(UserDefinitions["Max_Bias"]);
+		maximumBiasVariationByMutation = new double(UserDefinitions["Maximum_Bias_Variation_By_Mutation"]);
+		if(*maximumBiasVariationByMutation > 1 || *maximumBiasVariationByMutation < 0)
 		{
 			std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error maximumBiasVariationByMutation must be on interval [0,1]" << std::endl;
 		}
-		maximumSigmoidConstantVariationByMutation = UserDefinitions["Maximum_Sigmoid_Constant_Variation_By_Mutation"];
-		if(maximumSigmoidConstantVariationByMutation > 1 || maximumSigmoidConstantVariationByMutation < 0)
+		maximumSigmoidConstantVariationByMutation = new double(UserDefinitions["Maximum_Sigmoid_Constant_Variation_By_Mutation"]);
+		if(*maximumSigmoidConstantVariationByMutation > 1 || *maximumSigmoidConstantVariationByMutation < 0)
 		{
 			std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error maximumSigmoidConstantVariationByMutation must be on interval [0,1]" << std::endl;
 		}
-		probabilityOfBiasRandomMutation = UserDefinitions["Probability_Of_Bias_Random_Mutation"];
-		if(probabilityOfBiasRandomMutation > 1 || probabilityOfBiasRandomMutation < 0)
+		probabilityOfBiasRandomMutation = new double(UserDefinitions["Probability_Of_Bias_Random_Mutation"]);
+		if(*probabilityOfBiasRandomMutation > 1 || *probabilityOfBiasRandomMutation < 0)
 		{
 			std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error probabilityOfBiasRandomMutation must be on interval [0,1]" << std::endl;
 		}
-		probabilityOfSigmoidConstantRandomMutation = UserDefinitions["Probability_Of_Sigmoid_Constant_Random_Mutation"];
-		if(probabilityOfSigmoidConstantRandomMutation > 1 || probabilityOfSigmoidConstantRandomMutation < 0)
+		probabilityOfSigmoidConstantRandomMutation = new double(UserDefinitions["Probability_Of_Sigmoid_Constant_Random_Mutation"]);
+		if(*probabilityOfSigmoidConstantRandomMutation > 1 || *probabilityOfSigmoidConstantRandomMutation < 0)
 		{
 			std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error probabilityOfSigmoidConstantRandomMutation must be on interval [0,1]" << std::endl;
 		}
 
-
-		ConstantDistanceOfSigmoidConstant = UserDefinitions["ConstantDistanceOfSigmoidConstant"];
-		ConstantDistanceOfBias = UserDefinitions["ConstantDistanceOfBias"];
+		ConstantDistanceOfSigmoidConstant = new double(UserDefinitions["ConstantDistanceOfSigmoidConstant"]);
+		ConstantDistanceOfBias = new double(UserDefinitions["ConstantDistanceOfBias"]);
 		//=========================================================================================
 	}
 
 	void BasicNeuron::init()
 	{
 		sigmoidConstant = rand()/(double)RAND_MAX;
-		bias = (2*(rand()/(double)RAND_MAX) - 1 )*maxBias;
-		identificator = id++;
+		bias = (2*(rand()/(double)RAND_MAX) - 1 )*(*maxBias);
 		lastOutputVoltage=0.0;
 	}
 }

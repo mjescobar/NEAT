@@ -145,7 +145,7 @@ namespace NEATSpikes{
 			int identificator;
 			int layer; // La capa en la que está.
 			int historicalMark; // También entendida como innovación es el valor que define estructuralmente a la neurona, dos neuronas con mismo historicalMark es porque fueron creadas en la misma posición de la red neuronal.
-			int historicalMarkNeuronInicialIn;
+			int historicalMarkNeuronInicialIn;// La marca historica de una neurona tiene como referencia una neurona inicial input y una neurona inicial output y asi se calcula la nueva marca historica. Esto quiere decir que dos neuronas que comiencen desde la misma y terminan en la misma neurona entonces es porque son la misma.
 			int historicalMarkNeuronInicialOut;
 			std::vector <int> incomingConections;
 			std::vector <int> outcomingConections;
@@ -160,15 +160,14 @@ namespace NEATSpikes{
 			double bias;
 			//========================================================
 			// Las siguientes son las variables que el usuario introduce para toda la clase. Las definiciones de usuario para todas las neuronas básicas.
-			static double maxBias;
-			static int id;
+			double * maxBias;
 			// Recordar que por modelo de programación la probabilidad de que una neurona mute es parte de la estructura ANN (redes neuronales) por lo tanto aquí sólo se ven datos respecto a cómo efectuar esta mutación, no a la probabilidad misma de que mute. 
-			static double maximumBiasVariationByMutation; // Esta variable corresponde a cuánto pondera el valor antiguo del bías en el calculo del valor actual.
-			static double maximumSigmoidConstantVariationByMutation; // Esta variable corresponde a cuánto pondera el valor antiguo de la constante de la sigmoide en el calculo del valor actual.
-			static double probabilityOfBiasRandomMutation; // Es la probabilidad de que se tenga un valor BIAS completamente random.  Esto se muy útil porque si no se tiene este tipo de mecanismos entonces es más diifícil que el valor del bias logre llegar a los extremos dado que la ponderancia tiende a que los datos estén en el centro. 
-			static double probabilityOfSigmoidConstantRandomMutation; // Es la probabilidad de que cambie absolutamente. Mismo caso que el comentario de la variable anterior.
-			static double ConstantDistanceOfBias;
-			static double ConstantDistanceOfSigmoidConstant;
+			double * maximumBiasVariationByMutation; // Esta variable corresponde a cuánto pondera el valor antiguo del bías en el calculo del valor actual.
+			double * maximumSigmoidConstantVariationByMutation; // Esta variable corresponde a cuánto pondera el valor antiguo de la constante de la sigmoide en el calculo del valor actual.
+			double * probabilityOfBiasRandomMutation; // Es la probabilidad de que se tenga un valor BIAS completamente random.  Esto se muy útil porque si no se tiene este tipo de mecanismos entonces es más diifícil que el valor del bias logre llegar a los extremos dado que la ponderancia tiende a que los datos estén en el centro. 
+			double * probabilityOfSigmoidConstantRandomMutation; // Es la probabilidad de que cambie absolutamente. Mismo caso que el comentario de la variable anterior.
+			double * ConstantDistanceOfBias;// Dado que existe un bias que puede mutar, este debe ser considerado como parte de la distancia entre dos redes neuonales.		
+			double * ConstantDistanceOfSigmoidConstant;//Dado que existe la variable constante de sigmoide que corresponde a 2 / ( 1 + exp( (inputVoltage+bias)*constanteSigmoid ) ) - 1, y este puede mutar, entonces se toma en cuenta como parte de la distancia entre dos redes diferentes.
 	};
 }
 #endif

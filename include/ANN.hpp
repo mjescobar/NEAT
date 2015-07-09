@@ -86,7 +86,7 @@ namespace NEATSpikes{
 		/**
 			\brief Se obtiene la cantidad de salidas del organismo.
 		*/
-		static int getOrganismOutputSize();
+		int getOrganismOutputSize();
 		/**
 			\brief Se carga una red neuronal a través de una anteriormente guardada.
 		*/
@@ -201,19 +201,20 @@ namespace NEATSpikes{
 		GlobalInformation * generalInformation;
 		
 
-		static Neuron * prototypeNeuron;
-		static SynapticWeight *  prototypeSynapticWeight;
-		static int id; // Se usará para poder guardar las ANN de forma ordenada si se quisieran volver a cargar de nuevo.
+		Neuron * prototypeNeuron; // El prototipo de neurona corresponde a la neurona con la que se construiran el resto de las neuronas de la red.
+		SynapticWeight *  prototypeSynapticWeight;
+
+		static int id; // Se usara para poder guardar las ANN de forma ordenada si se quisieran volver a cargar de nuevo.
 		// ============== DEFINICIONES DE USUARIO =======================================
-		static double probabilityOfSynapticWeightMutation; // Es para cada conexión sináptica existente en la red neuronal.
-		static double probabilityOfNeuronMutation; // Es para cada neurona existente en la red neuonal.
-		static double probabilityOfNewNeuronMutation; // Es la probabilidad de que por mutación se cree una nueva neurona
-		static double probabilityOfNewSynapticWeightMutation; // Es la probabilidad de que por mutación se cree una nueva conexión sináptica
-		static int inputsAmount; // Necesario para crear a la primera generación.
-		static int outputsAmount;// Necesario para crear a la primera generación.
-		static double ConstantOFDiferencesInStructureOfSynapticWeight;
-		static double ConstantOFDiferencesInStructureOfNeurons;
-		static bool ANNCanHaveConnectionsBack;
+		double * probabilityOfSynapticWeightMutation; // Es para cada conexión sináptica existente en la red neuronal.
+		double * probabilityOfNeuronMutation; // Es para cada neurona existente en la red neuonal.
+		double * probabilityOfNewNeuronMutation; // Es la probabilidad de que por mutación se cree una nueva neurona
+		double * probabilityOfNewSynapticWeightMutation; // Es la probabilidad de que por mutación se cree una nueva conexión sináptica
+		int * inputsAmount; // Necesario para crear a la primera generación.
+		int * outputsAmount;// Necesario para crear a la primera generación.
+		double * ConstantOFDiferencesInStructureOfSynapticWeight;
+		double * ConstantOFDiferencesInStructureOfNeurons;
+		bool * ANNCanHaveConnectionsBack;
 	};
 
 	typedef ANN Organism;
