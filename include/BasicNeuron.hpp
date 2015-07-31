@@ -19,7 +19,6 @@ namespace NEATSpikes{
 		// ========================================================================================================
 		// ====================================== Métodos ============================================================
 		public:
-
 			/**
 				\brief Se crea una nueva neurona la cual tendrá seteados los valores historicalMark, historicalMark_inicial_input, historicalMark_inicial_output, layer; además tendrá valores aleatorios de bias y constante de la sigmoide.
 			*/
@@ -129,6 +128,14 @@ namespace NEATSpikes{
 				\brief Se cambian todos los valores de la neurona de forma aleatoria.
 			*/
 			void changeValuesRandomly();
+			/**
+				\brief Se guarda en disco duro la id.
+			*/
+			void saveId(std::string pathToSave);
+			/**
+				\brief Se carga de disco duro la id.
+			*/
+			void loadId(std::string PathWhereIsSaved);
 		private:
 			/**
 				\brief Se obtienen los datos desde el archivo con definiciones y se guarda en las variables estáticas correspondietes. 
@@ -141,26 +148,30 @@ namespace NEATSpikes{
 		// ======================================================================================================
 		// ===========================================   Variables ====================================================
 		private:
-			double lastOutputVoltage;
-			int identificator;
+			int * id; // Variable usada para que toda neurona tenga un identificator diferente. 
+			double lastOutputVoltage; // El voljade de entrada de la iteracion anterior.
+			int identificator; // Variable que se usa para guardar y cargar una neurona a o desde el disco duro segun el caso en cuestion.
 			int layer; // La capa en la que está.
 			int historicalMark; // También entendida como innovación es el valor que define estructuralmente a la neurona, dos neuronas con mismo historicalMark es porque fueron creadas en la misma posición de la red neuronal.
 			int historicalMarkNeuronInicialIn;// La marca historica de una neurona tiene como referencia una neurona inicial input y una neurona inicial output y asi se calcula la nueva marca historica. Esto quiere decir que dos neuronas que comiencen desde la misma y terminan en la misma neurona entonces es porque son la misma.
-			int historicalMarkNeuronInicialOut;
-			std::vector <int> incomingConections;
-			std::vector <int> outcomingConections;
+			int historicalMarkNeuronInicialOut; // Esta variable posee la marca de la neurona que inicialmente es la salida de esta neurona. Las marcas historicas definen a las neuronas, dos neuronas con la misma marca estan posicionadas en la misma parte de la topologia de una red neuronal, esto quiere decir que inicialmente conecta las mismas dos neuronas que cualquier otra con la misma marca. 
+			std::vector <int> incomingConections; // Lista de todas las conecciones (sus innovaciones que son finalmente como identificarlas) que como destino llegan a esta neurona. 
+			std::vector <int> outcomingConections; // Lista de todas las conecciones (sus innovaciones que son finalmente como identificarlas) que comienzan de esta neurona.
 			//========================================================
 			// 	RELATIVO A LA FUNCIÓN SIGMOIDE QUE REPRESENTA A LA NEURONA.
 			// 	-----------------------------------------------------------------------------------------------------------
 			// La función a usar por la neurona es la sigmoide la cual se expresa de la siguiente forma:
 			//	sigmoide( inputVoltage ) = 2 / ( 1 + exp( (inputVoltage+bias)*constanteSigmoid ) ) - 1 
 			// Esta sigmoide tiene como destino el intervalo [-1,1] por eso la altereración a la normal que tiene [0,1]
-			double inputVoltage;
-			double sigmoidConstant; 
-			double bias;
+			double inputVoltage; //inputVoltage es la variable en que se suman todos los potenciales de voltaje de todas las conecciones entrantes a la neurona. El valor despues de cada iteracion vuelve a cero.
+			double sigmoidConstant; // Constante que es parte del calculo de la evaluacion de esta neurona.
+			double bias; // Bias es un valor que offset que es parte del calculo de la salida de la funcion de evaluacion de la neurona, o sea del metodo eval().
 			//========================================================
 			// Las siguientes son las variables que el usuario introduce para toda la clase. Las definiciones de usuario para todas las neuronas básicas.
-			double * maxBias;
+			double * maxBias; // El maximo valor que puede tomas la variable bias.
+			double * minBias; // El minimo valor que puede tomas la variable bias.
+			bool * useBias; // Si el usuario desea que se aprenda la constante bias o no. como el usuario no puede poner directamente true o false debe poner 0 o cualquier valor diferente de cero para false o true respectivamente.
+			double * PredefinedBias; // Si se decide no mutar el bias entonces este sera el valor a tomar.
 			// Recordar que por modelo de programación la probabilidad de que una neurona mute es parte de la estructura ANN (redes neuronales) por lo tanto aquí sólo se ven datos respecto a cómo efectuar esta mutación, no a la probabilidad misma de que mute. 
 			double * maximumBiasVariationByMutation; // Esta variable corresponde a cuánto pondera el valor antiguo del bías en el calculo del valor actual.
 			double * maximumSigmoidConstantVariationByMutation; // Esta variable corresponde a cuánto pondera el valor antiguo de la constante de la sigmoide en el calculo del valor actual.
@@ -168,6 +179,10 @@ namespace NEATSpikes{
 			double * probabilityOfSigmoidConstantRandomMutation; // Es la probabilidad de que cambie absolutamente. Mismo caso que el comentario de la variable anterior.
 			double * ConstantDistanceOfBias;// Dado que existe un bias que puede mutar, este debe ser considerado como parte de la distancia entre dos redes neuonales.		
 			double * ConstantDistanceOfSigmoidConstant;//Dado que existe la variable constante de sigmoide que corresponde a 2 / ( 1 + exp( (inputVoltage+bias)*constanteSigmoid ) ) - 1, y este puede mutar, entonces se toma en cuenta como parte de la distancia entre dos redes diferentes.
+			double * maxSigmoidConstant; // Valor maximo que puede tomar la constante de la sigmoide
+			double * minSigmoidConstant; // Valor minimo que puede tomar la constante de la sigmoide
+			bool * useSigmoidConstantMutation; // Se debe decidir si mutar o no mutar la constante de la sigmoide
+			double * PredefinedSigmoidConstat; // Si se decide no mutar la constante de la sigmoide entonces este sera el valor a tomar.
 	};
 }
 #endif

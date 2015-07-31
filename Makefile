@@ -3,6 +3,8 @@ COMPILER=g++ -std=c++11
 CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -frtti -O3 -g
 OBJS = ./objects/Life.o ./objects/Niche.o ./objects/ANN.o ./objects/BasicSynapticWeight.o ./objects/BasicNeuron.o ./objects/Input.o ./objects/GlobalInformation.o
 
+.PHONY: all clean install git
+
 all: Life.o Niche.o ANN.o BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o
 	@echo all NEAT Compiled 
 
@@ -14,8 +16,10 @@ Life.o: Life.cpp Niche.cpp Niche.o GlobalInformation.o
 
 ANN.o: ANN.cpp BasicSynapticWeight.cpp BasicNeuron.cpp Input.cpp GlobalInformation.cpp BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o 
 	@mkdir -p objects
-	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/ANN.o
 	@echo Compiling ANN 
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/ANN.o
+	
+	
 
 BasicSynapticWeight.o: BasicSynapticWeight.cpp BasicSynapticWeight.hpp GlobalInformation.cpp GlobalInformation.o 
 	@mkdir -p objects

@@ -1,24 +1,23 @@
 #include "BasicNeuron.hpp"
 
 namespace NEATSpikes
-{
+{	
 
-	//Dado que son variables estáticas DEBEN ser inicializadas siempre en el cpp o pueden ser en otra parte pero DEBEN ser inicializadas.
-
-	
 	BasicNeuron::BasicNeuron(int _historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int _layer)
 	{
-		layer=_layer;
-		historicalMark=_historicalMark;
-		historicalMarkNeuronInicialOut=historicalMark_inicial_output;
-		historicalMarkNeuronInicialIn=historicalMark_inicial_input;
+		layer = _layer;
+		historicalMark = _historicalMark;
+		historicalMarkNeuronInicialOut = historicalMark_inicial_output;
+		historicalMarkNeuronInicialIn = historicalMark_inicial_input;
 		init();
 	}
 	// Este constructor debe ser llamado una sola vez en todo el tiempo
-	BasicNeuron::BasicNeuron(std::string pathUserDefinitionsAboutBasicNeuron)
+	BasicNeuron::BasicNeuron( std::string pathUserDefinitionsAboutBasicNeuron )
 	{
-		SetParametersFromUserDefinitionsPath(pathUserDefinitionsAboutBasicNeuron);
+		id = new int(0);
+		SetParametersFromUserDefinitionsPath( pathUserDefinitionsAboutBasicNeuron );
 		init();
+		(*id)++;
 	}
 	
 	BasicNeuron::BasicNeuron()
@@ -44,35 +43,42 @@ namespace NEATSpikes
 		// 4) el resultado es devuelto al intervalo [min, max] a través de la inverza a la función afin usada. 
 		// OBSERVACIÓN: Existe la posibilidad que el valor deba ser obtenido de forma absolutamente aleatoria, ese caso es más sencillo.
 
-		double max,min, random_normalized, sigmoidConstant_normalized, bias_normalized;
+		double max, min, random_normalized, sigmoidConstant_normalized, bias_normalized;
 
 		// ===================== SIGMOID CONSTANT ==========================
-		max = 1;
-		min = 0;
-		if( rand()/(double)RAND_MAX < *probabilityOfSigmoidConstantRandomMutation )
+		
+		if (*useSigmoidConstantMutation)
 		{
-			sigmoidConstant = (max - min)*(rand()/(double)RAND_MAX) + min;
+			max = *maxSigmoidConstant;
+			min = *minSigmoidConstant;
+
+			if( rand()/(double)RAND_MAX < *probabilityOfSigmoidConstantRandomMutation )
+			{
+
+				sigmoidConstant = (max - min)*(rand()/(double)RAND_MAX) + min;
+			}
+			else
+			{
+				// paso 1
+				sigmoidConstant_normalized = (sigmoidConstant - min)/(max - min);
+				// paso 2
+				random_normalized = rand()/(double)RAND_MAX;
+				// paso 3
+				sigmoidConstant_normalized = sigmoidConstant_normalized *(1-*maximumSigmoidConstantVariationByMutation) + random_normalized*(*maximumSigmoidConstantVariationByMutation);
+			 	// paso 4
+			 	sigmoidConstant = (max - min) * sigmoidConstant_normalized + min;	
+			}
 		}
-		else
-		{
-			// paso 1
-			sigmoidConstant_normalized = (sigmoidConstant - min)/(max - min);
-			// paso 2
-			random_normalized = rand()/(double)RAND_MAX;
-			// paso 3
-			sigmoidConstant_normalized = sigmoidConstant_normalized *(1-*maximumSigmoidConstantVariationByMutation) + random_normalized*(*maximumSigmoidConstantVariationByMutation);
-		 	// paso 4
-		 	sigmoidConstant = (max - min) * sigmoidConstant_normalized + min;	
-		}
+		
 
 
 		// ========================BIAS==================================
 	 	// los valores límites del bias son obtenidos y se usan las definiciones del usuario para calcularlos.
-	 	
-		if( *maxBias != 0.0 )
+		if( *useBias )
 		{
+
 		 	max = *maxBias;
-			min = -*maxBias;
+			min = *minBias;
 
 			if( rand()/(double) RAND_MAX < *probabilityOfBiasRandomMutation )
 			{
@@ -107,7 +113,7 @@ namespace NEATSpikes
 	/*
 		Al momento de evaluar se calculan ordenadamente todas las entradas a la neurona, y se deben ir sumando las entradas para luego de finalizado ese proceso tener el voltaje total de entrada a la neurona.
 	*/
-	void BasicNeuron::sumIncomingConnectionsOutputs(double incomingOneConnectionOutput)
+	void BasicNeuron::sumIncomingConnectionsOutputs( double incomingOneConnectionOutput )
 	{
 		inputVoltage += incomingOneConnectionOutput;
 	}
@@ -133,6 +139,8 @@ namespace NEATSpikes
 		finalFile.close();
 	}
 
+
+	// Recordar que la clase que carge neuronas debe setea correctamente la variable id.
 	void BasicNeuron::load(std::string PathWhereIsSaved)
 	{
 		// Las variables que serán usadas en la función.
@@ -182,13 +190,24 @@ namespace NEATSpikes
 	{
 		std::ofstream userDefinitions;
 		userDefinitions.open(pathToSave+"userDefinitions", std::ios::out);
+		userDefinitions << "Use_Bias " << *useBias << std::endl;
+		
+		userDefinitions << "Min_Bias " << *minBias << std::endl;
 		userDefinitions << "Max_Bias " << *maxBias << std::endl;
 		userDefinitions << "Maximum_Bias_Variation_By_Mutation " << *maximumBiasVariationByMutation << std::endl;
-		userDefinitions << "Maximum_Sigmoid_Constant_Variation_By_Mutation " << *maximumSigmoidConstantVariationByMutation << std::endl;
 		userDefinitions << "Probability_Of_Bias_Random_Mutation " << *probabilityOfBiasRandomMutation << std::endl;
+		userDefinitions << "ConstantDistanceOfBias " << *ConstantDistanceOfBias << std::endl;
+		userDefinitions << "Predefined_Bias " << *PredefinedBias << std::endl;
+
+		userDefinitions << "Use_Sigmoid_Constant_Mutation " << *useSigmoidConstantMutation << std::endl;
+		userDefinitions << "Max_Sigmoid_Constant " << *maxSigmoidConstant << std::endl;
+		userDefinitions << "Min_Sigmoid_Constant " << *minSigmoidConstant << std::endl;
+		userDefinitions << "Maximum_Sigmoid_Constant_Variation_By_Mutation " << *maximumSigmoidConstantVariationByMutation << std::endl;
 		userDefinitions << "Probability_Of_Sigmoid_Constant_Random_Mutation " << *probabilityOfSigmoidConstantRandomMutation << std::endl;
 		userDefinitions << "ConstantDistanceOfSigmoidConstant " << *ConstantDistanceOfSigmoidConstant << std::endl;
-		userDefinitions << "ConstantDistanceOfBias " << *ConstantDistanceOfBias << std::endl;
+		userDefinitions << "Predefined_Sigmoid_Constat " << *PredefinedSigmoidConstat << std::endl;
+
+		
 		userDefinitions.close();
 	}
 
@@ -259,25 +278,40 @@ namespace NEATSpikes
 	{
 		// Sencillamente se crea una nueva neurona y se le dan los valores de ésta.
 		BasicNeuron * BN = new BasicNeuron;
-		BN->lastOutputVoltage=lastOutputVoltage;
-		BN->identificator=identificator;
-		BN->layer=layer;
-		BN->historicalMark=historicalMark;
-		BN->historicalMarkNeuronInicialIn=historicalMarkNeuronInicialIn;
-		BN->historicalMarkNeuronInicialOut=historicalMarkNeuronInicialOut;
+		BN->lastOutputVoltage = lastOutputVoltage;
+		BN->id = id;
+		BN->identificator = ++*id;
+		BN->layer = layer;
+		BN->historicalMark = historicalMark;
+		BN->historicalMarkNeuronInicialIn = historicalMarkNeuronInicialIn;
+		BN->historicalMarkNeuronInicialOut = historicalMarkNeuronInicialOut;
+		BN->useBias = useBias;
+		BN->maxBias = maxBias;
+		BN->minBias = minBias;
+		BN->probabilityOfBiasRandomMutation = probabilityOfBiasRandomMutation;
+		BN->maximumBiasVariationByMutation = maximumBiasVariationByMutation;
+		BN->ConstantDistanceOfBias = ConstantDistanceOfBias;
+		BN->PredefinedBias = PredefinedBias;
+		BN->useSigmoidConstantMutation = useSigmoidConstantMutation;
+		BN->maxSigmoidConstant = maxSigmoidConstant;
+		BN->minSigmoidConstant = minSigmoidConstant;
+		BN->probabilityOfSigmoidConstantRandomMutation  = probabilityOfSigmoidConstantRandomMutation;
+		BN->maximumSigmoidConstantVariationByMutation = maximumSigmoidConstantVariationByMutation;
+		BN->ConstantDistanceOfSigmoidConstant = ConstantDistanceOfSigmoidConstant;
+		BN->PredefinedSigmoidConstat = PredefinedSigmoidConstat;
 		BN->incomingConections.clear();
 		for (int i = 0; i < (int)incomingConections.size(); ++i)
 		{
-			BN->incomingConections.push_back(incomingConections.at(i));
+			BN->incomingConections.push_back( incomingConections.at( i ) );
 		}
 		BN->outcomingConections.clear();
 		for (int i = 0; i < (int)outcomingConections.size(); ++i)
 		{
-			BN->outcomingConections.push_back(outcomingConections.at(i));
+			BN->outcomingConections.push_back( outcomingConections.at( i ) );
 		}
-		BN->inputVoltage=inputVoltage;
-		BN->sigmoidConstant=sigmoidConstant;
-		BN->bias=bias;
+		BN->inputVoltage = inputVoltage;
+		BN->sigmoidConstant = sigmoidConstant;
+		BN->bias = bias;
 		return BN;
 	}
 
@@ -285,13 +319,13 @@ namespace NEATSpikes
 	{
 		// Primero que todo como la entrada no se puede asegurar que sea en realidad un puntero a BasicNeuron, lo primero que se hace es asegurar que en realidad si sea puntero a BasicNeuron o sino se emite un error.
 		BasicNeuron * BN = NULL;
-		BN = dynamic_cast< BasicNeuron * > (neuron);
+		BN = dynamic_cast< BasicNeuron * > ( neuron );
 		if(BN != NULL)
 		{
 			return fabs( sigmoidConstant - BN->sigmoidConstant )  * (*ConstantDistanceOfSigmoidConstant) +  fabs( bias - BN->bias )  * (*ConstantDistanceOfBias);
 		}
 		else
-		{ // Si entra aqui es porque neuron no es un puntero de BasicNeuron.
+		{  // Si entra aqui es porque neuron no es un puntero de BasicNeuron.
 			std::cerr << "ERROR::BasicNeuron::getDistance::Input must to be a pointer to BasicNeuron wrapped like pointer of Neuron" << std::endl;
 			neuron->printState();
 			exit( EXIT_FAILURE );
@@ -301,12 +335,68 @@ namespace NEATSpikes
 	void BasicNeuron::changeValuesRandomly()
 	{
 		double max,min;
-		max = 1;
-		min = 0;
-		sigmoidConstant = (max - min)*(rand()/(double)RAND_MAX) + min;
-		max = *maxBias;
-		min = -*maxBias;
-		bias = (max - min)*(rand()/(double)RAND_MAX) + min;
+		if(*useSigmoidConstantMutation)
+		{
+			max = *maxSigmoidConstant;
+			min = *minSigmoidConstant;
+			sigmoidConstant = (max - min)*(rand()/(double)RAND_MAX) + min;
+		}
+		else
+		{
+			sigmoidConstant = *PredefinedSigmoidConstat;
+		}
+
+		if(*useBias)
+		{
+			max = *maxBias;
+			min = -*minBias;
+			bias = (max - min)*(rand()/(double)RAND_MAX) + min;
+		}
+		else
+		{
+			bias = *PredefinedBias;
+		}
+	}
+
+	void BasicNeuron::saveId(std::string pathToSave)
+	{
+		std::string finalArchive = pathToSave + "BN_id" ;
+
+		// Se crea el archivo y se guardan los datos.
+		std::ofstream finalFile;
+		finalFile.open(finalArchive);
+		finalFile << "id " << *id << std::endl;
+		finalFile.close();
+	}
+
+	void BasicNeuron::loadId(std::string PathWhereIsSaved)
+	{
+	
+		FILE * archive; // El archivo es cargado en esta variable
+		//Las siguientes variables son usadas para leer las lineas del archivo
+		char * line = NULL;
+		size_t len = 0;
+		ssize_t read;
+		// Las siguientes variables son usadas para obtener los valores de las lineas y guardarlo en el mapa loadData
+		char * token_1; // Aqui se guardan los strings
+		char * token_2; // y aquí el valor 
+		char * saveptr; // variable para indicar el lugar donde quedó la ultima lectura del strtok_r
+		std::map <std::string, double> loadData; 
+		char delimiters[] = " \n\t"; // Los delimitadores usados.
+		
+		// Se abre el archivo donde está guardada la conexión sináptica
+		//=========================================================================================
+		archive = fopen(PathWhereIsSaved.c_str(),"r");
+		while ((read = getline(&line, &len, archive)) != -1) 
+		{
+			token_1 = strtok_r(line, delimiters, &saveptr);
+			token_2 = strtok_r(NULL, delimiters, &saveptr);
+			loadData[token_1]=atof(token_2);
+		}
+		fclose(archive); // Ya no se requiere más de este recurso.
+		//=========================================================================================
+
+		id = new int( loadData["id"] );
 	}
 
 	void BasicNeuron::SetParametersFromUserDefinitionsPath(std::string pathUserDefinitionsAboutBasicNeuron)
@@ -344,37 +434,73 @@ namespace NEATSpikes
 		//=========================================================================================
 		// Ahora se le da el valor a las variables de usuario y se termina este método. Usando mapas se hace más sencillo y más robusto.
 		//=========================================================================================
+		
+		useBias = new bool( UserDefinitions["Use_Bias"] );
+		useSigmoidConstantMutation = new bool( UserDefinitions["Use_Sigmoid_Constant_Mutation"] );
 		maxBias = new double(UserDefinitions["Max_Bias"]);
+		minBias = new double(UserDefinitions["Min_Bias"]);
 		maximumBiasVariationByMutation = new double(UserDefinitions["Maximum_Bias_Variation_By_Mutation"]);
-		if(*maximumBiasVariationByMutation > 1 || *maximumBiasVariationByMutation < 0)
-		{
-			std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error maximumBiasVariationByMutation must be on interval [0,1]" << std::endl;
-		}
-		maximumSigmoidConstantVariationByMutation = new double(UserDefinitions["Maximum_Sigmoid_Constant_Variation_By_Mutation"]);
-		if(*maximumSigmoidConstantVariationByMutation > 1 || *maximumSigmoidConstantVariationByMutation < 0)
-		{
-			std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error maximumSigmoidConstantVariationByMutation must be on interval [0,1]" << std::endl;
-		}
 		probabilityOfBiasRandomMutation = new double(UserDefinitions["Probability_Of_Bias_Random_Mutation"]);
-		if(*probabilityOfBiasRandomMutation > 1 || *probabilityOfBiasRandomMutation < 0)
-		{
-			std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error probabilityOfBiasRandomMutation must be on interval [0,1]" << std::endl;
-		}
+		ConstantDistanceOfBias = new double(UserDefinitions["ConstantDistanceOfBias"]);
+		maxSigmoidConstant = new double(UserDefinitions["Max_Sigmoid_Constant"]);
+		minSigmoidConstant = new double(UserDefinitions["Min_Sigmoid_Constant"]);
 		probabilityOfSigmoidConstantRandomMutation = new double(UserDefinitions["Probability_Of_Sigmoid_Constant_Random_Mutation"]);
-		if(*probabilityOfSigmoidConstantRandomMutation > 1 || *probabilityOfSigmoidConstantRandomMutation < 0)
+		maximumSigmoidConstantVariationByMutation = new double(UserDefinitions["Maximum_Sigmoid_Constant_Variation_By_Mutation"]);
+		ConstantDistanceOfSigmoidConstant = new double(UserDefinitions["ConstantDistanceOfSigmoidConstant"]);
+		PredefinedBias = new double(UserDefinitions["Predefined_Bias"]);
+		PredefinedSigmoidConstat = new double(UserDefinitions["Predefined_Sigmoid_Constat"]);
+			
+
+		//===========================================================================================
+		//Se procede a verificar errores
+
+		if(*useBias)
 		{
-			std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error probabilityOfSigmoidConstantRandomMutation must be on interval [0,1]" << std::endl;
+			if(*maxBias < *minBias)
+			{
+				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error Max Bias is less than Min Bias" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+			if(*maximumBiasVariationByMutation > 1 || *maximumBiasVariationByMutation < 0)
+			{
+				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error maximumBiasVariationByMutation must be on interval [0,1]" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+			if(*probabilityOfBiasRandomMutation > 1 || *probabilityOfBiasRandomMutation < 0)
+			{
+				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error probabilityOfBiasRandomMutation must be on interval [0,1]" << std::endl;
+				exit (EXIT_FAILURE);
+			}
 		}
 
-		ConstantDistanceOfSigmoidConstant = new double(UserDefinitions["ConstantDistanceOfSigmoidConstant"]);
-		ConstantDistanceOfBias = new double(UserDefinitions["ConstantDistanceOfBias"]);
+		if(*useSigmoidConstantMutation)
+		{
+			if(*maximumSigmoidConstantVariationByMutation > 1 || *maximumSigmoidConstantVariationByMutation < 0)
+			{
+				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error maximumSigmoidConstantVariationByMutation must be on interval [0,1]" << std::endl;
+				exit (EXIT_FAILURE);
+			}
+			
+			if(*probabilityOfSigmoidConstantRandomMutation > 1 || *probabilityOfSigmoidConstantRandomMutation < 0)
+			{
+				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error probabilityOfSigmoidConstantRandomMutation must be on interval [0,1]" << std::endl;
+				exit (EXIT_FAILURE);
+			}
+		}
 		//=========================================================================================
 	}
 
+
+
 	void BasicNeuron::init()
 	{
-		sigmoidConstant = rand()/(double)RAND_MAX;
-		bias = (2*(rand()/(double)RAND_MAX) - 1 )*(*maxBias);
+		int max = 1;
+		int min = 0;
+		sigmoidConstant = (max - min)*(rand()/(double)RAND_MAX) + min;
+		bias = 0;
 		lastOutputVoltage=0.0;
 	}
+
+
+	
 }

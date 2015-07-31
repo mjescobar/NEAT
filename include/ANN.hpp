@@ -153,12 +153,12 @@ namespace NEATSpikes{
 			\brief
 		*/
 		//ENCONTRAR UN MEJOR NOMBRE!!!!
-		std::tuple < int,int >  localNeuronsInOut_TO_referencesNeurons(std:: vector<int> neuron_in_out); // Es muy complicado el nombre pero
+		std::tuple < int,int >  localNeuronsToReferencesNeurons(std:: vector<int> neuron_in_out); // Es muy complicado el nombre pero
 		/**
 			\brief 
 		*/	
 			//ENCONTRAR UN MEJOR NOMBRE!!!!
-		std::tuple < int,int >  referencesNeurons_TO_localNeuronsInOut(std:: vector<int> vect_1_vect_2); // Es muy complicado el nombre pero
+		std::tuple < int,int >  referencesNeuronsToLocalNeurons(std:: vector<int> vect_1_vect_2); // Es muy complicado el nombre pero
 		/**
 			\brief Se encuentran las posibles neuronas entre las cuales se generara la mutacion.
 		*/
@@ -218,6 +218,5 @@ namespace NEATSpikes{
 	};
 
 	typedef ANN Organism;
-
 }
 #endif

@@ -155,22 +155,23 @@ namespace NEATSpikes
 		//=========================================================================================
 		// Ahora se le da el valor a las variables de usuario y se termina este método. Usando mapas se hace más sencillo y más robusto.
 		//=========================================================================================
-
 		maxWeightValue = UserDefinitions["Max_Weight_Value"];
 		maximumWeightVariationByMutation = UserDefinitions["Maximum_Weight_Variation_By_Mutation"];
-		if(maximumWeightVariationByMutation > 1 || maximumWeightVariationByMutation < 0){
-			std::cerr << "Error::BasicSynapticWeight::SetParametersFromUserDefinitionsPath::Error maximumWeightVariationByMutation must be on interval [0,1]" << std::endl;
-		}
 		probabilityOfWeightRandomMutation = UserDefinitions["Probability_Of_Weight_Random_Mutation"];
+		probabilityOfEnableADisabledConnection = UserDefinitions["probabilityOfEnableADisabledConnection"];
+		ConstantDistanceOfSynapticWeightValue = UserDefinitions["ConstantDistanceOfSynapticWeightValue"];
+
+		//=========================================================================================
+		// Se revizan todos los posibles problemas
 		if(probabilityOfWeightRandomMutation > 1 || probabilityOfWeightRandomMutation < 0){
 			std::cerr << "Error::BasicSynapticWeight::SetParametersFromUserDefinitionsPath::Error probabilityOfWeightRandomMutation must be on interval [0,1]" << std::endl;
 		}
-
-		probabilityOfEnableADisabledConnection = UserDefinitions["probabilityOfEnableADisabledConnection"];
 		if(probabilityOfEnableADisabledConnection > 1 || probabilityOfEnableADisabledConnection < 0){
 			std::cerr << "Error::BasicSynapticWeight::SetParametersFromUserDefinitionsPath::Error probabilityOfEnableADisabledConnection must be on interval [0,1]" << std::endl;
 		}
-		ConstantDistanceOfSynapticWeightValue = UserDefinitions["ConstantDistanceOfSynapticWeightValue"];
+		if(maximumWeightVariationByMutation > 1 || maximumWeightVariationByMutation < 0){
+			std::cerr << "Error::BasicSynapticWeight::SetParametersFromUserDefinitionsPath::Error maximumWeightVariationByMutation must be on interval [0,1]" << std::endl;
+		}
 		//=========================================================================================
 	}
 

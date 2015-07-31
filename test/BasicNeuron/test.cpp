@@ -16,9 +16,9 @@ int main()
 	cout << "First Neuron created by constructor method:" << endl;
 	BN->printState(); // Se imprime el estado buscando ver que están correctamente inicializadas todas las variables importantes.
 
-	cout << "Now 500 mutations " << endl;
+	cout << "Now 100 mutations " << endl;
 	// Se prueban 5 mutaciones.
-	for (int i = 0; i < 500; ++i)
+	for (int i = 0; i < 100; ++i)
 	{
 		BN->mutate();
 		BN->printState();	
@@ -35,10 +35,17 @@ int main()
 	cout << "Saving data" << endl;
 	BN->saveState("./save/");
 	BN->saveUserDefinitions("./save/");
+	BN->saveId("./save/");
+
+
+	cout << "Loading UserDef" << endl;
+	BasicNeuron * BNPrototype = new BasicNeuron("./save/userDefinitions");
+	cout << "Loading Id" << endl;
+	BNPrototype->loadId("./save/BN_id");	
 
 
 	cout << "Loading data" << endl;
-	BasicNeuron * BN2 = new BasicNeuron;
+	BasicNeuron * BN2 = dynamic_cast< BasicNeuron * > ( BNPrototype->duplicate());
 	BN2->load("./save/BN0");
 
 	cout << "Basic neuron loaded" << endl;

@@ -479,6 +479,16 @@ namespace NEATSpikes
 	void ANN::saveState(std::string pathToSave)
 	{
 		// Bastante largo, se deja para posterior trabajo.
+
+
+		//=============================================
+		// Neuronas
+
+
+
+		//=============================================
+		// Conecciones sinapticas
+
 	}
 
 	void ANN::load(std::string PathWhereIsSaved)
@@ -522,7 +532,6 @@ namespace NEATSpikes
 		//=========================================================================================
 		// Ahora se le da el valor a las variables de usuario y se termina este método. Usando mapas se hace más sencillo y más robusto.
 		//=========================================================================================
-		
 			probabilityOfSynapticWeightMutation = new double(UserDefinitions[ "Probability_Of_Synaptic_Weight_Mutation" ]);
 			probabilityOfNeuronMutation = new double(UserDefinitions[ "Probability_Of_Neuron_Mutation" ]);
 			probabilityOfNewNeuronMutation = new double(UserDefinitions[ "Probability_Of_New_Neuron_Mutation" ]);
@@ -650,7 +659,7 @@ namespace NEATSpikes
 			int NeuronReference1;
 			int NeuronReference2;
 
-			tie( NeuronReference1, NeuronReference2 ) = localNeuronsInOut_TO_referencesNeurons( {localNeuronIn,localNeuronOut} );
+			tie( NeuronReference1, NeuronReference2 ) = localNeuronsToReferencesNeurons( {localNeuronIn,localNeuronOut} );
 		//================================================================
 
 		// Si no se ha agregado antes entonces en el mapa neuronsReferencesForCreateNewSynapticWeight en su posición debería haber un valor -1
@@ -721,7 +730,7 @@ namespace NEATSpikes
 			// Se obtiene la posición de éstos en  neuronsReferencesForCreateNewNeurons
 			int NeuronReference1;
 			int NeuronReference2;
-			tie(NeuronReference1, NeuronReference2) = localNeuronsInOut_TO_referencesNeurons({localNeuronIn,localNeuronOut});
+			tie(NeuronReference1, NeuronReference2) = localNeuronsToReferencesNeurons({localNeuronIn,localNeuronOut});
 		//================================================================
 
 		// Paso 2: se analiza un posible caso de error:	
@@ -798,7 +807,7 @@ namespace NEATSpikes
 
 						// En el caso de conexiones desde la neurona i hacia la neurona nueva no se aceptan las conexiones (-2)
 						// Primero se deben saber los índices en el mapa de referencia cuando los inputs y outputs son cambiados
-						tie( ref1, ref2 )=localNeuronsInOut_TO_referencesNeurons( {output,input} );
+						tie( ref1, ref2 )=localNeuronsToReferencesNeurons( {output,input} );
 						neuronsReferencesForCreateNewNeurons.at( ref1 ).at( ref2 ) = -2;
 						neuronsReferencesForCreateNewSynapticWeight.at( ref1 ).at( ref2 ) = -2;
 						
@@ -817,7 +826,7 @@ namespace NEATSpikes
 						int ref1,ref2;
 						// En el caso de conexiones desde la neurona i hacia la neurona nueva no se aceptan las conexiones (-2)
 						// Primero se deben saber los índices en el mapa de referencia cuando los inputs y outputs son cambiados
-						tie( ref1, ref2 )=localNeuronsInOut_TO_referencesNeurons({output,input});
+						tie( ref1, ref2 )=localNeuronsToReferencesNeurons({output,input});
 						neuronsReferencesForCreateNewNeurons.at( ref1 ).at( ref2 ) = -2;
 						neuronsReferencesForCreateNewSynapticWeight.at( ref1 ).at( ref2 ) = -2;
 
@@ -936,7 +945,7 @@ namespace NEATSpikes
 
 						// En el caso de conexiones desde la neurona i hacia la neurona nueva no se aceptan las conexiones (-2)
 						// Primero se deben saber los índices en el mapa de referencia cuando los inputs y outputs son cambiados
-						tie( ref1, ref2 )=localNeuronsInOut_TO_referencesNeurons( {output,input} );
+						tie( ref1, ref2 )=localNeuronsToReferencesNeurons( {output,input} );
 						neuronsReferencesForCreateNewNeurons.at( ref1 ).at( ref2 ) = -2;
 						neuronsReferencesForCreateNewSynapticWeight.at( ref1 ).at( ref2 ) = -2;
 						
@@ -955,7 +964,7 @@ namespace NEATSpikes
 						int ref1,ref2;
 						// En el caso de conexiones desde la neurona i hacia la neurona nueva no se aceptan las conexiones (-2)
 						// Primero se deben saber los índices en el mapa de referencia cuando los inputs y outputs son cambiados
-						tie( ref1, ref2 )=localNeuronsInOut_TO_referencesNeurons({output,input});
+						tie( ref1, ref2 )=localNeuronsToReferencesNeurons({output,input});
 						neuronsReferencesForCreateNewNeurons.at( ref1 ).at( ref2 ) = -2;
 						neuronsReferencesForCreateNewSynapticWeight.at( ref1 ).at( ref2 ) = -2;
 
@@ -1210,7 +1219,7 @@ namespace NEATSpikes
 	}
 
 
-	std::tuple < int,int > ANN::localNeuronsInOut_TO_referencesNeurons(std:: vector<int> neuron_in_out)
+	std::tuple < int,int > ANN::localNeuronsToReferencesNeurons(std:: vector<int> neuron_in_out)
 	{
 		if( neuron_in_out.at(0) > neuron_in_out.at(1) )
 		{
@@ -1223,7 +1232,7 @@ namespace NEATSpikes
 	}
 
 
-	std::tuple < int,int >  ANN::referencesNeurons_TO_localNeuronsInOut(std:: vector<int> vect_1_vect_2)
+	std::tuple < int,int >  ANN::referencesNeuronsToLocalNeurons(std:: vector<int> vect_1_vect_2)
 	{
 		if( vect_1_vect_2.at(0) > vect_1_vect_2.at(1) )
 		{
@@ -1295,7 +1304,7 @@ namespace NEATSpikes
 		int localNeuronOut;
 		
 
-		tie( localNeuronIn , localNeuronOut ) = referencesNeurons_TO_localNeuronsInOut( {NeuronRef_1 , NeuronRef_2 } );
+		tie( localNeuronIn , localNeuronOut ) = referencesNeuronsToLocalNeurons( {NeuronRef_1 , NeuronRef_2 } );
 
 		int histoticalMarkNeuronIn = neuron_vector.at( localNeuronIn )->getHistoricalMark( );
 		int histoticalMarkNeuronOut = neuron_vector.at( localNeuronOut )->getHistoricalMark( );
@@ -1367,7 +1376,7 @@ namespace NEATSpikes
 
 
 		// Ahora a través de i y j se obtendrán las neuronas inicial input e inicial output que fueron elejidas.
-		tie(localNeuronIn, localNeuronOut) =  referencesNeurons_TO_localNeuronsInOut( { (int)i , (int)j } );
+		tie(localNeuronIn, localNeuronOut) =  referencesNeuronsToLocalNeurons( { (int)i , (int)j } );
 
 
 		// Además será bastante usada la marca histórica de ambas neuronas en lo que queda del método
