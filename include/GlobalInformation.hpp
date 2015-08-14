@@ -42,22 +42,14 @@ namespace NEATSpikes{
 			//ENCONTRAR UN MEJOR NOMBRE!!!!
 		std::tuple < int,int >  availableNumberOfMutationsInRelationToNeuron_Vect1_Vect2_TO_historicalMarkIN_OUT(std:: vector<int> vect_1_vect_2); // Es muy complicado el nombre pero
 
-
-		
-
-
 		std::vector < std::vector <int> > newNeuronPosibilities;
 		std::vector < std::vector <int> > newSynapticWeightPosibilities;
-
 		int historicalMark;
 		int innovation;
 		int layer;
 		std::vector < std::vector <int> > neuronsReferencesForCreateNewSynapticWeight;
 		std::vector < std::vector <int> > neuronsReferencesForCreateNewNeurons;
-
-
 		std::vector < std::vector <int> > LayersWithReferences;
-
 	};
 }
 

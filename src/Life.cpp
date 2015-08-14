@@ -22,7 +22,7 @@ namespace NEATSpikes
 			while( new_niches_vector.at(i).getAmountOfNewOrganisms() < amountOfOrganismInANewNiche )
 			{
 				
-				Organism * newOrganism = seedANN->createOtherFromSeedOrganism();	
+				Organism * newOrganism = seedANN->createNewWithSameTopologieButDiferentValues();	
 				
 				if( new_niches_vector.at(i).IsAcepted(newOrganism) )
 				{ // entonces es aceptado con el nicho padre.

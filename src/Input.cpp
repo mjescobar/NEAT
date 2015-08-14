@@ -99,7 +99,7 @@ void Input::printState()
 {
 	std::cout << "Input\t" << "historicalMark " << historicalMark << "\tlayer " << layer <<  "\tlastOutput" << lastOutput   <<std::endl;
 }
-Neuron * Input::createNew(int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer)
+Neuron * Input::createNew(Neuron * prototype, int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer)
 {
 	Input * I = new Input(historicalMark, historicalMark_inicial_input, historicalMark_inicial_output, layer);
 	return dynamic_cast<Neuron*>(I);

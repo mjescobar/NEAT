@@ -19,19 +19,17 @@ ANN.o: ANN.cpp BasicSynapticWeight.cpp BasicNeuron.cpp Input.cpp GlobalInformati
 	@echo Compiling ANN 
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/ANN.o
 	
-	
-
 BasicSynapticWeight.o: BasicSynapticWeight.cpp BasicSynapticWeight.hpp GlobalInformation.cpp GlobalInformation.o 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicSynapticWeight.o
 	@echo Compiling BasicSynapticWeight 
 
-BasicNeuron.o: BasicNeuron.cpp
+BasicNeuron.o: BasicNeuron.cpp GlobalInformation.o
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicNeuron.o
 	@echo Compiling BasicNeuron 
 
-Input.o: Input.cpp
+Input.o: Input.cpp GlobalInformation.o
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Input.o
 	@echo Compiling Input 
@@ -58,9 +56,6 @@ git:
 	@./clean.sh
 	@git add --all; git status; git commit -e; git push  
 	
-
-
-
 install:
 	@g++ -shared -Wl,-soname,libneatspikes.so.1 -o libneatspikes.so.1.0 $(OBJS)
 	@ln -sf libneatspikes.so.1.0 libneatspikes.so

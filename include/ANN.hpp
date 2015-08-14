@@ -82,7 +82,7 @@ namespace NEATSpikes{
 		/**
 			\brief Se crea otra red neuronal con la misma estructura pero con todos los valores aleatorios.
 		*/
-		ANN * createOtherFromSeedOrganism();
+		ANN * createNewWithSameTopologieButDiferentValues();
 		/**
 			\brief Se obtiene la cantidad de salidas del organismo.
 		*/

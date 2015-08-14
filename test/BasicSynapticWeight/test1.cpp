@@ -9,10 +9,10 @@ int main()
 {
 	srand(time(0)); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
 	// Se harán dos conexiones sinápticas, la primera se inicializará con el constructor que carga las características del usuario y inicializa el valor de la conexión sináptica con valor aleatorio, la otra conexión sináptica no será inicializada para posteiormente cargar desde archivo usando el método load. Es inportante notar que  la segunda conexión sináptica cargará la misma información que la primera porque de hecho es parte de la prueba que se guarde correctamente la primera.
-	BasicSynapticWeight * bsw = new BasicSynapticWeight("./userDefinitions");
-	BasicSynapticWeight * bsw2 = new BasicSynapticWeight;
+	GlobalInformation * information  = new GlobalInformation();
+	BasicSynapticWeight * bsw = new BasicSynapticWeight( "./userDefinitions", information);
+	BasicSynapticWeight * bsw2;
 	// Con el fin de probar la evaluación de una conexión se probará si funciona ante una entrada random.
-	
 	double random = rand()/(double)RAND_MAX; // Este valor random corresponde a la entrada de la conexión sináptica.
 	cout << "First synaptic weight" << endl;
 	// Se imprime la primera conexión sináptica según los valores que obtuvo en el constructor.
@@ -27,9 +27,17 @@ int main()
 	bsw->saveState("./save/");
 	// Se guardan las definiciones de usuario para conexiones sinápticas.
 	bsw->saveUserDefinitions("./save/");
+	cout << "Savind ID" << endl;
+	bsw->saveId("./save/");
 	// Ahora se probará si el método para cargar conexiónes está funcional usando el método load, el resultado debería ser que esta otra conexión sináptica tenga las mismas características de la primera.
+
 	cout << "Loading data" << endl;
-	bsw2->load("./save/BSW0");
+	BasicSynapticWeight * prototype = new BasicSynapticWeight("./save/userDefinitions", information);
+	prototype->loadId("./save/BSW_id");
+
+	bsw2 = dynamic_cast <BasicSynapticWeight *> (prototype->duplicate());
+
+	bsw2->load("./save/BSW1");
 	cout << "Second synaptic weight" << endl;
 	// Se imprime la información de la segunda conexión sináptica, debería ser igual a la primera que se mostro por la anterior conexión sináptica.
 	bsw2->printState();
@@ -42,11 +50,9 @@ int main()
 		bsw2->mutate();
 		bsw2->printState();
 	}
-
 	bsw2->setInput(random);
 	bsw2->spread();
 	cout << "input: " << random << "\toutput: " <<  bsw2->getOutput() << endl;
-
 
 	return EXIT_SUCCESS;
 }

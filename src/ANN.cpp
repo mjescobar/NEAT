@@ -232,78 +232,6 @@ namespace NEATSpikes
 		std::cerr << "salió de mutate" << std::endl;
 	}
 
-
-	// ANN * ANN::crossover(ANN * mother)
-	// {
-
-	// 	// El procedimiento que se realiza es:
-	// 	// 1) El hijo copia todo del padre
-	// 	// 2) Se recorren todas las neuronas de la madre, de haber coincidencia de neuronas entonces con 50% de probabilidades la neurona se cambia por la versión de la madre en otro caso se conserva el del padre. 
-	// 	// 3) Lo mismo pero con las conexiones sinápticas.
-	// 	ANN * children = new ANN( *this );
-
-	// 	// Primero se agregan todas las neuronas que posea la madre al padre si este no lo tiene, y si lo tiene 50% de probabilidad de cambiar el existente por el de la madre
-	// 	//==================================================================================
-	// 		for (unsigned int i = 0; i < mother->neuron_vector.size(); ++i)
-	// 		{
-				
-	// 			int historicalMarkMotherNeuron = mother->neuron_vector.at( i )->getHistoricalMark();
-
-	// 			if( historicalMark_To_localNeuron.count( historicalMarkMotherNeuron ) > 0 ) // Si historicalMarkMotherNeuron está en el mapa entonces:
-	// 			{
-					
-	// 				int localNeuronPosition = historicalMark_To_localNeuron.at( historicalMarkMotherNeuron );
-	// 				if( localNeuronPosition == 0 && historicalMarkMotherNeuron != 0 )
-	// 				{
-	// 					std::cerr << "EROR:::::::::: " << historicalMarkMotherNeuron << "\t" << historicalMark_To_localNeuron.count( historicalMarkMotherNeuron ) << std::endl;
-	// 					testPrint();
-	// 					exit( EXIT_FAILURE );
-	// 				}
-
-	// 				if( rand()/(double)RAND_MAX > 0.5 )
-	// 				{ // Entonces cambiar el existente por el de la madre.
-	// 					Neuron * toDelete = children->neuron_vector.at( localNeuronPosition );
-	// 					children->neuron_vector.at( localNeuronPosition ) = mother->neuron_vector.at( i )->duplicate( );
-	// 					delete( toDelete );
-	// 				}
-	// 			}	
-	// 			else
-	// 			{
-	// 				children->addNeuron( mother->neuron_vector.at( i )->duplicate() );
-	// 			}
-	// 		}
-	// 	//==================================================================================
-
-
-	// 	// Se agregan todas las conexiones sinápticas que están sólo en la madre, y las conexiones sinápticas que están en ambos se tiene un 50% de probabilidades que adquiera el del padre o la madre.
-	// 	//==================================================================================
-	// 		for ( unsigned int i = 0; i < mother->synapticWeight_vector.size( ); ++i )
-	// 		{
-	// 			int innovationMother = mother->synapticWeight_vector.at( i )->getInnovation( );
-
-	// 			if( innovarion_to_localSynapticWeightVectorPosition.count( innovationMother ) )
-	// 			{
-	// 				int localInnovationPosition = innovarion_to_localSynapticWeightVectorPosition.at( innovationMother );
-
-	// 				if( rand()/(double)RAND_MAX > 0.5 )
-	// 				{ // Entonces cambiar el existente por el de la madre.
-	// 					SynapticWeight * toDelete;
-	// 					toDelete = children->synapticWeight_vector.at( localInnovationPosition );
-	// 					children->synapticWeight_vector.at( localInnovationPosition )= mother->synapticWeight_vector.at( i )->duplicate();
-	// 					delete( toDelete );
-	// 				}
-	// 			}
-	// 			else // Si el dato no está en el mapa de referencias entocnes es porque no existe en el padre y hay que agregarlo sin más
-	// 			{
-	// 				children->addSynapticWeight( mother->synapticWeight_vector.at( i )->duplicate( ) );
-	// 			}
-	// 		}
-	// 	//==================================================================================
-
-	// 	return children;
-	// }
-
-
 	/*
 		Las neuronas del hijo se agregaran en orden, esto quiere decir que primero se les agregarán las neuronas con marcas históricas de menor magnitud, similarmente con las conexiones sinápticas y sus innovaciones.
 	*/
@@ -459,15 +387,16 @@ namespace NEATSpikes
 		fitness = _fitness;
 	}
 
-	ANN * ANN::createOtherFromSeedOrganism()
+	ANN * ANN::createNewWithSameTopologieButDiferentValues()
 	{
-		 ANN* newAnn = new ANN( *this );
+		 ANN* newAnn = new ANN( *this ); // Se llama al constructor copia.
 		
+		// Cada neurona obtiene valores aleatorios
 		for (unsigned int i = 0; i < newAnn->neuron_vector.size(); ++i)
 		{
 			newAnn->neuron_vector.at( i )->changeValuesRandomly();	
 		}
-		
+		// Cada peso sinaptico obtiene valores aleatorios
 		for (unsigned int i = 0; i < newAnn->synapticWeight_vector.size(); ++i)
 		{
 			newAnn->synapticWeight_vector.at( i )->changeValuesRandomly();	
@@ -706,7 +635,7 @@ namespace NEATSpikes
 
 	void ANN::addSynapticWeight(int historicalNeuronIn, int historicalNeuronOut)
 	{
-		SynapticWeight * newSynapticWeight = prototypeSynapticWeight->createNew( historicalNeuronIn , historicalNeuronOut );
+		SynapticWeight * newSynapticWeight = prototypeSynapticWeight->createNew( prototypeSynapticWeight, historicalNeuronIn , historicalNeuronOut );
 		addSynapticWeight(newSynapticWeight);
 	}
 
@@ -869,7 +798,7 @@ namespace NEATSpikes
 		layer = generalInformation->getLayer( neuron_vector.at( localNeuronIn )->getLayer() , neuron_vector.at( localNeuronOut )->getLayer() );
 		// A estas alturas ya se sabe el valor de la neurona inicial input y la neurona inicial output. 
 		// Se debe obtener el valor del historical mark de esta neurona, también a qué capa (layer) que corresponde.
-		Neuron * newNeuron = prototypeNeuron->createNew( historicalMark, histoticalMarkNeuronIn, histoticalMarkNeuronOut, layer );
+		Neuron * newNeuron = prototypeNeuron->createNew(prototypeNeuron,  historicalMark, histoticalMarkNeuronIn, histoticalMarkNeuronOut, layer );
 		// Finalmente se agrega a la red neuronal.
 		addNeuron(newNeuron);
 	}
@@ -1018,7 +947,7 @@ namespace NEATSpikes
 		{
 			int position = neuron_vector.size();
 			outputsInNeuron_vector.push_back(position);
-			addInitialStructureNeuron( prototypeNeuron->createNew(position , -1, -1, LAYER_OUTPUT ) );
+			addInitialStructureNeuron( prototypeNeuron->createNew(prototypeNeuron, position , -1, -1, LAYER_OUTPUT ) );
 		}
 		
 		// SE AGREGAN LAS CONEXIONES

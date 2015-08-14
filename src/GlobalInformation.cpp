@@ -12,13 +12,10 @@ int GlobalInformation::getInnovation( int historicalMarkNeuronInput, int histori
 	{
 		return neuronsReferencesForCreateNewSynapticWeight.at(vec_1).at(vec_2);
 	}
-	else
-	{
-		int _innovation=innovation++;
-		neuronsReferencesForCreateNewSynapticWeight.at(vec_1).at(vec_2)=_innovation;
-		return _innovation;
-	}
-
+		
+	int _innovation=innovation++;
+	neuronsReferencesForCreateNewSynapticWeight.at(vec_1).at(vec_2) = _innovation;
+	return _innovation;
 }
 
 // Se puede optimizar fácil, por tiempo lo dejo para después. Mas que nada se puede optimizar cuando sí existe el layer.

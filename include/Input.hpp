@@ -45,7 +45,7 @@ namespace NEATSpikes
 			/**
 				\brief  Los inputs no pueden ser creados a través de este método. El uso de la función no está permitido.
 			*/
-			Neuron * createNew(int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer);
+			Neuron * createNew(Neuron * prototype, int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer);
 
 			int getHistoricalMark();
 

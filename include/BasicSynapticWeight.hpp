@@ -1,8 +1,6 @@
 #ifndef BASICSYNAPTICWEIGHT_HPP
 #define BASICSYNAPTICWEIGHT_HPP
-/*
-	Una conexión sináptica básica corresponde a simplemente una que simplemente su entrada la multiplica por el peso sináptico y la pasa a la salida.
-*/
+
 #include <cstdlib> // RAND_MAX, EXIT_FAILURE, srand, rand 
 #include <map> // Para usar map.
 #include <cstring> // strtok_r
@@ -21,8 +19,8 @@ namespace NEATSpikes{
 	// ==========================================================================================================================
 	// ============================================ Métodos ========================================================================
 	public:
-		BasicSynapticWeight(int histoticalMark_Neuron_in , int histoticalMark_Neuron_out);	
-		BasicSynapticWeight(int innovation, int histoticalMark_Neuron_in , int histoticalMark_Neuron_out);	
+		BasicSynapticWeight(SynapticWeight * prototype, int histoticalMark_Neuron_in , int histoticalMark_Neuron_out);	
+		BasicSynapticWeight(SynapticWeight * prototype, int innovation, int histoticalMark_Neuron_in , int histoticalMark_Neuron_out);	
 		/**
 			\brief Se obtienen todos los parámetros necesarios a partir del archivo de definiciones de usuarios y se inicializa el peso con un valor random.
 		*/
@@ -64,7 +62,7 @@ namespace NEATSpikes{
 		/**
 			\brief Se crea uno nuevo. Esto es necesario porque a priori desde la clase ANN no se sabe el tipo de conexión sináptica que se está usando.
 		*/
-		SynapticWeight * createNew(int histoticalMark_Neuron_in , int histoticalMark_Neuron_out);
+		SynapticWeight * createNew(SynapticWeight * prototype, int histoticalMark_Neuron_in , int histoticalMark_Neuron_out);
 		/**
 			\brief Se guardan las definiciones de usuario relativo a esta clase.
 		*/
@@ -113,6 +111,14 @@ namespace NEATSpikes{
 			\brief se ocambia el peso de forma aleatoria.
 		*/
 		void changeValuesRandomly();
+		/**
+			\brief Se guarda el valor de Id en disco duro
+		*/
+		void saveId(std::string pathToSave);
+		/**
+			\brief Se carga de disco duro el valor de Id.
+		*/
+		void loadId(std::string PathWhereIsSaved);
 	private:
 		/**
 			\brief Dado que no es 100% compatible llamar a un constructor desde otro constructor se crea el método init() el cual inicializa el peso sináptico.
@@ -122,6 +128,10 @@ namespace NEATSpikes{
 			\brief Se obtienen los datos desde el archivo con definiciones y se guarda en las variables estáticas correspondietes. 
 		*/
 		void SetParametersFromUserDefinitionsPath(std::string pathUserDefinitionsAboutBasicSynapticWeight);
+		/**
+			\brief Se cargan los parametros de usuario a través de otra conexion sinaptica prototupo.
+		*/
+		void loadParametersFromPrototype(SynapticWeight * prototype);
 	// =========================================================================================================================
 	// ==========================================   Variables ========================================================================
 	private:
@@ -133,15 +143,16 @@ namespace NEATSpikes{
 		bool enable;
 		int historicalMarkOfNeuronIn;
 		int historicalMarkOfNeuronOut;
-		static GlobalInformation * information; 
+		GlobalInformation * information; 
 
 		// Recordar que, por modelo de programación, la probabilidad de que una conexión sináptica mute es parte de la estructura ANN (redes neuronales) por lo tanto aquí sólo se ven datos respecto a cómo efectuar esta mutación, no a la probabilidad misma de que mute. 
-		static int id;
-		static double maxWeightValue; 
-		static double maximumWeightVariationByMutation; //Notar: que el valor debe ser descrito en el intervalo [0  1]. Existirá una máxima variación del peso sináptico permitido por mutación, o sea: peso nuevo = peso antiguo*(1-maximumWeightVariationByMutation) + random/RAND_MAX * maximumWeightVariationByMutation.  
-		static double probabilityOfWeightRandomMutation; // Es la probabilidad de que se tenga un valor de peso sináptico completamente random.  Esto se muy útil porque si no se tiene este tipo de mecanismos entonces es más diifícil que el valor del bias logre llegar a los extremos dado que la ponderancia tiende a que los datos estén en el centro. 
-		static double probabilityOfEnableADisabledConnection;
-		static double ConstantDistanceOfSynapticWeightValue;
+		int * id;
+		double * maxWeightValue; //Maximo valor que puede tomar el peso sinamptico
+		double * minWeightValue; //Minimo valor que puede tomar el peso sinamptico
+		double * maximumWeightVariationByMutation; //Notar: que el valor debe ser descrito en el intervalo [0  1]. Existirá una máxima variación del peso sináptico permitido por mutación, o sea: peso nuevo = peso antiguo*(1-maximumWeightVariationByMutation) + random/RAND_MAX * maximumWeightVariationByMutation.  
+		double * probabilityOfWeightRandomMutation; // Es la probabilidad de que se tenga un valor de peso sináptico completamente random.  Esto se muy útil porque si no se tiene este tipo de mecanismos entonces es más diifícil que el valor del bias logre llegar a los extremos dado que la ponderancia tiende a que los datos estén en el centro. 
+		double * probabilityOfEnableADisabledConnection;
+		double * ConstantDistanceOfSynapticWeightValue;
 	};
 }
 #endif

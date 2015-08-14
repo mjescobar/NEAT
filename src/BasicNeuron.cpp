@@ -1,28 +1,30 @@
 #include "BasicNeuron.hpp"
+#include "GlobalInformation.hpp"
 
 namespace NEATSpikes
 {	
 
-	BasicNeuron::BasicNeuron(int _historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int _layer)
+	BasicNeuron::BasicNeuron(Neuron * prototype, int _historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int _layer)
 	{
+		loadParametersFromPrototype( prototype );
+		init();
 		layer = _layer;
 		historicalMark = _historicalMark;
 		historicalMarkNeuronInicialOut = historicalMark_inicial_output;
 		historicalMarkNeuronInicialIn = historicalMark_inicial_input;
-		init();
+		globalInformation->getHistoricalMark(historicalMark_inicial_input, historicalMark_inicial_output);
 	}
 	// Este constructor debe ser llamado una sola vez en todo el tiempo
-	BasicNeuron::BasicNeuron( std::string pathUserDefinitionsAboutBasicNeuron )
+	BasicNeuron::BasicNeuron(GlobalInformation * information, std::string pathUserDefinitionsAboutBasicNeuron )
 	{
+		globalInformation = information;
 		id = new int(0);
-		SetParametersFromUserDefinitionsPath( pathUserDefinitionsAboutBasicNeuron );
 		init();
-		(*id)++;
+		SetParametersFromUserDefinitionsPath( pathUserDefinitionsAboutBasicNeuron );
 	}
 	
 	BasicNeuron::BasicNeuron()
 	{
-		init();
 	}
 
 	BasicNeuron::~BasicNeuron()
@@ -232,9 +234,9 @@ namespace NEATSpikes
 	}
 
 
-	Neuron * BasicNeuron::createNew(int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer)
+	Neuron * BasicNeuron::createNew(Neuron * prototype, int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer)
 	{
-		BasicNeuron * BN = new BasicNeuron(historicalMark, historicalMark_inicial_input, historicalMark_inicial_output, layer);
+		BasicNeuron * BN = new BasicNeuron(prototype, historicalMark, historicalMark_inicial_input, historicalMark_inicial_output, layer);
 		return BN;
 	}
 	
@@ -278,28 +280,16 @@ namespace NEATSpikes
 	{
 		// Sencillamente se crea una nueva neurona y se le dan los valores de ésta.
 		BasicNeuron * BN = new BasicNeuron;
+		BN->loadParametersFromPrototype(this);
 		BN->lastOutputVoltage = lastOutputVoltage;
-		BN->id = id;
 		BN->identificator = ++*id;
 		BN->layer = layer;
 		BN->historicalMark = historicalMark;
 		BN->historicalMarkNeuronInicialIn = historicalMarkNeuronInicialIn;
 		BN->historicalMarkNeuronInicialOut = historicalMarkNeuronInicialOut;
-		BN->useBias = useBias;
-		BN->maxBias = maxBias;
-		BN->minBias = minBias;
-		BN->probabilityOfBiasRandomMutation = probabilityOfBiasRandomMutation;
-		BN->maximumBiasVariationByMutation = maximumBiasVariationByMutation;
-		BN->ConstantDistanceOfBias = ConstantDistanceOfBias;
-		BN->PredefinedBias = PredefinedBias;
-		BN->useSigmoidConstantMutation = useSigmoidConstantMutation;
-		BN->maxSigmoidConstant = maxSigmoidConstant;
-		BN->minSigmoidConstant = minSigmoidConstant;
-		BN->probabilityOfSigmoidConstantRandomMutation  = probabilityOfSigmoidConstantRandomMutation;
-		BN->maximumSigmoidConstantVariationByMutation = maximumSigmoidConstantVariationByMutation;
-		BN->ConstantDistanceOfSigmoidConstant = ConstantDistanceOfSigmoidConstant;
-		BN->PredefinedSigmoidConstat = PredefinedSigmoidConstat;
 		BN->incomingConections.clear();
+		BN->globalInformation = globalInformation;
+
 		for (int i = 0; i < (int)incomingConections.size(); ++i)
 		{
 			BN->incomingConections.push_back( incomingConections.at( i ) );
@@ -349,7 +339,7 @@ namespace NEATSpikes
 		if(*useBias)
 		{
 			max = *maxBias;
-			min = -*minBias;
+			min = *minBias;
 			bias = (max - min)*(rand()/(double)RAND_MAX) + min;
 		}
 		else
@@ -371,7 +361,6 @@ namespace NEATSpikes
 
 	void BasicNeuron::loadId(std::string PathWhereIsSaved)
 	{
-	
 		FILE * archive; // El archivo es cargado en esta variable
 		//Las siguientes variables son usadas para leer las lineas del archivo
 		char * line = NULL;
@@ -456,9 +445,9 @@ namespace NEATSpikes
 
 		if(*useBias)
 		{
-			if(*maxBias < *minBias)
+			if(*maxBias <= *minBias)
 			{
-				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error Max Bias is less than Min Bias" << std::endl;
+				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error maxBias <= minBias" << std::endl;
 				exit(EXIT_FAILURE);
 			}
 			if(*maximumBiasVariationByMutation > 1 || *maximumBiasVariationByMutation < 0)
@@ -494,13 +483,37 @@ namespace NEATSpikes
 
 	void BasicNeuron::init()
 	{
-		int max = 1;
-		int min = 0;
-		sigmoidConstant = (max - min)*(rand()/(double)RAND_MAX) + min;
-		bias = 0;
 		lastOutputVoltage=0.0;
+		identificator = ++(*id);
 	}
 
-
+	void BasicNeuron::loadParametersFromPrototype(Neuron * prototype)
+	{
+		BasicNeuron * BN = NULL;
+		BN = dynamic_cast < BasicNeuron * > ( prototype );
+		if(BN != NULL)
+		{
+			id = BN->id;
+			useBias = BN->useBias;
+			maxBias = BN->maxBias;
+			minBias = BN->minBias;
+			probabilityOfBiasRandomMutation = BN->probabilityOfBiasRandomMutation;
+			maximumBiasVariationByMutation = BN->maximumBiasVariationByMutation;
+			ConstantDistanceOfBias = BN->ConstantDistanceOfBias;
+			PredefinedBias = BN->PredefinedBias;
+			useSigmoidConstantMutation = BN->useSigmoidConstantMutation;
+			maxSigmoidConstant = BN->maxSigmoidConstant;
+			minSigmoidConstant = BN->minSigmoidConstant;
+			probabilityOfSigmoidConstantRandomMutation  = BN->probabilityOfSigmoidConstantRandomMutation;
+			maximumSigmoidConstantVariationByMutation = BN->maximumSigmoidConstantVariationByMutation;
+			ConstantDistanceOfSigmoidConstant = BN->ConstantDistanceOfSigmoidConstant;
+			PredefinedSigmoidConstat = BN->PredefinedSigmoidConstat;
+		}
+		else
+		{
+			std::cerr << "ERROR::BasicNeuron::loadParametersFromPrototype::Input must to be a pointer to BasicNeuron wrapped like pointer of Neuron" << std::endl;
+			exit(EXIT_FAILURE);
+		}
+	}
 	
 }

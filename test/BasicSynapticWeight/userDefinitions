@@ -1,4 +1,5 @@
 Max_Weight_Value 2.0
+Min_Weight_Value -2.0
 Maximum_Weight_Variation_By_Mutation 0.7
 Probability_Of_Weight_Random_Mutation 0.2
 probabilityOfEnableADisabledConnection 0.1

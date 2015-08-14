@@ -36,7 +36,7 @@ namespace NEATSpikes{
 		/**
 			\brief Se crea una nueva neurona.  Esto es necesario porque a priori desde la clase ANN no se sabe el tipo de neurona que se está usando. 
 		*/
-		virtual Neuron * createNew(int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer)=0;
+		virtual Neuron * createNew(Neuron * prototype, int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer)=0;
 		/**
 			\brief Devuelve el valor de marca histórica asociada a la neurona.
 		*/

@@ -32,7 +32,7 @@ namespace NEATSpikes{
 		/**
 			\brief Se crea uno con valores random. Esto es necesario porque a priori desde la clase ANN no se sabe el tipo de conexión sináptica que se está usando.
 		*/
-		virtual SynapticWeight * createNew(int histoticalMark_Neuron_in , int histoticalMark_Neuron_out )=0;
+		virtual SynapticWeight * createNew(SynapticWeight * prototype, int histoticalMark_Neuron_in , int histoticalMark_Neuron_out )=0;
 
 		virtual void disable()=0;
 		virtual int getInnovation()=0;

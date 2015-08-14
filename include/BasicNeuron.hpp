@@ -11,6 +11,7 @@
 #include <stdio.h> // getline
 #include <fstream> // ofstream
 #include <cmath> // exp
+#include <GlobalInformation.hpp>
 
 namespace NEATSpikes{
 	class BasicNeuron : public Neuron 
@@ -22,11 +23,11 @@ namespace NEATSpikes{
 			/**
 				\brief Se crea una nueva neurona la cual tendrá seteados los valores historicalMark, historicalMark_inicial_input, historicalMark_inicial_output, layer; además tendrá valores aleatorios de bias y constante de la sigmoide.
 			*/
-			BasicNeuron(int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer);
+			BasicNeuron(Neuron * prototype, int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer);
 			/**
 				\brief Se crea una neurona nueva y a además se cargan los valores de las definiciones de usuario.
 			*/
-			BasicNeuron(std::string pathUserDefinitionsAboutBasicNeuron);
+			BasicNeuron(GlobalInformation * information, std::string pathUserDefinitionsAboutBasicNeuron);
 			/**
 				\brief El constructor básico simplemente inicializa los valores de forma random.
 			*/
@@ -85,7 +86,7 @@ namespace NEATSpikes{
 			/**
 				\brief Se crea uno nuevo. Esto es necesario porque a priori desde la clase ANN no se sabe el tipo neurona es la que se está usando.
 			*/
-			Neuron * createNew(int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer);
+			Neuron * createNew(Neuron * prototype, int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer);
 			/**
 				\brief  Se obtiene la neurona que inicialmente fue la entrada a esta neurona.
 				\return La marca histórica de la neurona que inicialmente fue entrada.
@@ -145,10 +146,15 @@ namespace NEATSpikes{
 				\brief Se inicializa una neurona con sus variables de forma random.
 			*/
 			void init();
+			/**
+				\brief Se cargan los parametros de usuario desde una neurona prototipo.
+			*/
+			void loadParametersFromPrototype(Neuron * prototype);
 		// ======================================================================================================
 		// ===========================================   Variables ====================================================
 		private:
 			int * id; // Variable usada para que toda neurona tenga un identificator diferente. 
+			GlobalInformation * globalInformation;
 			double lastOutputVoltage; // El voljade de entrada de la iteracion anterior.
 			int identificator; // Variable que se usa para guardar y cargar una neurona a o desde el disco duro segun el caso en cuestion.
 			int layer; // La capa en la que está.

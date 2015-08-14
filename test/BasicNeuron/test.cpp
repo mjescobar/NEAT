@@ -9,10 +9,10 @@ using namespace NEATSpikes;
 int main()
 {
 	srand( time( 0 ) ); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
-
+	GlobalInformation * information = new GlobalInformation();
 	cout << "Basic Neuron Test initialized" << endl;
 	// Lo primero que se prueba es la carga correcta de los parámetros de usuario.
-	BasicNeuron * BN = new BasicNeuron("./BasicNeuronUserDefinitions");
+	BasicNeuron * BN = new BasicNeuron(information, "./BasicNeuronUserDefinitions");
 	cout << "First Neuron created by constructor method:" << endl;
 	BN->printState(); // Se imprime el estado buscando ver que están correctamente inicializadas todas las variables importantes.
 
@@ -39,14 +39,14 @@ int main()
 
 
 	cout << "Loading UserDef" << endl;
-	BasicNeuron * BNPrototype = new BasicNeuron("./save/userDefinitions");
+	BasicNeuron * BNPrototype = new BasicNeuron(information, "./save/userDefinitions");
 	cout << "Loading Id" << endl;
 	BNPrototype->loadId("./save/BN_id");	
 
 
 	cout << "Loading data" << endl;
 	BasicNeuron * BN2 = dynamic_cast< BasicNeuron * > ( BNPrototype->duplicate());
-	BN2->load("./save/BN0");
+	BN2->load("./save/BN1");
 
 	cout << "Basic neuron loaded" << endl;
 	BN2->printState();
