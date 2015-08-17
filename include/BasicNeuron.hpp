@@ -23,7 +23,7 @@ namespace NEATSpikes{
 			/**
 				\brief Se crea una nueva neurona la cual tendrá seteados los valores historicalMark, historicalMark_inicial_input, historicalMark_inicial_output, layer; además tendrá valores aleatorios de bias y constante de la sigmoide.
 			*/
-			BasicNeuron(Neuron * prototype, int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer);
+			BasicNeuron(Neuron * prototype, int historicalMark_inicial_input, int historicalMark_inicial_output);
 			/**
 				\brief Se crea una neurona nueva y a además se cargan los valores de las definiciones de usuario.
 			*/
@@ -86,7 +86,15 @@ namespace NEATSpikes{
 			/**
 				\brief Se crea uno nuevo. Esto es necesario porque a priori desde la clase ANN no se sabe el tipo neurona es la que se está usando.
 			*/
-			Neuron * createNew(Neuron * prototype, int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer);
+			Neuron * createNew(Neuron * prototype, int historicalMark_inicial_input, int historicalMark_inicial_output);
+			/**
+				\brief Se crea una nueva neurona de salida.
+			*/
+			Neuron * createNewOutput(Neuron * prototype);
+			/**
+				\brief Se crea una nueva neurona de entrada.
+			*/
+			Neuron * createNewInput(Neuron * prototype);
 			/**
 				\brief  Se obtiene la neurona que inicialmente fue la entrada a esta neurona.
 				\return La marca histórica de la neurona que inicialmente fue entrada.

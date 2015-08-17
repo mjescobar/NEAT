@@ -17,12 +17,15 @@
 #include <tuple>
 #include <cstdlib> // RAND_MAX, EXIT_FAILURE, srand, rand 
 
+#define INPUT_INICIAL_IN_OUT -2
+#define OUTPUT_INICIAL_IN_OUT -3
 
 namespace NEATSpikes{
 	class GlobalInformation{
 	public:
 		int getInnovation( int historicalMarkNeuronInput, int historicalMarkNeuronoutput );
-		int getLayer( int layer_input_neuron, int layer_output_neuron);
+		int getLayer( int layer_input_neuron, int layer_output_neuron );
+		int getLayer( int historicalMark );
 		int getHistoricalMark( int historicalMarkNeuronInput, int historicalMarkNeuronoutput);
 		void initialize(int amountOfInputs,int amountOfOutputs );
 		void printLayers();
@@ -30,6 +33,11 @@ namespace NEATSpikes{
 		int layerToPlace(int layer);
 		int getAmountOfNeurons();
 		int getAmountOfSynapticWeights();
+		int getNeuronInputHistoricalMark();
+		int getNeuronInputLayer();
+		int getNeuronOutputHistoricalMark();
+		int getNeuronOutputLayer();
+
 	private:
 			//ENCONTRAR UN MEJOR NOMBRE!!!!
 		/*
@@ -50,6 +58,7 @@ namespace NEATSpikes{
 		std::vector < std::vector <int> > neuronsReferencesForCreateNewSynapticWeight;
 		std::vector < std::vector <int> > neuronsReferencesForCreateNewNeurons;
 		std::vector < std::vector <int> > LayersWithReferences;
+		std::vector < int > hytoricalMarkToLayer; // En este vector almacena la conversion desde historical mark a layer
 	};
 }
 

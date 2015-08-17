@@ -8,6 +8,9 @@
 #include <fstream> // ofstream
 #include <map>
 #include <cstring> // strtok_r
+#include "GlobalInformation.hpp"
+
+
 
 namespace NEATSpikes
 {
@@ -17,7 +20,7 @@ namespace NEATSpikes
 			Input();
 			~Input();
 			Input(const Input & in);
-			Input(int _historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int _layer);
+			Input(GlobalInformation * globalInformation);
 			/**
 				\brief Bajo cierta probabilidad pueden cambiar características de esta neurona.
 			*/
@@ -45,7 +48,7 @@ namespace NEATSpikes
 			/**
 				\brief  Los inputs no pueden ser creados a través de este método. El uso de la función no está permitido.
 			*/
-			Neuron * createNew(Neuron * prototype, int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer);
+			Neuron * createNewInput(Neuron * prototype);
 
 			int getHistoricalMark();
 
@@ -71,7 +74,11 @@ namespace NEATSpikes
 
 			void changeValuesRandomly() { };
 
+
+		GlobalInformation * globalInformation;
+
 		private:
+			
 			double inputVoltage;
 			double lastOutput;
 			int identificator;

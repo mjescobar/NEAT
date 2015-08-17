@@ -4,15 +4,15 @@
 namespace NEATSpikes
 {	
 
-	BasicNeuron::BasicNeuron(Neuron * prototype, int _historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int _layer)
+	BasicNeuron::BasicNeuron(Neuron * prototype, int historicalMark_inicial_input, int historicalMark_inicial_output)
 	{
 		loadParametersFromPrototype( prototype );
 		init();
-		layer = _layer;
-		historicalMark = _historicalMark;
+		identificator = ++*id;
 		historicalMarkNeuronInicialOut = historicalMark_inicial_output;
 		historicalMarkNeuronInicialIn = historicalMark_inicial_input;
-		globalInformation->getHistoricalMark(historicalMark_inicial_input, historicalMark_inicial_output);
+		historicalMark = globalInformation->getHistoricalMark(historicalMark_inicial_input, historicalMark_inicial_output);
+		layer = globalInformation->getLayer(historicalMark);
 	}
 	// Este constructor debe ser llamado una sola vez en todo el tiempo
 	BasicNeuron::BasicNeuron(GlobalInformation * information, std::string pathUserDefinitionsAboutBasicNeuron )
@@ -234,9 +234,9 @@ namespace NEATSpikes
 	}
 
 
-	Neuron * BasicNeuron::createNew(Neuron * prototype, int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer)
+	Neuron * BasicNeuron::createNew(Neuron * prototype, int historicalMark_inicial_input, int historicalMark_inicial_output)
 	{
-		BasicNeuron * BN = new BasicNeuron(prototype, historicalMark, historicalMark_inicial_input, historicalMark_inicial_output, layer);
+		BasicNeuron * BN = new BasicNeuron(prototype, historicalMark_inicial_input, historicalMark_inicial_output);
 		return BN;
 	}
 	
@@ -508,6 +508,7 @@ namespace NEATSpikes
 			maximumSigmoidConstantVariationByMutation = BN->maximumSigmoidConstantVariationByMutation;
 			ConstantDistanceOfSigmoidConstant = BN->ConstantDistanceOfSigmoidConstant;
 			PredefinedSigmoidConstat = BN->PredefinedSigmoidConstat;
+			globalInformation = BN->globalInformation;
 		}
 		else
 		{
@@ -515,5 +516,30 @@ namespace NEATSpikes
 			exit(EXIT_FAILURE);
 		}
 	}
+	Neuron * BasicNeuron::createNewOutput(Neuron * prototype)
+	{
+		BasicNeuron * BN =  new BasicNeuron;
+		BN->loadParametersFromPrototype( prototype );
+		BN->init();
+		BN->historicalMarkNeuronInicialIn = OUTPUT_INICIAL_IN_OUT;
+		BN->historicalMarkNeuronInicialOut = OUTPUT_INICIAL_IN_OUT;
+		BN->historicalMark = (BN->globalInformation)->getNeuronOutputHistoricalMark();
+		BN->layer = (BN->globalInformation)->getNeuronOutputLayer();
+		BN->identificator = ++*id;
+		return BN;
+	}
 	
+	Neuron * BasicNeuron::createNewInput(Neuron * prototype)
+	{
+		BasicNeuron * BN =  new BasicNeuron;
+		BN->loadParametersFromPrototype( prototype );
+		BN->init();
+		BN->historicalMarkNeuronInicialIn = INPUT_INICIAL_IN_OUT;
+		BN->historicalMarkNeuronInicialOut = INPUT_INICIAL_IN_OUT;
+		BN->historicalMark = (BN->globalInformation)->getNeuronInputHistoricalMark();
+		BN->layer = (BN->globalInformation)->getNeuronInputLayer();
+		BN->identificator = ++*id;
+		return BN;
+	}
+
 }

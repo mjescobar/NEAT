@@ -5,46 +5,51 @@ OBJS = ./objects/Life.o ./objects/Niche.o ./objects/ANN.o ./objects/BasicSynapti
 
 .PHONY: all clean install git
 
-all: Life.o Niche.o ANN.o BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o
-	@echo all NEAT Compiled 
+all: Life.o Niche.o ANN.o BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o MutationControl.o
+	@echo All NEAT Compiled 
 
 
 Life.o: Life.cpp Niche.cpp Niche.o GlobalInformation.o
+	@echo Compiling Life 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Life.o
-	@echo Compiling Life 
 
 ANN.o: ANN.cpp BasicSynapticWeight.cpp BasicNeuron.cpp Input.cpp GlobalInformation.cpp BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o 
-	@mkdir -p objects
 	@echo Compiling ANN 
+	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/ANN.o
 	
 BasicSynapticWeight.o: BasicSynapticWeight.cpp BasicSynapticWeight.hpp GlobalInformation.cpp GlobalInformation.o 
+	@echo Compiling BasicSynapticWeight 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicSynapticWeight.o
-	@echo Compiling BasicSynapticWeight 
 
 BasicNeuron.o: BasicNeuron.cpp GlobalInformation.o
+	@echo Compiling BasicNeuron 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicNeuron.o
-	@echo Compiling BasicNeuron 
 
 Input.o: Input.cpp GlobalInformation.o
+	@echo Compiling Input 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Input.o
-	@echo Compiling Input 
 
 Niche.o: Niche.cpp ANN.cpp
+	@echo Compiling Niche 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Niche.o
-	@echo Compiling Niche 
 
    
 GlobalInformation.o: GlobalInformation.cpp GlobalInformation.hpp
+	@echo Compiling GlobalInformation 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/GlobalInformation.o
-	@echo Compiling GlobalInformation 
 
+MutationControl.o: MutationControl.cpp MutationControl.hpp GlobalInformation.o BasicNeuron.o
+	@echo Compiling MutationControl 
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/MutationControl.o
+	
 
 clean:
 	@rm -Rf objects

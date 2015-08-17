@@ -7,79 +7,28 @@ namespace NEATSpikes
 
 	ANN::ANN()
 	{
-	
+		identificator = id++;
 	}
 
 	// Este constructor es creado para nuevos ANN
+	// Se debe llamar una sola vez.
 	ANN::ANN(GlobalInformation * information)
 	{
-		generalInformation = information; // Así siempre se tiene una copia de la información de todas las redes neuronales.
+		globalInformation = information; // Así siempre se tiene una copia de la información de todas las redes neuronales.
 		identificator = id++;
-		amountOfPosiblyNeuronMutation=0;
-		amountOfPosiblySynapticWeightMutation=0;
+/*		amountOfPosiblyNeuronMutation=0;
+		amountOfPosiblySynapticWeightMutation=0;*/
 	}
-
-	// Constructor copia.
-	// Aquí simplemente se copia toda la información de ANN. No hay ningún algoritmo que entender.
-	ANN::ANN(const ANN & ann)
-	{
-
-		for (int i = 0; i < (int)ann.neuron_vector.size(); ++i)
-		{
-			neuron_vector.push_back( ann.neuron_vector.at(i)->duplicate() );
-		}
-
-		for (int i = 0; i < (int)ann.synapticWeight_vector.size(); ++i)
-		{
-			synapticWeight_vector.push_back( ann.synapticWeight_vector.at(i)->duplicate() );
-		}
-
-		fitness=ann.fitness;
-
-		generalInformation = ann.generalInformation;
-		inputsInNeuron_vector = ann.inputsInNeuron_vector;
-		outputsInNeuron_vector = ann.outputsInNeuron_vector;
-		
-		identificator = id++;
-		amountOfPosiblyNeuronMutation = ann.amountOfPosiblyNeuronMutation;
-		amountOfPosiblySynapticWeightMutation = ann.amountOfPosiblySynapticWeightMutation;
-		amountOfNeurons = ann.amountOfNeurons;
-
-
-		innovarion_to_localSynapticWeightVectorPosition.insert(ann.innovarion_to_localSynapticWeightVectorPosition.begin(), ann.innovarion_to_localSynapticWeightVectorPosition.end());
-		historicalMark_To_localNeuron.insert(ann.historicalMark_To_localNeuron.begin(), ann.historicalMark_To_localNeuron.end());
-
-		neuronsReferencesForCreateNewNeurons = ann.neuronsReferencesForCreateNewNeurons;
-		neuronsReferencesForCreateNewSynapticWeight = ann.neuronsReferencesForCreateNewSynapticWeight;
-
-		for (unsigned int i = 0; i < ann.availableNumberOfNeuronMutationsInRelationToNeuron.size(); ++i)
-		{
-			availableNumberOfNeuronMutationsInRelationToNeuron.push_back(ann.availableNumberOfNeuronMutationsInRelationToNeuron.at(i));
-		}
-		
-		for (unsigned int i = 0; i < ann.availableNumberOfSynaptinWeightMutationsInRelationToNeuron.size(); ++i)
-		{
-			availableNumberOfSynaptinWeightMutationsInRelationToNeuron.push_back(ann.availableNumberOfSynaptinWeightMutationsInRelationToNeuron.at(i));
-		}
-		
-		for (unsigned int i = 0; i < ann.neuronsAtLayer.size(); ++i)
-		{
-			neuronsAtLayer.push_back(ann.neuronsAtLayer.at(i));
-		} 
-	}
-
-
-	/**
-		Esto debe crearse  una sola vez en el experimento en si.
-	*/
 	ANN::ANN(Neuron * neuron, SynapticWeight * synapticWeight, std::string path_ANN_definitions, GlobalInformation * information)
 	{
 		prototypeNeuron = neuron;
 		prototypeSynapticWeight = synapticWeight;
-		generalInformation = information; // Así siempre se tiene una copia de la información de todas las redes neuronales.
+		inputPrororype = new Input(information);
+		outputPrototype = neuron;
+		globalInformation = information; // Así siempre se tiene una copia de la información de todas las redes neuronales.
 		SetParametersFromUserDefinitionsPath( path_ANN_definitions ); // Acá se determinan los valores de las definiciones de usurio.
 		identificator = id++;
-		createInitialANN( );
+		createInitialANN();
 	}
 
 	ANN::~ANN()
@@ -105,6 +54,60 @@ namespace NEATSpikes
 		outputsInNeuron_vector.clear();
 	}
 
+	// Constructor copia.
+	// Aquí simplemente se copia toda la información de ANN. No hay ningún algoritmo que entender.
+	ANN::ANN(ANN * ann)
+	{
+		//Se le da un identificador
+		identificator = id++;
+		//Se cargan todos los parametros de usuario y el puntero de globalInformation.
+		loadParametersFromPrototype(ann);
+
+		// Se crea una nueva red neuronal la cual poseerá absolutamente las mismas neuronas pero en su propio espacio de memoria por lo que se llamara a el metodo duplicate.
+		for (int i = 0; i < (int)ann->neuron_vector.size(); ++i)
+		{
+			neuron_vector.push_back( ann->neuron_vector.at(i)->duplicate() );
+		}
+		// Se crea una nueva red neuronal la cual poseerá absolutamente las mismas conecciones sinapticas pero en su propio espacio de memoria por lo que se llamara a el metodo duplicate.
+		for (int i = 0; i < (int)ann->synapticWeight_vector.size(); ++i)
+		{
+			synapticWeight_vector.push_back( ann->synapticWeight_vector.at(i)->duplicate() );
+		}
+		//Ahora todos los valores característicos de la red neuronal son copiados
+		fitness = ann->fitness;
+		inputsInNeuron_vector = ann->inputsInNeuron_vector;
+		outputsInNeuron_vector = ann->outputsInNeuron_vector;
+		//amountOfPosiblyNeuronMutation = ann->amountOfPosiblyNeuronMutation;
+		//amountOfPosiblySynapticWeightMutation = ann->amountOfPosiblySynapticWeightMutation;
+		amountOfNeurons = ann->amountOfNeurons;
+		//innovarion_to_localSynapticWeightVectorPosition.insert(ann->innovarion_to_localSynapticWeightVectorPosition.begin(), ann->innovarion_to_localSynapticWeightVectorPosition.end());
+		//historicalMark_To_localNeuron.insert(ann->historicalMark_To_localNeuron.begin(), ann->historicalMark_To_localNeuron.end());
+
+		//neuronsReferencesForCreateNewNeurons = ann->neuronsReferencesForCreateNewNeurons;
+		//neuronsReferencesForCreateNewSynapticWeight = ann->neuronsReferencesForCreateNewSynapticWeight;
+
+		/*for (unsigned int i = 0; i < ann->availableNumberOfNeuronMutationsInRelationToNeuron.size(); ++i)
+		{
+			availableNumberOfNeuronMutationsInRelationToNeuron.push_back(ann->availableNumberOfNeuronMutationsInRelationToNeuron.at(i));
+		}
+		
+		for (unsigned int i = 0; i < ann->availableNumberOfSynaptinWeightMutationsInRelationToNeuron.size(); ++i)
+		{
+			availableNumberOfSynaptinWeightMutationsInRelationToNeuron.push_back(ann->availableNumberOfSynaptinWeightMutationsInRelationToNeuron.at(i));
+		}*/
+		
+		for (unsigned int i = 0; i < ann->neuronsAtLayer.size(); ++i)
+		{
+			neuronsAtLayer.push_back(ann->neuronsAtLayer.at(i));
+		} 
+	}
+
+
+	/**
+		Esto debe crearse  una sola vez en el experimento en si.
+	*/
+	
+
 	void ANN::printState()
 	{ 
 		// Al imprimir el estado de un organismo, por completitud, se imprime el estado de todas las neuronas y todas las conexiones sinápticas de forma ordenada.
@@ -113,7 +116,7 @@ namespace NEATSpikes
 		//============================================================================
 			std::cout << "ANN\t" << "identificator: " << identificator << "\aamountOfNeurons: " << neuron_vector.size()  << std::endl; 
 			std::cout << "Layers" << std::endl;
-			generalInformation->printLayers();
+			globalInformation->printLayers();
 		//=============================================================================
 
 		// Segundo se imprimen todas las neuronas que son parte de este organismo.
@@ -239,7 +242,7 @@ namespace NEATSpikes
 	{
 		std::cerr << "crossover entra" << std::endl;
 		// Lo primero es crear un hijo vacío. 
-		ANN * children = new ANN( father->generalInformation );
+		ANN * children = new ANN( father->globalInformation );
 		// Se agregan todas las neuronas iniciales.
 		//==================================================
 			// INPUTS
@@ -268,7 +271,7 @@ namespace NEATSpikes
 		// Se agergan todas las neuronas restantes que se encuentren en alguno de los progenitores, si se enceuntra en ambos entonces se hereda cualquiera con 50% de probabilidades.
 		//==================================================
 			//Hacerlo de forma ordenada teóricamente no debería atraer problemas porque se suponque que una nurona de historical mark más alto sólo puede conectar dos neuronas de historical mark mas bajo que se suponque que ya fueron creadas.
-			for (int i = *father->inputsAmount + *father->outputsAmount; i < children->generalInformation->getAmountOfNeurons() +1 ; ++i)
+			for (int i = *father->inputsAmount + *father->outputsAmount; i < children->globalInformation->getAmountOfNeurons() +1 ; ++i)
 			{
 				int fatherLocalNeuron = father->historicalMark_To_localNeuron[ i ];
 				int motherLocalNeuron = mother->historicalMark_To_localNeuron[ i ];
@@ -313,7 +316,7 @@ namespace NEATSpikes
 				children->addSynapticWeight( ( mother->synapticWeight_vector.at( 0 ) )->duplicate() );
 			}
 
-			for (int i = 1; i < children->generalInformation->getAmountOfSynapticWeights() +1 ; ++i)
+			for (int i = 1; i < children->globalInformation->getAmountOfSynapticWeights() +1 ; ++i)
 			{
 				int fatherLocalSynapses = father->innovarion_to_localSynapticWeightVectorPosition[ i ];
 				int motherLocalSynapses = mother->innovarion_to_localSynapticWeightVectorPosition[ i ];
@@ -530,7 +533,7 @@ namespace NEATSpikes
 		// Ahora se deben crear 2 conexiones sinápticas, la primera desde la neurona que inicialmente es la input hacia la neurona nueva y otro desde la neurona haica la neurona que es inicialmente la salida.
 		// Ahora sí se agregan las conexiones sinápticas.
 		std::cerr << "OPCIÓN 1" << "  neuronReference_1: " << neuronReference_1 << "\tneuronReference_2: "<< neuronReference_2 << std::endl;
-		generalInformation->printLayers();
+		globalInformation->printLayers();
 		std::cerr << neuron_vector.at(localNeuronIn)->getLayer() << " , " << neuron_vector.at(localNeuronOut)->getLayer() << std::endl;
 
 		addSynapticWeight( histoticalMarkNeuronIn , historicalMark );
@@ -598,7 +601,7 @@ namespace NEATSpikes
 			{
 				std::cerr << "ANN::addSynapticWeight::SynapticWeight already exist    " << neuronsReferencesForCreateNewSynapticWeight.at( NeuronReference1 ).at( NeuronReference2 ) << std::endl;
 				cerr << "NeuronReference1: " << NeuronReference1 << "\tNeuronReference2: " << NeuronReference2 << std::endl;
-				generalInformation->printLayers();
+				globalInformation->printLayers();
 		std::cerr << neuron_vector.at(localNeuronIn)->getLayer() << " , " << neuron_vector.at(localNeuronOut)->getLayer() << std::endl;
 				testPrint();
 				exit( EXIT_FAILURE );
@@ -725,7 +728,7 @@ namespace NEATSpikes
 					}
 
 					// En caso de que sean el mismo layer se eliminan todas las posibles conexiones/neuronas entre estas dos neuronas (sea de dirección ida o vuelta).
-					else if( generalInformation->layerToPlace( layer ) == generalInformation->layerToPlace(layerOtherNeuron) )
+					else if( globalInformation->layerToPlace( layer ) == globalInformation->layerToPlace(layerOtherNeuron) )
 					{
 						int input = positionNewNeuron;
 						int output= i;
@@ -748,7 +751,7 @@ namespace NEATSpikes
 
 					}
 					// En caso de que el layer actual sea menor que el layer de la neurona i entonces se anulan todas las conexiones/neuronas que comiencen en la neurona i y terminen en la nueva.
-					else if( generalInformation->layerToPlace( layer ) < generalInformation->layerToPlace( layerOtherNeuron ) )
+					else if( globalInformation->layerToPlace( layer ) < globalInformation->layerToPlace( layerOtherNeuron ) )
 					{
 						int input = positionNewNeuron;
 						int output= i;
@@ -793,9 +796,9 @@ namespace NEATSpikes
 		localNeuronIn = historicalMark_To_localNeuron.at(histoticalMarkNeuronIn);
 		localNeuronOut = historicalMark_To_localNeuron.at(histoticalMarkNeuronOut);
 		//Se obtiene la marca histórica de la neurona
-		historicalMark = generalInformation->getHistoricalMark( histoticalMarkNeuronIn, histoticalMarkNeuronOut  ); // Si ya tiene innovation no importa prque el valor no cambiaría, si no tiene es impotante
+		historicalMark = globalInformation->getHistoricalMark( histoticalMarkNeuronIn, histoticalMarkNeuronOut  ); // Si ya tiene innovation no importa prque el valor no cambiaría, si no tiene es impotante
 		// Se obtiene el layer correspondiente de la neurona. 
-		layer = generalInformation->getLayer( neuron_vector.at( localNeuronIn )->getLayer() , neuron_vector.at( localNeuronOut )->getLayer() );
+		layer = globalInformation->getLayer( neuron_vector.at( localNeuronIn )->getLayer() , neuron_vector.at( localNeuronOut )->getLayer() );
 		// A estas alturas ya se sabe el valor de la neurona inicial input y la neurona inicial output. 
 		// Se debe obtener el valor del historical mark de esta neurona, también a qué capa (layer) que corresponde.
 		Neuron * newNeuron = prototypeNeuron->createNew(prototypeNeuron,  historicalMark, histoticalMarkNeuronIn, histoticalMarkNeuronOut, layer );
@@ -862,7 +865,7 @@ namespace NEATSpikes
 						amountOfPosiblyNeuronMutation -= 1;
 					}
 					// En caso de que sean el mismo layer se eliminan todas las posibles conexiones/neuronas entre estas dos neuronas (sea de dirección ida o vuelta).
-					else if( generalInformation->layerToPlace( layer ) == generalInformation->layerToPlace( layerOtherNeuron ) )
+					else if( globalInformation->layerToPlace( layer ) == globalInformation->layerToPlace( layerOtherNeuron ) )
 					{
 
 						int input = positionNewNeuron;
@@ -886,7 +889,7 @@ namespace NEATSpikes
 					}
 
 					// En caso de que el layer actual sea menor que el layer de la neurona i entonces se anulan todas las conexiones/neuronas que comiencen en la neurona i y terminen en la nueva.
-					else if( generalInformation->layerToPlace( layer ) < generalInformation->layerToPlace( layerOtherNeuron ) )
+					else if( globalInformation->layerToPlace( layer ) < globalInformation->layerToPlace( layerOtherNeuron ) )
 					{
 						int input = positionNewNeuron;
 						int output= i;
@@ -931,7 +934,7 @@ namespace NEATSpikes
 		amountOfPosiblySynapticWeightMutation=0;
 
 		// Se inicializan las listas de mutaciones de informationBetweenOrganismAndLife
-		generalInformation->initialize(*inputsAmount,*outputsAmount);
+		globalInformation->initialize(*inputsAmount,*outputsAmount);
 
 		// Las primeras neuronas en ser agregadas serán los inputs, que rigurosamente hablando no son neuronas, pero en la implementación derivan de neurona para simplificar la programación.
 		// Estarán en el layer 0;
@@ -939,7 +942,7 @@ namespace NEATSpikes
 		{
 			int position = neuron_vector.size();
 			inputsInNeuron_vector.push_back(position);
-			addInitialStructureNeuron( new Input( position,-1,-1, LAYER_INPUT ) );
+			addInitialStructureNeuron( inputPrororype->createNewInput(inputPrororype); );
 		}
 
 		//Ahora se agregan las neuronas output
@@ -1080,7 +1083,7 @@ namespace NEATSpikes
 		
 		
 		// Antes de comenzar se actualizan el orden de las capas según el orden de todas las capas en NEAT.
-		std::vector <int> layerOrdererList =  generalInformation->layerOrdererList(); // Acá están los layer ordenadamente según la distancia entre los input y los output.
+		std::vector <int> layerOrdererList =  globalInformation->layerOrdererList(); // Acá están los layer ordenadamente según la distancia entre los input y los output.
 		// Se actualiza la lista de ordenes en este organismo, esto se realiza para no tener problemas ante la posibilidad de que un layer no esté dentro de los layes del organismo.
 		updatePresentList( layerOrdererList.size() );
 
@@ -1318,5 +1321,19 @@ namespace NEATSpikes
 	int ANN::getOrganismOutputSize()
 	{
 		return *outputsAmount;
+	}
+
+	void ANN::loadParametersFromPrototype(ANN * prototype)
+	{
+		globalInformation = prototype->globalInformation;
+		probabilityOfSynapticWeightMutation  = prototype->probabilityOfSynapticWeightMutation ;
+		probabilityOfNeuronMutation = prototype->probabilityOfNeuronMutation;
+		probabilityOfNewNeuronMutation = prototype->probabilityOfNewNeuronMutation;
+		probabilityOfNewSynapticWeightMutation  = prototype->probabilityOfNewSynapticWeightMutation ;
+		inputsAmount = prototype->inputsAmount;
+		outputsAmount = prototype->outputsAmount;
+		ConstantOFDiferencesInStructureOfSynapticWeight  = prototype->ConstantOFDiferencesInStructureOfSynapticWeight ;
+		ConstantOFDiferencesInStructureOfNeurons = prototype->ConstantOFDiferencesInStructureOfNeurons;
+		ANNCanHaveConnectionsBack = prototype->ANNCanHaveConnectionsBack;
 	}
 }

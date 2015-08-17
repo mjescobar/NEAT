@@ -12,16 +12,7 @@ namespace NEATSpikes
 		init();
 		changeValuesRandomly();
 	}
-	BasicSynapticWeight::BasicSynapticWeight(SynapticWeight * prototype, int _innovation, int histoticalMark_Neuron_in , int histoticalMark_Neuron_out)
-	{
-		loadParametersFromPrototype( prototype );
-		init();
-		historicalMarkOfNeuronIn = histoticalMark_Neuron_in;
-		historicalMarkOfNeuronOut = histoticalMark_Neuron_out;
-		innovation = _innovation;
-		changeValuesRandomly();
-		innovation = information->getInnovation( histoticalMark_Neuron_in , histoticalMark_Neuron_out );	
-	}
+	
 	BasicSynapticWeight::BasicSynapticWeight(SynapticWeight * prototype, int histoticalMark_Neuron_in , int histoticalMark_Neuron_out)
 	{
 		loadParametersFromPrototype(prototype);
@@ -268,6 +259,7 @@ namespace NEATSpikes
 		BSW->historicalMarkOfNeuronIn = historicalMarkOfNeuronIn;
 		BSW->historicalMarkOfNeuronOut = historicalMarkOfNeuronOut;
 		BSW->identificator = ++(*id);
+		BSW->information = information;
 		return BSW;
 	}
 

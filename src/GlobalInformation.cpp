@@ -19,37 +19,8 @@ int GlobalInformation::getInnovation( int historicalMarkNeuronInput, int histori
 }
 
 // Se puede optimizar fácil, por tiempo lo dejo para después. Mas que nada se puede optimizar cuando sí existe el layer.
-int GlobalInformation::getLayer( int layer_input_neuron, int layer_output_neuron)
+int GlobalInformation::getLayer( int layer_input_neuron, int layer_output_neuron )
 {	
-/*
-
-
-	for (int i = 0; i < (int)LayersWithReferences.size(); ++i)
-	{
-		// primero se compara el layer input que tiene cada uno.
-		if(  layerToPlace(LayersWithReferences.at(i).at(1) ) > layerToPlace(layer_input_neuron) ) // Si el layer input de la referencia es mayor entonces el nuevo layer debe agregarse justo antes que este.
-		{
-			LayersWithReferences.insert(LayersWithReferences.begin() + i, {layer,layer_input_neuron,layer_output_neuron});
-			return layer++;
-		}
-		else if(  layerToPlace(LayersWithReferences.at(i).at(1) ) == layerToPlace(layer_input_neuron)) // Si tienen el mismo, aún no se sabe nada, se deben comparar el layer output primero.
-		{
-			if( layerToPlace(LayersWithReferences.at(i).at(2) ) > layerToPlace(layer_output_neuron) ) // Si es mayor el layer de referencia entonces el nuevo layer debe agregarse antes que este.
-			{
-				LayersWithReferences.insert(LayersWithReferences.begin() + i, {layer,layer_input_neuron,layer_output_neuron});
-				return layer++;
-			}
-			else if( layerToPlace(LayersWithReferences.at(i).at(2) ) == layerToPlace(layer_output_neuron) ) // Si tiene tanto el input como el output iguales es porque son el mismo
-			{
-				return LayersWithReferences.at(i).at(0);
-			}
-		}
-	}
-
-	
-
-*/
-
 	if(layer_input_neuron == layer_output_neuron)
 	{
 		return layer_input_neuron;
@@ -87,12 +58,27 @@ int GlobalInformation::getLayer( int layer_input_neuron, int layer_output_neuron
 	exit(EXIT_FAILURE);
 }
 
+int GlobalInformation::getLayer( int historicalMark )
+{
+	if(historicalMark < this->historicalMark){
+		return hytoricalMarkToLayer.at(historicalMark);
+	}
+	std::cerr << "ERROR::GlobalInformation::getLayer:: historicalMark dont exists" << std::endl; 
+	exit(EXIT_FAILURE);
+}
+
+
+
 int GlobalInformation::getHistoricalMark( int historicalMarkNeuronInput, int historicalMarkNeuronoutput)
 {
+	//Primero se obtendra el historicalMark y luego se calculara el layer correspondiente y se gaurdara la conversion de uhno al otro en hytoricalMarkToLayer
+
 	int _historicalMark;
 	int vec_1,vec_2;
+	// Se obtiene la posicion en el mapa de referencia de neuronas que corresponde a las historicalMark entrada y salida.
 	std::tie(vec_1,vec_2) = historicalMarkIN_OUT_TO_availableNumberOfMutationsInRelationToNeuron_Vect1_Vect2({historicalMarkNeuronInput,historicalMarkNeuronoutput});
 	
+	//Si ya existe una neurona que use la posicion en la coordenada entonces tienen el mismo historicalMark y simplemente se devuevle el valor, en otro caso habra que poner el valor en la coordenada correspondiente y agregar la nueva coordenas que dado esta nueva neurona existiran nuevas coordenadas.
 	if(  neuronsReferencesForCreateNewNeurons.at(vec_1).at(vec_2) == -1  )
 	{
 		_historicalMark = historicalMark++;
@@ -103,15 +89,23 @@ int GlobalInformation::getHistoricalMark( int historicalMarkNeuronInput, int his
 
 		neuronsReferencesForCreateNewSynapticWeight.push_back(extension_1);
 		neuronsReferencesForCreateNewNeurons.push_back(extension_2);
-
-
-		return _historicalMark;
 	}
-	else{
+	else
+	{
 		return neuronsReferencesForCreateNewNeurons.at(vec_1).at(vec_2);
 	}
+
+	//Ahora se calcula el valor del layer.
+	//==========================================================================
+	int layerInputNeuron = hytoricalMarkToLayer.at(historicalMarkNeuronInput);
+	int layerOutputNeuron = hytoricalMarkToLayer.at(historicalMarkNeuronoutput);
+	int layer = getLayer(layerInputNeuron,layerOutputNeuron);
+	hytoricalMarkToLayer.push_back(layer);
+
+	return _historicalMark;
 }
-void GlobalInformation::initialize(int amountOfInputs,int amountOfOutputs )
+
+/*void GlobalInformation::initialize(int amountOfInputs,int amountOfOutputs )
 {
 	historicalMark = amountOfInputs+amountOfOutputs;
 	innovation = 0;
@@ -129,7 +123,7 @@ void GlobalInformation::initialize(int amountOfInputs,int amountOfOutputs )
 	LayersWithReferences.push_back({LAYER_INPUT,LAYER_INICIAL_INPUT,LAYER_FINAL_INPUT});
 	LayersWithReferences.push_back({LAYER_OUTPUT,LAYER_INICIAL_OUTPUT,LAYER_FINAL_OUTPUT});
 
-}
+}*/
 
 void GlobalInformation::printLayers()
 {
@@ -210,4 +204,29 @@ int GlobalInformation::getAmountOfNeurons()
 int GlobalInformation::getAmountOfSynapticWeights()
 {
 	return innovation;
+}
+
+int GlobalInformation::getNeuronInputHistoricalMark()
+{
+	int historical = historicalMark++;
+	hytoricalMarkToLayer.push_back(LAYER_INPUT);
+	return historical;
+}
+
+int GlobalInformation::getNeuronInputLayer()
+{
+	return LAYER_INPUT;
+}
+
+
+int GlobalInformation::getNeuronOutputHistoricalMark()
+{
+	int historical = historicalMark++;
+	hytoricalMarkToLayer.push_back(LAYER_OUTPUT);
+	return historical;
+}
+
+int GlobalInformation::getNeuronOutputLayer()
+{
+	return LAYER_OUTPUT;
 }

@@ -36,7 +36,15 @@ namespace NEATSpikes{
 		/**
 			\brief Se crea una nueva neurona.  Esto es necesario porque a priori desde la clase ANN no se sabe el tipo de neurona que se está usando. 
 		*/
-		virtual Neuron * createNew(Neuron * prototype, int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer)=0;
+		virtual Neuron * createNew(Neuron * prototype, int historicalMark_inicial_input, int historicalMark_inicial_output){std::cerr << "ERROR::Neuron::createNew::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
+		/**
+			\brief Se crea una nueva neurona.  Esto es necesario porque a priori desde la clase ANN no se sabe el tipo de neurona que se está usando. 
+		*/
+		virtual Neuron * createNewInput(Neuron * prototype){std::cerr << "ERROR::Neuron::createNewInput::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
+		/**
+			\brief Se crea una nueva neurona.  Esto es necesario porque a priori desde la clase ANN no se sabe el tipo de neurona que se está usando. 
+		*/
+		virtual Neuron * createNewOutput(Neuron * prototype){std::cerr << "ERROR::Neuron::createNewOutput::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
 		/**
 			\brief Devuelve el valor de marca histórica asociada a la neurona.
 		*/

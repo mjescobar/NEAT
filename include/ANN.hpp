@@ -13,11 +13,13 @@
 #include "SynapticWeight.hpp"
 #include "GlobalInformation.hpp"
 #include "Input.hpp"
+#include "MutationControl"
 #include <tuple>
 #include <map>
 #include <iostream>
 #include <cstring>
 #include <algorithm>    // std::copy
+
 
 using namespace std;
 
@@ -38,7 +40,7 @@ namespace NEATSpikes{
 		/**
 			\brief Constructor copia.
 		*/
-		ANN(const ANN & ann);
+		ANN(ANN * ann);
 		/**
 			\brief El constructor de ANN debe generar toda la red neuronal del organismo inicial. Se debe realizar al comienzo de todo el entrenamiento, lueog se hacen copias de ANN al cruzarse los organismos.
 		*/
@@ -167,7 +169,10 @@ namespace NEATSpikes{
 			\brief Se encuentran las posibles neuronas entre las cuales se generara la mutacion.
 		*/
 		std::tuple < int, int > findNeuronsForNewSynapticMutation();
-
+		/**
+			\brief Se obtienen los parametros de usuario y globalinformation a traves de los que el prototipo tiene.
+		*/
+		void loadParametersFromPrototype(ANN * prototype);
 	// =====================================================================================================
 	// ===========================================   VARIABLES  ==================================================
 	private:
@@ -198,11 +203,16 @@ namespace NEATSpikes{
 		std::vector <int> outputsInNeuron_vector;
 		std::vector < Neuron * > neuron_vector;
 		std::vector <SynapticWeight * > synapticWeight_vector;
-		GlobalInformation * generalInformation;
+		GlobalInformation * globalInformation;
 		
 
 		Neuron * prototypeNeuron; // El prototipo de neurona corresponde a la neurona con la que se construiran el resto de las neuronas de la red.
 		SynapticWeight *  prototypeSynapticWeight;
+
+		Neuron * InputPrototype;
+		Neuron * OutputPrototype;
+
+
 
 		static int id; // Se usara para poder guardar las ANN de forma ordenada si se quisieran volver a cargar de nuevo.
 		// ============== DEFINICIONES DE USUARIO =======================================

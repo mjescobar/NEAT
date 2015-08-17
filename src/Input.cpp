@@ -19,14 +19,11 @@ Input::Input(const Input & in)
 {
 	
 }
-
-Input::Input(int _historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int _layer)
+// Este metodo se debe usar una sola vez por NEAT
+Input::Input(GlobalInformation * globalInformation)
 {
-	layer=_layer;
-	historicalMark=_historicalMark;
+	this->globalInformation = globalInformation;
 	identificator=id++;
-	historicalMarkNeuronInicialIn=historicalMark_inicial_input;
-	historicalMarkNeuronInicialOut=historicalMark_inicial_output;
 	lastOutput=0.0;
 }
 void Input::mutate()
@@ -99,12 +96,21 @@ void Input::printState()
 {
 	std::cout << "Input\t" << "historicalMark " << historicalMark << "\tlayer " << layer <<  "\tlastOutput" << lastOutput   <<std::endl;
 }
-Neuron * Input::createNew(Neuron * prototype, int historicalMark, int historicalMark_inicial_input, int historicalMark_inicial_output, int layer)
+Neuron * Input::createNewInput(Neuron * prototype)
 {
-	Input * I = new Input(historicalMark, historicalMark_inicial_input, historicalMark_inicial_output, layer);
-	return dynamic_cast<Neuron*>(I);
-	//Neuron & N = dynamic_cast<Neuron&> (*I);
-	//return N;
+	Input * proto = NULL;
+	proto = dynamic_cast<Input*>(prototype);
+	if ( proto != NULL)
+	{
+		Input * I = new Input();
+		I->globalInformation = proto->globalInformation;
+		I->historicalMark = globalInformation->getNeuronInputHistoricalMark();
+		I->layer = globalInformation->getNeuronInputLayer();
+		return I;
+	}
+
+	std::cerr << "Error::Input::createNew::Prototype is not of Input class" << std::endl;
+	exit(EXIT_FAILURE);
 }
 
 
@@ -115,12 +121,12 @@ int Input::getHistoricalMark()
 
 int Input::getInitialNeuronInHistoricalMark()
 {
-	return historicalMarkNeuronInicialIn;
+	return INPUT_INICIAL_IN_OUT;
 }
 
 int Input::getInitialNeuronOutHistoricalMark()
 {
-	return historicalMarkNeuronInicialOut;
+	return INPUT_INICIAL_IN_OUT;
 }
 
 std::vector <int> Input::getOutcomingConnections()
@@ -168,5 +174,6 @@ Neuron * Input::duplicate()
 	I->historicalMarkNeuronInicialOut=historicalMarkNeuronInicialOut;
 	I->incomingConections=incomingConections;
 	I->outcomingConections=outcomingConections;
+	I->globalInformation=globalInformation;
 	return I;
 }
