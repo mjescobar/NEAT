@@ -4,7 +4,8 @@
 #include <iostream>
 #include <vector>
 #include "GlobalInformation.hpp"
-#include "Neuron.h"
+#include "Neuron.hpp"
+#include "SynapticWeight.hpp"
 #include "ReferenceMap.hpp"
 #include <cstdlib>
 #include <algorithm>
@@ -16,7 +17,7 @@ namespace NEATSpikes
 	class MutationControl
 	{
 		public:
-			MutationControlMutationControl(GlobalInformation * globalInformation, std::vector < Neuron * > * neurons,  bool connectionsBack, int inputAmount, int outputAmount,std::vector < SynapticWeight * > * synapticWeights, std::vector <int> innovationToSynapticWeight, std::vector <int> historicalMarkToNeuron, Neuron * neuronPrototype, SynapticWeight * synapticWeightPrototype );
+			MutationControl(GlobalInformation * globalInformation, std::vector < Neuron * > * neurons,  bool connectionsBack, int inputAmount, int outputAmount,std::vector < SynapticWeight * > * synapticWeights, std::vector <int> * innovationToSynapticWeight, std::vector <int> * historicalMarkToNeuron, Neuron * neuronPrototype, SynapticWeight * synapticWeightPrototype,std::vector < std::vector< int > > * historicalMarkAtLayer );
 
 			~MutationControl();
 			/**
@@ -30,7 +31,7 @@ namespace NEATSpikes
 			/**
 				\brief Al momento de crear una nueva red neuronal debe poseer su propia copia de control de mutaciones.
 			*/
-			MutationControl * duplicate(std::vector < Neuron * > * neurons, std::vector < SynapticWeight * > * synapticWeights, std::vector<int> innovationToSynapticWeight, std::vector <int> historicalMarkToNeuron   ); // Esas entradas tienen que ser dadas al momento de crear la copia pues no pueden ser obtenidas desde una instancia de MutationControl para funcionar.
+			MutationControl * duplicate(std::vector < Neuron * > * neurons, std::vector < SynapticWeight * > * synapticWeights, std::vector<int> * innovationToSynapticWeight, std::vector <int> * historicalMarkToNeuron   ); // Esas entradas tienen que ser dadas al momento de crear la copia pues no pueden ser obtenidas desde una instancia de MutationControl para funcionar.
 			/**
 				\brief Devuelve la cantidad de mutaciones de neurona posibles.
 			*/
@@ -45,10 +46,11 @@ namespace NEATSpikes
 			GlobalInformation * globalInformation;
 			std::vector < Neuron * > * neurons;
 			std::vector < SynapticWeight * > * synapticWeights;
-			std::vector <int> innovationToSynapticWeight;
-			std::vector <int> historicalMarkToNeuron;
+			std::vector <int> * innovationToSynapticWeight;
+			std::vector <int> * historicalMarkToNeuron;
 			Neuron * neuronPrototype;
 			SynapticWeight * synapticWeightPrototype; 
+			std::vector < std::vector< int > > * historicalMarkAtLayer;
 	};
 }
 

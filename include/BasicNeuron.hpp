@@ -184,7 +184,7 @@ namespace NEATSpikes{
 			// Las siguientes son las variables que el usuario introduce para toda la clase. Las definiciones de usuario para todas las neuronas básicas.
 			double * maxBias; // El maximo valor que puede tomas la variable bias.
 			double * minBias; // El minimo valor que puede tomas la variable bias.
-			bool * useBias; // Si el usuario desea que se aprenda la constante bias o no. como el usuario no puede poner directamente true o false debe poner 0 o cualquier valor diferente de cero para false o true respectivamente.
+			bool   * useBias; // Si el usuario desea que se aprenda la constante bias o no. como el usuario no puede poner directamente true o false debe poner 0 o cualquier valor diferente de cero para false o true respectivamente.
 			double * PredefinedBias; // Si se decide no mutar el bias entonces este sera el valor a tomar.
 			// Recordar que por modelo de programación la probabilidad de que una neurona mute es parte de la estructura ANN (redes neuronales) por lo tanto aquí sólo se ven datos respecto a cómo efectuar esta mutación, no a la probabilidad misma de que mute. 
 			double * maximumBiasVariationByMutation; // Esta variable corresponde a cuánto pondera el valor antiguo del bías en el calculo del valor actual.
@@ -195,7 +195,7 @@ namespace NEATSpikes{
 			double * ConstantDistanceOfSigmoidConstant;//Dado que existe la variable constante de sigmoide que corresponde a 2 / ( 1 + exp( (inputVoltage+bias)*constanteSigmoid ) ) - 1, y este puede mutar, entonces se toma en cuenta como parte de la distancia entre dos redes diferentes.
 			double * maxSigmoidConstant; // Valor maximo que puede tomar la constante de la sigmoide
 			double * minSigmoidConstant; // Valor minimo que puede tomar la constante de la sigmoide
-			bool * useSigmoidConstantMutation; // Se debe decidir si mutar o no mutar la constante de la sigmoide
+			bool   * useSigmoidConstantMutation; // Se debe decidir si mutar o no mutar la constante de la sigmoide
 			double * PredefinedSigmoidConstat; // Si se decide no mutar la constante de la sigmoide entonces este sera el valor a tomar.
 	};
 }

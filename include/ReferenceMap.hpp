@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "GlobalInformation.hpp"
-#include "Neuron.h"
+#include "Neuron.hpp"
 #include <cstdlib>
 #include <algorithm>
 
@@ -93,17 +93,20 @@ namespace NEATSpikes
 						count++;
 					}
 				}
+
+				std::cerr << "ERROR::ReferenceMapVector::getAvaibleAtPlace::Not avaivle place found" << std::endl;
+				exit(EXIT_FAILURE);
 			}
 
 			void set ( int absolutePlace, int value )
 			{
-				coordinate [ absolutePlace ] = value;
+				coordinates [ absolutePlace ] = value;
 				amountOfAvaibleMutations--;
 			}
 
 			int get ( int absolutePlace )
 			{
-				return coordinate [ absolutePlace ];
+				return coordinates [ absolutePlace ];
 			}
 
 			ReferenceMapVector * duplicate()
@@ -156,8 +159,9 @@ namespace NEATSpikes
 
 			~ReferenceMap()
 			{
-				for (int i = 0; i < referenceNeurons.size(); ++i)
+				for (int i = 0; i < (int)referenceNeurons.size(); ++i)
 				{
+					//referenceNeurons.erase (referenceNeurons.begin(),referenceNeurons.end());
 					delete referenceNeurons.at(i);
 				}
 			}
@@ -171,7 +175,7 @@ namespace NEATSpikes
 
 
 
-			vector <int> obtainAvaibleMutationRandomly()
+			std::vector <int> obtainAvaibleMutationRandomly()
 			{
 				if(amountOfAvaibleMutations == 0)
 				{
@@ -180,12 +184,12 @@ namespace NEATSpikes
 
 				int randomIndex = rand()%amountOfAvaibleMutations;
 				int count = -1;
-				for (int i = 0; i < referenceNeurons.size(); ++i)
+				for (int i = 0; i < (int)referenceNeurons.size(); ++i)
 				{
-					count += referenceNeurons.at(i).getAmountOfAvaibleMutations();
+					count += referenceNeurons.at(i)->getAmountOfAvaibleMutations();
 					if(count >= randomIndex)
 					{
-						return { i , referenceNeurons.at(i).getAvaibleAtPlace(count - randomIndex) };
+						return { i , referenceNeurons.at(i)->getAvaibleAtPlace(count - randomIndex) };
 					}
 				}
 
@@ -193,37 +197,43 @@ namespace NEATSpikes
 				exit (EXIT_FAILURE);
 			}
 
-			void set( vector <int> place, int value )
+			void set( std::vector <int> place, int value )
 			{
 				amountOfAvaibleMutations--;
-				referenceNeurons.at(place.at(0)).set(place.at(1), value);
+				referenceNeurons.at(place.at(0))->set(place.at(1), value);
+				while( (int)valueToPosition.size() - 1 > value )
+				{
+					valueToPosition.push_back({});
+				}
+				valueToPosition.at(value) = place;
 			}
 
-			int get ( vector <int> place)
+			int get ( std::vector <int> place)
 			{
-				return referenceNeurons.at(place.at(0)).get(place.at(1));
+				return referenceNeurons.at(place.at(0))->get(place.at(1));
 			}
 
 
 			ReferenceMap * duplicate()
 			{
-				ReferenceMap * result-> = new ReferenceMap();
-				for (int i = 0; i < referenceNeurons.size(); ++i)
+				ReferenceMap * result = new ReferenceMap();
+				for (int i = 0; i < (int)referenceNeurons.size(); ++i)
 				{
-					result->referenceNeurons.push_back( this->referenceNeurons.at(i).duplicate() );
+					result->referenceNeurons.push_back( this->referenceNeurons.at(i)->duplicate() );
 				}
 				result->currentPosition = this->currentPosition;
 				result->amountOfAvaibleMutations = this->amountOfAvaibleMutations;
 				result->globalInformation = this->globalInformation;
 				result->connectionsBack = this->connectionsBack;
 				result->neurons = this->neurons;
+				return result;
 			}
 			 
 			int getAmountOfAvaibleMutations()
 			{
 				return amountOfAvaibleMutations;
 			}
-			vector <int> getHistoricalMarkFromReferencePosition(vector <int> ReferencePosition)
+			std::vector <int> getHistoricalMarkFromReferencePosition(std::vector <int> ReferencePosition)
 			{
 				int in, out, historicalMarkIn, historicalMarkOut;
 				if( ReferencePosition.at(0) <= ReferencePosition.at(1) )
@@ -241,12 +251,27 @@ namespace NEATSpikes
 				return { historicalMarkIn , historicalMarkOut };
 			}
 
+			std::vector <int> getPlaceOfValue(int value)
+			{
+				if((int)valueToPosition.size() > value)
+				{
+					if(valueToPosition.at(value).size() != 0)
+					{
+						return valueToPosition.at(value);
+					}
+				}
+				
+				std::cerr << "ERROR::ReferenceMap::getPlaceOfValue::Value has not been stored in the map before this call." << std::endl;
+				exit(EXIT_FAILURE);
+			}
+
 		private:
 			int currentPosition;
-			std::vector < ReferenceMapVector > referenceNeurons;
+			std::vector < ReferenceMapVector * > referenceNeurons;
 			int amountOfAvaibleMutations;//Cantidad Total de mutaciones.
 			GlobalInformation * globalInformation;
 			bool connectionsBack;
 			std::vector < Neuron * > * neurons;
+			std::vector < std::vector <int> > valueToPosition; // Dado que los valores deben, por obligacion ser diferentes cada vez entonces solo existe una posicion para un valor dado.
 	};
 }
