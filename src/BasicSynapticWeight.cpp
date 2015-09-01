@@ -345,4 +345,20 @@ namespace NEATSpikes
 		//=========================================================================================
 		id = new int( loadData["id"] );
 	}
+
+	void BasicSynapticWeight::copyValues(SynapticWeight * sw)
+	{
+		BasicSynapticWeight * BSW = NULL;
+		BSW = dynamic_cast < BasicSynapticWeight * > ( sw );
+		if(BSW != NULL)
+		{
+			this->synapticWeightValue = BSW->synapticWeightValue;
+		}
+		else
+		{
+			std::cerr << "ERROR::BasicSynapticWeight::copyValues::Input must to be a pointer to BasicSynapticWeight wrapped like pointer of SynapticWeight" << std::endl;
+			exit(EXIT_FAILURE);
+		}
+		
+	}
 }

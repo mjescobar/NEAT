@@ -13,7 +13,7 @@ int main()
 	cout << "Basic Neuron Test initialized" << endl;
 	// Lo primero que se prueba es la carga correcta de los parámetros de usuario.
 	BasicNeuron * BN = new BasicNeuron(information, "./BasicNeuronUserDefinitions");
-	cout << "First Neuron created by constructor method:" << endl;
+	/*cout << "First Neuron created by constructor method:" << endl;
 	BN->printState(); // Se imprime el estado buscando ver que están correctamente inicializadas todas las variables importantes.
 
 	cout << "Now 100 mutations " << endl;
@@ -65,6 +65,6 @@ int main()
 	cout << " Diference between BN2 and BN: "<< BN2->getDistance(BN) << endl;
 
 
-
+*/
 	return EXIT_SUCCESS;
 }

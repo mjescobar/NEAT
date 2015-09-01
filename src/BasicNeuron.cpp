@@ -234,9 +234,9 @@ namespace NEATSpikes
 	}
 
 
-	Neuron * BasicNeuron::createNew(Neuron * prototype, int historicalMark_inicial_input, int historicalMark_inicial_output)
+	Neuron * BasicNeuron::createNew( int historicalMark_inicial_input, int historicalMark_inicial_output)
 	{
-		BasicNeuron * BN = new BasicNeuron(prototype, historicalMark_inicial_input, historicalMark_inicial_output);
+		BasicNeuron * BN = new BasicNeuron(this, historicalMark_inicial_input, historicalMark_inicial_output);
 		return BN;
 	}
 	
@@ -314,12 +314,11 @@ namespace NEATSpikes
 		{
 			return fabs( sigmoidConstant - BN->sigmoidConstant )  * (*ConstantDistanceOfSigmoidConstant) +  fabs( bias - BN->bias )  * (*ConstantDistanceOfBias);
 		}
-		else
-		{  // Si entra aqui es porque neuron no es un puntero de BasicNeuron.
-			std::cerr << "ERROR::BasicNeuron::getDistance::Input must to be a pointer to BasicNeuron wrapped like pointer of Neuron" << std::endl;
-			neuron->printState();
-			exit( EXIT_FAILURE );
-		}
+		// Si entra aqui es porque neuron no es un puntero de BasicNeuron.
+		std::cerr << "ERROR::BasicNeuron::getDistance::Input must to be a pointer to BasicNeuron wrapped like pointer of Neuron" << std::endl;
+		neuron->printState();
+		exit( EXIT_FAILURE );
+		
 	}
 
 	void BasicNeuron::changeValuesRandomly()
@@ -358,7 +357,7 @@ namespace NEATSpikes
 		finalFile << "id " << *id << std::endl;
 		finalFile.close();
 	}
-
+	
 	void BasicNeuron::loadId(std::string PathWhereIsSaved)
 	{
 		FILE * archive; // El archivo es cargado en esta variable
@@ -516,10 +515,10 @@ namespace NEATSpikes
 			exit(EXIT_FAILURE);
 		}
 	}
-	Neuron * BasicNeuron::createNewOutput(Neuron * prototype)
+	Neuron * BasicNeuron::createNewOutput()
 	{
 		BasicNeuron * BN =  new BasicNeuron;
-		BN->loadParametersFromPrototype( prototype );
+		BN->loadParametersFromPrototype( this );
 		BN->init();
 		BN->historicalMarkNeuronInicialIn = OUTPUT_INICIAL_IN_OUT;
 		BN->historicalMarkNeuronInicialOut = OUTPUT_INICIAL_IN_OUT;
@@ -529,10 +528,10 @@ namespace NEATSpikes
 		return BN;
 	}
 	
-	Neuron * BasicNeuron::createNewInput(Neuron * prototype)
+	Neuron * BasicNeuron::createNewInput()
 	{
 		BasicNeuron * BN =  new BasicNeuron;
-		BN->loadParametersFromPrototype( prototype );
+		BN->loadParametersFromPrototype( this );
 		BN->init();
 		BN->historicalMarkNeuronInicialIn = INPUT_INICIAL_IN_OUT;
 		BN->historicalMarkNeuronInicialOut = INPUT_INICIAL_IN_OUT;
@@ -540,6 +539,24 @@ namespace NEATSpikes
 		BN->layer = (BN->globalInformation)->getNeuronInputLayer();
 		BN->identificator = ++*id;
 		return BN;
+	}
+
+
+	void BasicNeuron::copyValues(Neuron * neuron)
+	{
+		BasicNeuron * BN = NULL;
+		BN = dynamic_cast < BasicNeuron * > (neuron) ;
+		if( BN != NULL )
+		{
+			this->bias = BN->bias;
+			this->sigmoidConstant = BN->sigmoidConstant;
+		}
+		else
+		{
+			std::cerr << "ERROR::BasicNeuron::copyValues::The neuron is not BasicNeuron" << std::endl;
+			exit (EXIT_FAILURE);
+		}
+		
 	}
 
 }

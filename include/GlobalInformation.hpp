@@ -23,6 +23,7 @@
 namespace NEATSpikes{
 	class GlobalInformation{
 	public:
+		GlobalInformation();
 		int getInnovation( int historicalMarkNeuronInput, int historicalMarkNeuronoutput );
 		int getLayer( int layer_input_neuron, int layer_output_neuron );
 		int getLayer( int historicalMark );
@@ -39,16 +40,14 @@ namespace NEATSpikes{
 		int getNeuronOutputLayer();
 
 	private:
-			//ENCONTRAR UN MEJOR NOMBRE!!!!
 		/*
 			\brief
 		*/
-		std::tuple < int,int >  historicalMarkIN_OUT_TO_availableNumberOfMutationsInRelationToNeuron_Vect1_Vect2(std:: vector<int> neuron_in_out); // Es muy complicado el nombre pero
+		std::tuple < int,int >  historicalMarkToVector(std:: vector<int> neuron_in_out); // Es muy complicado el nombre pero
 		/**
 			\brief 
 		*/	
-			//ENCONTRAR UN MEJOR NOMBRE!!!!
-		std::tuple < int,int >  availableNumberOfMutationsInRelationToNeuron_Vect1_Vect2_TO_historicalMarkIN_OUT(std:: vector<int> vect_1_vect_2); // Es muy complicado el nombre pero
+		std::tuple < int,int >  vectorToHistoricalMark(std:: vector<int> vect_1_vect_2); // Es muy complicado el nombre pero
 
 		std::vector < std::vector <int> > newNeuronPosibilities;
 		std::vector < std::vector <int> > newSynapticWeightPosibilities;

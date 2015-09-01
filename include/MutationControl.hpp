@@ -1,3 +1,4 @@
+
 #ifndef MUTATION_CONTROL_HPP
 #define MUTATION_CONTROL_HPP
 
@@ -17,7 +18,8 @@ namespace NEATSpikes
 	class MutationControl
 	{
 		public:
-			MutationControl(GlobalInformation * globalInformation, std::vector < Neuron * > * neurons,  bool connectionsBack, int inputAmount, int outputAmount,std::vector < SynapticWeight * > * synapticWeights, std::vector <int> * innovationToSynapticWeight, std::vector <int> * historicalMarkToNeuron, Neuron * neuronPrototype, SynapticWeight * synapticWeightPrototype,std::vector < std::vector< int > > * historicalMarkAtLayer );
+			MutationControl();
+			MutationControl(GlobalInformation * globalInformation, std::vector < Neuron * > * neurons,  bool connectionsBack, std::vector < SynapticWeight * > * synapticWeights, std::vector <int> * innovationToSynapticWeight, std::vector <int> * historicalMarkToNeuron, Neuron * neuronPrototype, SynapticWeight * synapticWeightPrototype,std::vector < std::vector< int > > * historicalMarkAtLayer );
 
 			~MutationControl();
 			/**
@@ -31,7 +33,7 @@ namespace NEATSpikes
 			/**
 				\brief Al momento de crear una nueva red neuronal debe poseer su propia copia de control de mutaciones.
 			*/
-			MutationControl * duplicate(std::vector < Neuron * > * neurons, std::vector < SynapticWeight * > * synapticWeights, std::vector<int> * innovationToSynapticWeight, std::vector <int> * historicalMarkToNeuron   ); // Esas entradas tienen que ser dadas al momento de crear la copia pues no pueden ser obtenidas desde una instancia de MutationControl para funcionar.
+			MutationControl * duplicate(std::vector < Neuron * > * neurons, std::vector < SynapticWeight * > * synapticWeights, std::vector<int> * innovationToSynapticWeight, std::vector <int> * historicalMarkToNeuron, std::vector < std::vector< int > > * historicalMarkAtLayer); // Esas entradas tienen que ser dadas al momento de crear la copia pues no pueden ser obtenidas desde una instancia de MutationControl para funcionar.
 			/**
 				\brief Devuelve la cantidad de mutaciones de neurona posibles.
 			*/
@@ -40,6 +42,20 @@ namespace NEATSpikes
 				\brief Devuelve la cantidad de mutaciones de coneccion sinaptica posibles.
 			*/
 			int getAmountOfSynapticWeightMutationAvaible();
+			/**
+				\brief Se agrega una neurona a la estructura neuronal. Ojo que no crea una neurona nueva a partir de la que se le de, se debe dar una neurona nueva desde la clase que llame a este metodo.
+			*/
+			void addNeuron(Neuron * neuron);
+			/**
+				\brief Se agrega una coneccion sinaptica a la estructura neuronal. Ojo que no crea una coneccion nueva a partir de la que se le de, se debe dar una coneccion sinaptica nueva desde la clase que llame a este metodo.
+			*/
+			void addSynapticWeight( SynapticWeight * synapticWeight );
+			/**
+				\brief Se imprime la informacion de MutationControl.
+			*/
+			void print();
+
+			void AddInitialNeuron(Neuron * neuron);
 		private:
 			ReferenceMap * referenceMapForSynapticsWeight;
 			ReferenceMap * referenceMapForNeurons;

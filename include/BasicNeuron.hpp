@@ -17,8 +17,8 @@ namespace NEATSpikes{
 	class BasicNeuron : public Neuron 
 	{
 		// Primero los métodos y después las variables.
-		// ========================================================================================================
-		// ====================================== Métodos ============================================================
+		// =====================================================================================================
+		// ================================ Métodos ============================================================
 		public:
 			/**
 				\brief Se crea una nueva neurona la cual tendrá seteados los valores historicalMark, historicalMark_inicial_input, historicalMark_inicial_output, layer; además tendrá valores aleatorios de bias y constante de la sigmoide.
@@ -86,15 +86,15 @@ namespace NEATSpikes{
 			/**
 				\brief Se crea uno nuevo. Esto es necesario porque a priori desde la clase ANN no se sabe el tipo neurona es la que se está usando.
 			*/
-			Neuron * createNew(Neuron * prototype, int historicalMark_inicial_input, int historicalMark_inicial_output);
+			Neuron * createNew( int historicalMark_inicial_input, int historicalMark_inicial_output);
 			/**
 				\brief Se crea una nueva neurona de salida.
 			*/
-			Neuron * createNewOutput(Neuron * prototype);
+			Neuron * createNewOutput();
 			/**
 				\brief Se crea una nueva neurona de entrada.
 			*/
-			Neuron * createNewInput(Neuron * prototype);
+			Neuron * createNewInput();
 			/**
 				\brief  Se obtiene la neurona que inicialmente fue la entrada a esta neurona.
 				\return La marca histórica de la neurona que inicialmente fue entrada.
@@ -145,6 +145,11 @@ namespace NEATSpikes{
 				\brief Se carga de disco duro la id.
 			*/
 			void loadId(std::string PathWhereIsSaved);
+			/**
+				 \brief Se copian los valores desde neuron, este metodo se llama desde ANN en crossover, el supuesto es que ya existe una neurona pero con valores diferentes. Se copian solo los valores que caracterizan a la neurona, no se deben copiar por ejemplo las listas de neuronas entrantes por ejemplo.
+			*/
+			void copyValues(Neuron * neuron);
+
 		private:
 			/**
 				\brief Se obtienen los datos desde el archivo con definiciones y se guarda en las variables estáticas correspondietes. 
@@ -158,8 +163,8 @@ namespace NEATSpikes{
 				\brief Se cargan los parametros de usuario desde una neurona prototipo.
 			*/
 			void loadParametersFromPrototype(Neuron * prototype);
-		// ======================================================================================================
-		// ===========================================   Variables ====================================================
+		// ====================================================================================================
+		// ===================================   Variables ====================================================
 		private:
 			int * id; // Variable usada para que toda neurona tenga un identificator diferente. 
 			GlobalInformation * globalInformation;

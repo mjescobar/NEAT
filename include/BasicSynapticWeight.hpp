@@ -119,6 +119,11 @@ namespace NEATSpikes{
 			\brief Se carga de disco duro el valor de Id.
 		*/
 		void loadId(std::string PathWhereIsSaved);
+		/**
+			\brief Se copian los valores relevantes de una coneccion sinaptica, esto ese realiza cuando ya teniendo una coneccion sinaptica se desea cambiar sus valores internos por los de otra coneccion sinaptica.
+		*/
+		void copyValues(SynapticWeight * sw);
+
 	private:
 		/**
 			\brief Dado que no es 100% compatible llamar a un constructor desde otro constructor se crea el método init() el cual inicializa el peso sináptico.

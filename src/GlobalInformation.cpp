@@ -2,10 +2,17 @@
 
 using namespace NEATSpikes;
 
+GlobalInformation::GlobalInformation()
+{
+	LayersWithReferences.push_back({LAYER_INPUT,LAYER_INICIAL_INPUT,LAYER_FINAL_INPUT});
+	LayersWithReferences.push_back({LAYER_OUTPUT,LAYER_INICIAL_OUTPUT,LAYER_FINAL_OUTPUT});
+}
+
+
 int GlobalInformation::getInnovation( int historicalMarkNeuronInput, int historicalMarkNeuronoutput )
 {
 	int vec_1,vec_2;
-	std::tie(vec_1,vec_2) = historicalMarkIN_OUT_TO_availableNumberOfMutationsInRelationToNeuron_Vect1_Vect2({historicalMarkNeuronInput,historicalMarkNeuronoutput});
+	std::tie(vec_1,vec_2) = historicalMarkToVector({historicalMarkNeuronInput,historicalMarkNeuronoutput});
 	
 
 	if(neuronsReferencesForCreateNewSynapticWeight.at(vec_1).at(vec_2) != -1)
@@ -13,7 +20,7 @@ int GlobalInformation::getInnovation( int historicalMarkNeuronInput, int histori
 		return neuronsReferencesForCreateNewSynapticWeight.at(vec_1).at(vec_2);
 	}
 		
-	int _innovation=innovation++;
+	int _innovation = innovation++;
 	neuronsReferencesForCreateNewSynapticWeight.at(vec_1).at(vec_2) = _innovation;
 	return _innovation;
 }
@@ -76,7 +83,7 @@ int GlobalInformation::getHistoricalMark( int historicalMarkNeuronInput, int his
 	int _historicalMark;
 	int vec_1,vec_2;
 	// Se obtiene la posicion en el mapa de referencia de neuronas que corresponde a las historicalMark entrada y salida.
-	std::tie(vec_1,vec_2) = historicalMarkIN_OUT_TO_availableNumberOfMutationsInRelationToNeuron_Vect1_Vect2({historicalMarkNeuronInput,historicalMarkNeuronoutput});
+	std::tie(vec_1,vec_2) = historicalMarkToVector({historicalMarkNeuronInput,historicalMarkNeuronoutput});
 	
 	//Si ya existe una neurona que use la posicion en la coordenada entonces tienen el mismo historicalMark y simplemente se devuevle el valor, en otro caso habra que poner el valor en la coordenada correspondiente y agregar la nueva coordenas que dado esta nueva neurona existiran nuevas coordenadas.
 	if(  neuronsReferencesForCreateNewNeurons.at(vec_1).at(vec_2) == -1  )
@@ -135,7 +142,7 @@ void GlobalInformation::printLayers()
 	std::cout << std::endl;
 }
 
-std::tuple < int,int > GlobalInformation::historicalMarkIN_OUT_TO_availableNumberOfMutationsInRelationToNeuron_Vect1_Vect2(std:: vector<int> _historicalMark)
+std::tuple < int,int > GlobalInformation::historicalMarkToVector(std:: vector<int> _historicalMark)
 {
 	if( _historicalMark.at(0) > _historicalMark.at(1) )
 	{
@@ -148,7 +155,7 @@ std::tuple < int,int > GlobalInformation::historicalMarkIN_OUT_TO_availableNumbe
 }
 
 
-std::tuple < int,int >  GlobalInformation::availableNumberOfMutationsInRelationToNeuron_Vect1_Vect2_TO_historicalMarkIN_OUT(std:: vector<int> vect_1_vect_2)
+std::tuple < int,int >  GlobalInformation::vectorToHistoricalMark(std:: vector<int> vect_1_vect_2)
 {
 	if( vect_1_vect_2.at(0) > vect_1_vect_2.at(1) )
 	{
@@ -208,8 +215,22 @@ int GlobalInformation::getAmountOfSynapticWeights()
 
 int GlobalInformation::getNeuronInputHistoricalMark()
 {
-	int historical = historicalMark++;
+	int historical = historicalMark;
 	hytoricalMarkToLayer.push_back(LAYER_INPUT);
+
+
+	//Se actualizan los mapas.
+	std::vector <int> extension_1 ( 2*historicalMark+1, -1);
+	std::vector <int> extension_2 ( 2*historicalMark+1, -1);
+	neuronsReferencesForCreateNewSynapticWeight.push_back(extension_1);
+	neuronsReferencesForCreateNewNeurons.push_back(extension_2);
+
+	//Se agergan a los layers
+	getLayer(LAYER_INICIAL_INPUT,LAYER_FINAL_INPUT);
+	
+
+	//Se actualizan los layers
+	historicalMark++;
 	return historical;
 }
 
@@ -221,8 +242,20 @@ int GlobalInformation::getNeuronInputLayer()
 
 int GlobalInformation::getNeuronOutputHistoricalMark()
 {
-	int historical = historicalMark++;
+	int historical = historicalMark;
 	hytoricalMarkToLayer.push_back(LAYER_OUTPUT);
+	//Se actualizan los mapas.
+	std::vector <int> extension_1 ( 2*historicalMark+1, -1);
+	std::vector <int> extension_2 ( 2*historicalMark+1, -1);
+	neuronsReferencesForCreateNewSynapticWeight.push_back(extension_1);
+	neuronsReferencesForCreateNewNeurons.push_back(extension_2);
+
+	//Se agergan a los layers
+	getLayer(LAYER_INICIAL_OUTPUT,LAYER_FINAL_OUTPUT);
+	
+
+	//Se actualizan los layers
+	historicalMark++;
 	return historical;
 }
 

@@ -13,7 +13,7 @@
 #include "SynapticWeight.hpp"
 #include "GlobalInformation.hpp"
 #include "Input.hpp"
-#include "MutationControl"
+#include "MutationControl.hpp"
 #include <tuple>
 #include <map>
 #include <iostream>
@@ -44,7 +44,8 @@ namespace NEATSpikes{
 		/**
 			\brief El constructor de ANN debe generar toda la red neuronal del organismo inicial. Se debe realizar al comienzo de todo el entrenamiento, lueog se hacen copias de ANN al cruzarse los organismos.
 		*/
-		ANN(Neuron * neuron, SynapticWeight * synapticWeight, std::string path_ANN_definitions, GlobalInformation * information);
+		ANN(Neuron * inputPrototype, Neuron * outputPrototype, Neuron * neuron, SynapticWeight * synapticWeight, std::string path_ANN_definitions, GlobalInformation * globalInformation);
+
 		/**
 			\brief Se carga una ANN a partir del lugar donde fue guardada anteriormete
 		*/
@@ -107,30 +108,15 @@ namespace NEATSpikes{
 			\brief Se crea una nueva neurona en la estructura de la red neuronal.
 		*/
 		void newNeuronMutation();
-		/**
-			\brief Cada layer sabe qué nodos son parte de él, así después el método eval puede ser realizado de forma ordenada las capas son evaluadas desde las entradas hasta las salidas en orden.
-		*/
-		void addNeuronToLayer(int layer, int historicalMark);
 		/*
 			\brief Se agrega una conexión sináptica a la red neurnal con todos los valores ya establecidos. 
 		*/
-		void addSynapticWeight(SynapticWeight * SW);
-		/*
-			\brief Se agrega una conexión sináptica a la red neurnal con todos los valores ya establecidos. 
-		*/
-		void addSynapticWeight(int historicalNeuronIn, int historicalNeuronOut);
+		void addSynapticWeight( SynapticWeight * SW );
+		
 		/**
 			\brief Se agrega una neurona a la red neurnal con todos los valores ya establecidos. 
 		*/
 		void addNeuron(Neuron * N);
-		/**
-			\brief Se agrega una neurona a la red neurnal con todos los valores ya establecidos. 
-		*/
-		void addNeuron( int histoticalMarkNeuronIn, int histoticalMarkNeuronOut );
-		/**
-			\brief 
-		*/	
-		void addInitialStructureNeuron( Neuron * N );
 		/**
 			\brief 
 		*/
@@ -173,44 +159,41 @@ namespace NEATSpikes{
 			\brief Se obtienen los parametros de usuario y globalinformation a traves de los que el prototipo tiene.
 		*/
 		void loadParametersFromPrototype(ANN * prototype);
-	// =====================================================================================================
-	// ===========================================   VARIABLES  ==================================================
+		/**
+			\brief Se crea una copia con sus variables en su propia memoria.
+		*/
+		ANN * duplicate();
+	// ==============================================================================================
+	// ==============================   VARIABLES  ==================================================
 	private:
-		
-		int identificator;
+		double fitness; // Indicador del comportamiendo de la red neuronal, entre mejor realice el experimento mayor fitness debe tener.
+		int identificator; // Es unico para cada red neuronal.
+
+		//============================================================
 		// ======RELATIVO A LA MUTACION PARA CREAR NUEVAS NEURONAS O CONEXIONES SINÁPTICAS===
-			std::vector < std::vector <int> > neuronsReferencesForCreateNewNeurons; // Cada neurona creada tiene como referencia 2 neuronas a las cuales inicialmente unió, esto es necesario para luego adquirir una marca histórica. Ver capitulo relativo a mutaciones en el manual.
-			std::vector <int> availableNumberOfNeuronMutationsInRelationToNeuron; // Esta variable posee todas cantidad de mutaciones disponibles que tengan relación con la neurona X, siendo X la entrada (o sea .at(X)), así al crear una nueva neurona se crea una nueva entrada a este vector con todas las cantidad de posibles mutaciones que se pueden tener con ésta, y al hacer una mutacion que la involucre encontes se baja en 1 la cantidad.
-			std::vector < std::vector <int> > neuronsReferencesForCreateNewSynapticWeight;
-			std::vector <int> availableNumberOfSynaptinWeightMutationsInRelationToNeuron;
-
-			int amountOfPosiblyNeuronMutation;
-			int amountOfPosiblySynapticWeightMutation;
-			int amountOfNeurons;
-
-			std::map <int, int> historicalMark_To_localNeuron; 
-			std::map <int, int> innovarion_to_localSynapticWeightVectorPosition; 
-			double fitness;
+			std::vector < int > * historicalMarkToNeuron; 
+			std::vector < int > * innovationToSynapticWeight; 
+			MutationControl * mutationControl;	
 		//============================================================
 
 
 		//=======================================================
 		// 					RELATIVO A EVAL()
-			std::vector < std::vector< int > > neuronsAtLayer; // Cada layer tiene una lista con las marcas históricas de las neuronas que pertenecen a aquel layer.
+			std::vector < std::vector < int > > * historicalMarkAtLayer; // Cada layer tiene una lista con las marcas históricas de las neuronas que pertenecen a aquel layer.
 		//=======================================================
 
-		std::vector <int> inputsInNeuron_vector;
-		std::vector <int> outputsInNeuron_vector;
-		std::vector < Neuron * > neuron_vector;
-		std::vector <SynapticWeight * > synapticWeight_vector;
+		std::vector < int > inputsInNeuron_vector; // Is a map to inputs in neuron vector
+		std::vector < int > outputsInNeuron_vector; // Is a map to outputs in neuron vector
+		std::vector < Neuron * > * neuron_vector;
+		std::vector < SynapticWeight * > * synapticWeight_vector;
 		GlobalInformation * globalInformation;
-		
 
-		Neuron * prototypeNeuron; // El prototipo de neurona corresponde a la neurona con la que se construiran el resto de las neuronas de la red.
+
+		Neuron * prototypeNeuron; // El prototipo de neurona corresponde a la neurona con la que se construiran el resto de las neuronas de la red, corresponden a las que se crearan por mutaciones.
 		SynapticWeight *  prototypeSynapticWeight;
 
-		Neuron * InputPrototype;
-		Neuron * OutputPrototype;
+		Neuron * inputPrototype; // Este es el prototipo de neurona que sera usada como Input.
+		Neuron * outputPrototype; // Este es el prototipo de neurona que sera usada como Output.
 
 
 

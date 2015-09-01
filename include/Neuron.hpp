@@ -36,15 +36,15 @@ namespace NEATSpikes{
 		/**
 			\brief Se crea una nueva neurona.  Esto es necesario porque a priori desde la clase ANN no se sabe el tipo de neurona que se está usando. 
 		*/
-		virtual Neuron * createNew(Neuron * prototype, int historicalMark_inicial_input, int historicalMark_inicial_output){std::cerr << "ERROR::Neuron::createNew::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
+		virtual Neuron * createNew( int historicalMark_inicial_input, int historicalMark_inicial_output)=0;//{std::cerr << "ERROR::Neuron::createNew::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
 		/**
 			\brief Se crea una nueva neurona.  Esto es necesario porque a priori desde la clase ANN no se sabe el tipo de neurona que se está usando. 
 		*/
-		virtual Neuron * createNewInput(Neuron * prototype){std::cerr << "ERROR::Neuron::createNewInput::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
+		virtual Neuron * createNewInput()=0;//{std::cerr << "ERROR::Neuron::createNewInput::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
 		/**
 			\brief Se crea una nueva neurona.  Esto es necesario porque a priori desde la clase ANN no se sabe el tipo de neurona que se está usando. 
 		*/
-		virtual Neuron * createNewOutput(Neuron * prototype){std::cerr << "ERROR::Neuron::createNewOutput::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
+		virtual Neuron * createNewOutput()=0;//{std::cerr << "ERROR::Neuron::createNewOutput::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
 		/**
 			\brief Devuelve el valor de marca histórica asociada a la neurona.
 		*/
@@ -71,6 +71,8 @@ namespace NEATSpikes{
 		virtual double getDistance(Neuron * neuron)=0;
 
 		virtual void changeValuesRandomly()=0;
+
+		virtual void copyValues(Neuron * neuron);
 
 	};
 

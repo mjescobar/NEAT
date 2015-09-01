@@ -74,6 +74,8 @@ namespace NEATSpikes
 
 			void changeValuesRandomly() { };
 
+			void copyValues(Neuron * neuron){};
+
 
 		GlobalInformation * globalInformation;
 

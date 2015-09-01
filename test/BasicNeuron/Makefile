@@ -1,5 +1,5 @@
-VPATH=../../include:../../src:.:../../objetcs
-COMPILER=g++ -std=c++11 -O3
+VPATH=../../include:.:../../src:../../objects
+COMPILER=g++ -std=c++11
 CFLAGS = -Wall -fPIC -I../../include   -I../../objects -I.
 
 test: test.cpp BasicNeuron.o GlobalInformation.o

@@ -1,141 +1,16 @@
+#ifndef REFERENCE_MAP_HPP
+#define REFERENCE_MAP_HPP
+
 #include <iostream>
 #include <vector>
 #include "GlobalInformation.hpp"
 #include "Neuron.hpp"
 #include <cstdlib>
 #include <algorithm>
-
-#define NOT_CONNECTIONS_BACK -2
-#define AVAIBLE_MUTATION -1
-#define NOT_MUTATION_AVAIBLE -3
+#include "ReferenceMapVector.hpp"
 
 namespace NEATSpikes
 {
-
-	class ReferenceMapVector
-	{
-		public: 
-			ReferenceMapVector()
-			{
-
-			}
-
-			ReferenceMapVector(int position)
-			{
-				this->position = position;
-				initialSize = position*2 + 1;  
-				coordinates = new int[initialSize];
-				amountOfAvaibleMutations = initialSize;
-				std::fill_n(coordinates, initialSize, AVAIBLE_MUTATION);
-			}
-
-			ReferenceMapVector(int position, GlobalInformation * globalInformation, std::vector < Neuron * > * neurons, bool connectionsBack)
-			{
-				// Se crea este vector y se setean los valores.
-				this->position = position;
-				this->connectionsBack = connectionsBack;
-				initialSize = position*2 + 1;  
-				coordinates = new int[initialSize];
-				amountOfAvaibleMutations = initialSize;
-				this->neurons = neurons;
-				this->globalInformation = globalInformation;
-				std::fill_n(coordinates, initialSize, AVAIBLE_MUTATION);
-
-				// En caso de que se prohiba conecciones recursivas se deben eliminar todas las opciones recursivas.
-				if(connectionsBack)
-				{
-					amountOfAvaibleMutations -=  ((initialSize-1)/2 + 1) ; // se restan altiro todos los casos en que uno de los dos tienen un layer mas grande que el otro y el caso con sigo mismo, solo faltan los casos en que ambos tienen el mismo layer, en esos casos hay que disminuir en 1 este valor.
-					coordinates[position] = NOT_CONNECTIONS_BACK;
-					int thisNeuronLayerPlace = globalInformation->layerToPlace((*neurons).at(position)->getLayer());
-					//Se mira la primera mitad nada mas pues la siguiente mitad es inverso.
-					for (int i = 0; i < (initialSize-1)/2; ++i)
-					{
-						int otherNeuronLayerPlace = globalInformation->layerToPlace((*neurons).at(i)->getLayer()); 
-						
-						if( thisNeuronLayerPlace >= otherNeuronLayerPlace )
-						{
-							coordinates[i] = NOT_CONNECTIONS_BACK;
-							if(thisNeuronLayerPlace == otherNeuronLayerPlace)
-							{
-								coordinates[initialSize - 1 -i] = NOT_CONNECTIONS_BACK;
-								amountOfAvaibleMutations--;
-							}
-						}
-						else
-						{
-							coordinates[initialSize -1 -i] = NOT_CONNECTIONS_BACK;
-						}
-					}
-				}
-			}
-
-			~ReferenceMapVector()
-			{
-				delete[] coordinates;
-			}
-
-			int getAmountOfAvaibleMutations()
-			{
-				return amountOfAvaibleMutations;
-			}
-
-			int getAvaibleAtPlace (int place)
-			{
-				int count = 0; 
-				for (int i = 0; i < initialSize; ++i)
-				{
-					if(coordinates[i] == AVAIBLE_MUTATION)
-					{
-						if(count == place)
-						{
-							return i;
-						}
-						count++;
-					}
-				}
-
-				std::cerr << "ERROR::ReferenceMapVector::getAvaibleAtPlace::Not avaivle place found" << std::endl;
-				exit(EXIT_FAILURE);
-			}
-
-			void set ( int absolutePlace, int value )
-			{
-				coordinates [ absolutePlace ] = value;
-				amountOfAvaibleMutations--;
-			}
-
-			int get ( int absolutePlace )
-			{
-				return coordinates [ absolutePlace ];
-			}
-
-			ReferenceMapVector * duplicate()
-			{
-				ReferenceMapVector * result = new ReferenceMapVector(position);
-				for (int i = 0; i < position*2 + 1; ++i)
-				{
-					result->coordinates[i] =  this->coordinates[i];
-				}
-				result->amountOfAvaibleMutations = this->amountOfAvaibleMutations;
-				result->connectionsBack = this->connectionsBack;
-				result->neurons = this->neurons;
-				return result;
-			}
-
-		private:
-			int amountOfAvaibleMutations;
-			int * coordinates;
-			int position;
-			bool connectionsBack;
-			std::vector < Neuron * > * neurons;
-			int initialSize;
-			GlobalInformation * globalInformation;
-	};
-//============================================================================================================
-//============================================================================================================
-//============================================================================================================
-//============================================================================================================
-//============================================================================================================
 	class ReferenceMap
 	{
 		public:
@@ -144,17 +19,12 @@ namespace NEATSpikes
 
 			}
 
-			ReferenceMap(GlobalInformation * globalInformation, std::vector < Neuron * > * neurons,  bool connectionsBack, int inputAmount, int outputAmount )
+			ReferenceMap(GlobalInformation * globalInformation, std::vector < Neuron * > * neurons,  bool connectionsBack )
 			{
 				this->globalInformation = globalInformation;
 				currentPosition = 0;
 				this->connectionsBack = connectionsBack;
 				this->neurons = neurons;
-
-				for (int i = 0; i < inputAmount + outputAmount; ++i)
-				{
-					addNewReferenceMapVector();
-				}
 			}
 
 			~ReferenceMap()
@@ -233,6 +103,7 @@ namespace NEATSpikes
 			{
 				return amountOfAvaibleMutations;
 			}
+			
 			std::vector <int> getHistoricalMarkFromReferencePosition(std::vector <int> ReferencePosition)
 			{
 				int in, out, historicalMarkIn, historicalMarkOut;
@@ -264,7 +135,14 @@ namespace NEATSpikes
 				std::cerr << "ERROR::ReferenceMap::getPlaceOfValue::Value has not been stored in the map before this call." << std::endl;
 				exit(EXIT_FAILURE);
 			}
-
+			void print()
+			{
+				for (unsigned int i = 0; i < referenceNeurons.size(); ++i)
+				{
+					std::cout << "Row " << i << std::endl;
+					referenceNeurons.at(i)->print();
+				}
+			}
 		private:
 			int currentPosition;
 			std::vector < ReferenceMapVector * > referenceNeurons;
@@ -275,3 +153,4 @@ namespace NEATSpikes
 			std::vector < std::vector <int> > valueToPosition; // Dado que los valores deben, por obligacion ser diferentes cada vez entonces solo existe una posicion para un valor dado.
 	};
 }
+#endif
