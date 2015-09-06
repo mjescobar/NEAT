@@ -129,7 +129,7 @@ namespace NEATSpikes
 			{
 				for (int i = 0; i < initialSize-1; ++i)
 				{
-					std::cout << coordinates[i] << "   "; 
+					std::cout << coordinates[i] << "  "; 
 				}
 				std::cout << coordinates[initialSize-1];
 			}

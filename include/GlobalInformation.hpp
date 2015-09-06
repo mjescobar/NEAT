@@ -28,7 +28,6 @@ namespace NEATSpikes{
 		int getLayer( int layer_input_neuron, int layer_output_neuron );
 		int getLayer( int historicalMark );
 		int getHistoricalMark( int historicalMarkNeuronInput, int historicalMarkNeuronoutput);
-		void initialize(int amountOfInputs,int amountOfOutputs );
 		void printLayers();
 		std::vector <int> layerOrdererList();
 		int layerToPlace(int layer);

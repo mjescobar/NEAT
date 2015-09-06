@@ -171,21 +171,21 @@ namespace NEATSpikes{
 
 		//============================================================
 		// ======RELATIVO A LA MUTACION PARA CREAR NUEVAS NEURONAS O CONEXIONES SINÁPTICAS===
-			std::vector < int > * historicalMarkToNeuron; 
-			std::vector < int > * innovationToSynapticWeight; 
+			std::vector < int > historicalMarkToNeuron; 
+			std::vector < int > innovationToSynapticWeight; 
 			MutationControl * mutationControl;	
 		//============================================================
 
 
 		//=======================================================
 		// 					RELATIVO A EVAL()
-			std::vector < std::vector < int > > * historicalMarkAtLayer; // Cada layer tiene una lista con las marcas históricas de las neuronas que pertenecen a aquel layer.
+			std::vector < std::vector < int > > historicalMarkAtLayer; // Cada layer tiene una lista con las marcas históricas de las neuronas que pertenecen a aquel layer.
 		//=======================================================
 
 		std::vector < int > inputsInNeuron_vector; // Is a map to inputs in neuron vector
 		std::vector < int > outputsInNeuron_vector; // Is a map to outputs in neuron vector
-		std::vector < Neuron * > * neuron_vector;
-		std::vector < SynapticWeight * > * synapticWeight_vector;
+		std::vector < Neuron * > neuron_vector;
+		std::vector < SynapticWeight * > synapticWeight_vector;
 		GlobalInformation * globalInformation;
 
 

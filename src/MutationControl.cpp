@@ -44,14 +44,19 @@ void MutationControl::mutateNewNeuron()
 	std::vector <int> newNeuronWeightInMap = referenceMapForNeurons->obtainAvaibleMutationRandomly ();
 	std::vector <int> historicalMarkOfNeurons = referenceMapForNeurons->getHistoricalMarkFromReferencePosition(newNeuronWeightInMap);
 	
-	Neuron * n = neuronPrototype->createNew(neuronPrototype, historicalMarkOfNeurons.at(0), historicalMarkOfNeurons.at(1));
+	Neuron * n = neuronPrototype->createNew( historicalMarkOfNeurons.at(0), historicalMarkOfNeurons.at(1));
 
 	addNeuron (n);
 
 	//Lo segundo es desactivar la coneccion sinaptica existente que unia las mismas neuronas pero directamente
+	// notar que puede ser que no existiese antes esta innovacion
 	//========================================================================================
-	int innovationOfSynapticToDisactivate =  referenceMapForNeurons->get ( newNeuronWeightInMap );
-	(*synapticWeights).at( (*innovationToSynapticWeight).at ( innovationOfSynapticToDisactivate ) )->disable();
+	int innovationOfSynapticToDisactivate =  referenceMapForSynapticsWeight->get ( newNeuronWeightInMap );
+
+	if(innovationOfSynapticToDisactivate != -1)
+	{
+		(*synapticWeights).at( (*innovationToSynapticWeight).at ( innovationOfSynapticToDisactivate ) )->disable();
+	}
 
 
 	//Se agregan las conecciones sinapticas nuevas, una desde la neurona inicial input a la nueva neurona y otra desde la neurona inicial output a la nueva neurona.
@@ -62,7 +67,9 @@ void MutationControl::mutateNewNeuron()
 	addSynapticWeight(sw1);
 	addSynapticWeight(sw2);
 
+
 }
+
 
 void MutationControl::mutateNewSynapticWeight()
 {
@@ -121,6 +128,7 @@ MutationControl * MutationControl::duplicate(std::vector < Neuron * > * neurons,
 void MutationControl::addNeuron(Neuron * neuron)
 {
 	// Primero se va a hacer un test pequeno para asegurar que todo esta bien, se vera si los historicalMark initial in e initial out existen en esta red neuronal, en caso de que no existiesen entonces generara un error y terminara la ejecucion.
+
 	int historicalMarkInitionIn  = neuron->getInitialNeuronInHistoricalMark();
 	int historicalMarkInitionOut = neuron->getInitialNeuronOutHistoricalMark();
 	
@@ -151,13 +159,13 @@ void MutationControl::addNeuron(Neuron * neuron)
 
 	if ( neuronsPositionOfInitialOut > neuronsPositionOfInitialIn )
 	{
-		mapCoordinateOne = neuronsPositionOfInitialIn;
-		mapCoordinateTwo =  neuronsPositionOfInitialOut;
+		mapCoordinateOne = neuronsPositionOfInitialOut;
+		mapCoordinateTwo =  2*neuronsPositionOfInitialOut-neuronsPositionOfInitialIn;
 	}
 	else
 	{
-		mapCoordinateOne = neuronsPositionOfInitialOut;
-		mapCoordinateTwo =  2*neuronsPositionOfInitialOut-neuronsPositionOfInitialIn; 
+		mapCoordinateOne = neuronsPositionOfInitialIn;
+		mapCoordinateTwo =  neuronsPositionOfInitialOut;
 	}
 
 
@@ -170,7 +178,7 @@ void MutationControl::addNeuron(Neuron * neuron)
 
 	//Se actualiza historicalMarkToNeuron
 	//========================================================================================
-	while( (int)(*historicalMarkToNeuron).size()-1 >  neuron->getHistoricalMark() ) 
+	while( neuron->getHistoricalMark() >= (int)(*historicalMarkToNeuron).size()  ) 
 	{
 		(*historicalMarkToNeuron).push_back(-1);
 	}
@@ -178,7 +186,7 @@ void MutationControl::addNeuron(Neuron * neuron)
 
 	//Se agrega esta neurona en el layer correspondiente
 	//========================================================================================
-	while( (int)(*historicalMarkAtLayer).size()-1 >  neuron->getLayer() ) 
+	while(  neuron->getLayer()  >= (int)(*historicalMarkAtLayer).size() ) 
 	{
 		(*historicalMarkAtLayer).push_back({});
 	}
@@ -196,15 +204,14 @@ void MutationControl::addSynapticWeight( SynapticWeight * synapticWeight )
 	int historicalMarkInitionIn = synapticWeight->getHistoricalMarkOfNeuronIn() ;
 	int historicalMarkInitionOut = synapticWeight->getHistoricalMarkOfNeuronOut();
 
-	
+
+
 	if( (int) (*historicalMarkToNeuron).size() <= historicalMarkInitionIn || (int)(*historicalMarkToNeuron).size() <= historicalMarkInitionOut  )
 	{	
-		std::cerr << "ERROR::MutationControl::addSynapticWeight::HistoricalMark initial in or initial out does not exist" << std::endl;
 	}
 
 	if( (*historicalMarkToNeuron).at(historicalMarkInitionIn) == 1 ||  (*historicalMarkToNeuron).at(historicalMarkInitionOut) == 1 )
 	{
-		std::cerr << "ERROR::MutationControl::addSynapticWeight::HistoricalMark initial in or initial out does not exist" << std::endl;
 	}
 
 
@@ -219,13 +226,14 @@ void MutationControl::addSynapticWeight( SynapticWeight * synapticWeight )
 
 	if ( neuronsPositionOfInitialOut > neuronsPositionOfInitialIn )
 	{
-		mapCoordinateOne = neuronsPositionOfInitialIn;
-		mapCoordinateTwo =  neuronsPositionOfInitialOut;
+		mapCoordinateOne = neuronsPositionOfInitialOut;
+		mapCoordinateTwo =  2*neuronsPositionOfInitialOut-neuronsPositionOfInitialIn;
 	}
+
 	else
 	{
-		mapCoordinateOne = neuronsPositionOfInitialOut;
-		mapCoordinateTwo =  2*neuronsPositionOfInitialOut-neuronsPositionOfInitialIn; 
+		mapCoordinateOne = neuronsPositionOfInitialIn;
+		mapCoordinateTwo =  neuronsPositionOfInitialOut;
 	}	
 	
 
@@ -240,7 +248,7 @@ void MutationControl::addSynapticWeight( SynapticWeight * synapticWeight )
 	//Se actualiza valor de innovationToSynapticWeight para que todo funcione bien.
 	//===============================================================================================
 
-	while((int)(*innovationToSynapticWeight).size()-1 > synapticWeight->getInnovation())
+	while( synapticWeight->getInnovation() >= (int)(*innovationToSynapticWeight).size())
 	{
 		(*innovationToSynapticWeight).push_back(-1);
 	}
@@ -250,6 +258,7 @@ void MutationControl::addSynapticWeight( SynapticWeight * synapticWeight )
 	//Se agrega la coneccion sinaptica a la lista de conecciones entrantes/salientes de las neuronas correspondientemente
 	(*neurons).at( (*historicalMarkToNeuron).at( historicalMarkInitionIn ) )->addNewOutcomingConection(synapticWeight->getInnovation());
 	(*neurons).at( (*historicalMarkToNeuron).at( historicalMarkInitionOut ) )->addNewIncomingConection(synapticWeight->getInnovation());
+
 }
 
 int MutationControl::getAmountOfNeuronMutationAvaible()
@@ -265,7 +274,7 @@ void MutationControl::print()
 {
 	std::cout << "ReferenceSynapticMap" << std::endl;
 	std::cout << "===================="<< std::endl;
-	referenceMapForSynapticsWeight->print();
+	referenceMapForSynapticsWeight->print();  
 	std::cout << "ReferenceNeuronMap" << std::endl;
 	std::cout << "===================="<< std::endl;
 	referenceMapForNeurons->print();
@@ -279,7 +288,7 @@ void MutationControl::AddInitialNeuron(Neuron * neuron)
 
 	//Se actualiza historicalMarkToNeuron
 	//========================================================================================
-	while( (int)(*historicalMarkToNeuron).size()-1 >  neuron->getHistoricalMark() ) 
+	while( neuron->getHistoricalMark() >= (int)(*historicalMarkToNeuron).size() ) 
 	{
 		(*historicalMarkToNeuron).push_back(-1);
 	}
@@ -287,7 +296,7 @@ void MutationControl::AddInitialNeuron(Neuron * neuron)
 
 	//Se agrega esta neurona en el layer correspondiente
 	//========================================================================================
-	while( (int)(*historicalMarkAtLayer).size()-1 >  neuron->getLayer() ) 
+	while( neuron->getLayer() >= (int)(*historicalMarkAtLayer).size() ) 
 	{
 		(*historicalMarkAtLayer).push_back({});
 	}

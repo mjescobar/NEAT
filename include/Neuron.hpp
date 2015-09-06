@@ -7,8 +7,10 @@
 /*
 	Esta clase es abstracta, la  idea es poder probar diferentes tipos de neuronas de forma sencilla.
 */
-namespace NEATSpikes{
-	class Neuron{
+namespace NEATSpikes
+{
+	class Neuron
+	{
 	public:
 		virtual ~Neuron(){};
 
@@ -36,15 +38,15 @@ namespace NEATSpikes{
 		/**
 			\brief Se crea una nueva neurona.  Esto es necesario porque a priori desde la clase ANN no se sabe el tipo de neurona que se está usando. 
 		*/
-		virtual Neuron * createNew( int historicalMark_inicial_input, int historicalMark_inicial_output)=0;//{std::cerr << "ERROR::Neuron::createNew::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
+		virtual Neuron * createNew( int historicalMark_inicial_input, int historicalMark_inicial_output){std::cerr << "ERROR::Neuron::createNew::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
 		/**
 			\brief Se crea una nueva neurona.  Esto es necesario porque a priori desde la clase ANN no se sabe el tipo de neurona que se está usando. 
 		*/
-		virtual Neuron * createNewInput()=0;//{std::cerr << "ERROR::Neuron::createNewInput::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
+		virtual Neuron * createNewInput(){std::cerr << "ERROR::Neuron::createNewInput::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
 		/**
 			\brief Se crea una nueva neurona.  Esto es necesario porque a priori desde la clase ANN no se sabe el tipo de neurona que se está usando. 
 		*/
-		virtual Neuron * createNewOutput()=0;//{std::cerr << "ERROR::Neuron::createNewOutput::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
+		virtual Neuron * createNewOutput(){std::cerr << "ERROR::Neuron::createNewOutput::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
 		/**
 			\brief Devuelve el valor de marca histórica asociada a la neurona.
 		*/
@@ -72,7 +74,7 @@ namespace NEATSpikes{
 
 		virtual void changeValuesRandomly()=0;
 
-		virtual void copyValues(Neuron * neuron);
+		virtual void copyValues(Neuron * neuron){std::cerr << "ERROR::Neuron::copyValues::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
 
 	};
 

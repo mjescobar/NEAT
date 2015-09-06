@@ -283,7 +283,6 @@ namespace NEATSpikes
 		double max = *maxWeightValue;
 		double min = *minWeightValue;
 		synapticWeightValue = (max - min)*(rand()/(double)RAND_MAX) + min;
-		std::cerr << "max " << max << "\tmin " << min << "\tsynapticWeightValue: " << synapticWeightValue << std::endl;
 	}
 
 	void BasicSynapticWeight::loadParametersFromPrototype(SynapticWeight * prototype)

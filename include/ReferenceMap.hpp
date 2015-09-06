@@ -47,6 +47,7 @@ namespace NEATSpikes
 
 			std::vector <int> obtainAvaibleMutationRandomly()
 			{
+
 				if(amountOfAvaibleMutations == 0)
 				{
 					return {NOT_MUTATION_AVAIBLE,NOT_MUTATION_AVAIBLE};
@@ -71,7 +72,7 @@ namespace NEATSpikes
 			{
 				amountOfAvaibleMutations--;
 				referenceNeurons.at(place.at(0))->set(place.at(1), value);
-				while( (int)valueToPosition.size() - 1 > value )
+				while(  value >= (int)valueToPosition.size() )
 				{
 					valueToPosition.push_back({});
 				}
@@ -109,13 +110,13 @@ namespace NEATSpikes
 				int in, out, historicalMarkIn, historicalMarkOut;
 				if( ReferencePosition.at(0) <= ReferencePosition.at(1) )
 				{
-					in = ReferencePosition.at(0);
-					out = ReferencePosition.at(1);
+					in = 2*ReferencePosition.at(0) - ReferencePosition.at(1);
+					out = ReferencePosition.at(0);
 				}
 				else
 				{
-					in = 2*ReferencePosition.at(0) - ReferencePosition.at(1);
-					out = ReferencePosition.at(0);
+					in = ReferencePosition.at(0);
+					out = ReferencePosition.at(1);
 				}
 				historicalMarkIn = (*neurons).at(in)->getHistoricalMark();
 				historicalMarkOut = (*neurons).at(out)->getHistoricalMark();
@@ -139,8 +140,9 @@ namespace NEATSpikes
 			{
 				for (unsigned int i = 0; i < referenceNeurons.size(); ++i)
 				{
-					std::cout << "Row " << i << std::endl;
+					std::cout << "Row " << i  << ":\t";
 					referenceNeurons.at(i)->print();
+					std::cout << std::endl;
 				}
 			}
 		private:
