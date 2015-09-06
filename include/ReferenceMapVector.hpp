@@ -16,7 +16,7 @@ namespace NEATSpikes
 {
 
 	class ReferenceMapVector
-	{
+	{ 
 		public: 
 			ReferenceMapVector()
 			{
@@ -45,19 +45,23 @@ namespace NEATSpikes
 				std::fill_n(coordinates, initialSize, AVAIBLE_MUTATION);
 
 				// En caso de que se prohiba conecciones recursivas se deben eliminar todas las opciones recursivas.
-				if(connectionsBack)
+				if(!connectionsBack)
 				{
-					amountOfAvaibleMutations -=  ((initialSize-1)/2 + 1) ; // se restan altiro todos los casos en que uno de los dos tienen un layer mas grande que el otro y el caso con sigo mismo, solo faltan los casos en que ambos tienen el mismo layer, en esos casos hay que disminuir en 1 este valor.
 					coordinates[position] = NOT_CONNECTIONS_BACK;
+					amountOfAvaibleMutations --;
+
+					amountOfAvaibleMutations -= (initialSize-1)/2;
 					int thisNeuronLayerPlace = globalInformation->layerToPlace((*neurons).at(position)->getLayer());
+					std::cerr << "position: " << position << "\tLayer: " <<  (*neurons).at(position)->getLayer() << std::endl;
 					//Se mira la primera mitad nada mas pues la siguiente mitad es inverso.
 					for (int i = 0; i < (initialSize-1)/2; ++i)
 					{
 						int otherNeuronLayerPlace = globalInformation->layerToPlace((*neurons).at(i)->getLayer()); 
-						
+						std:: cerr << "(*neurons).at(i)->getLayer(): "<< (*neurons).at(i)->getLayer()<<  "\totherNeuronLayerPlace: " << otherNeuronLayerPlace << "\tthisNeuronLayerPlace: " << thisNeuronLayerPlace << std::endl;
 						if( thisNeuronLayerPlace >= otherNeuronLayerPlace )
 						{
 							coordinates[i] = NOT_CONNECTIONS_BACK;
+							coordinates[initialSize -1 -i] = -1;
 							if(thisNeuronLayerPlace == otherNeuronLayerPlace)
 							{
 								coordinates[initialSize - 1 -i] = NOT_CONNECTIONS_BACK;
@@ -67,6 +71,8 @@ namespace NEATSpikes
 						else
 						{
 							coordinates[initialSize -1 -i] = NOT_CONNECTIONS_BACK;
+							coordinates[i] = -1;
+
 						}
 					}
 				}

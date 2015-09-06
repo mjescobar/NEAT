@@ -13,10 +13,10 @@ BasicNeuron.o: BasicNeuron.cpp BasicNeuron.hpp
 GlobalInformation.o: GlobalInformation.cpp GlobalInformation.hpp
 	cd ../../..; make GlobalInformation.o;
 
-ANN.o: ANN.cpp ANN.hpp ReferenceMap.hpp ReferenceMapVector.hpp 
+ANN.o: ANN.cpp ANN.hpp 
 	cd ../../..; make ANN.o;
 
-MutationControl.o: MutationControl.cpp MutationControl.hpp
+MutationControl.o: MutationControl.cpp MutationControl.hpp ReferenceMap.hpp ReferenceMapVector.hpp
 	cd ../../..; make MutationControl.o;
 
 BasicSynapticWeight.o: BasicSynapticWeight.cpp BasicSynapticWeight.hpp 

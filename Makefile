@@ -14,7 +14,7 @@ Life.o: Life.cpp Niche.cpp Niche.o GlobalInformation.o
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Life.o
 
-ANN.o: ANN.cpp ANN.hpp BasicSynapticWeight.cpp BasicNeuron.cpp Input.cpp GlobalInformation.cpp BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o ReferenceMap.hpp ReferenceMapVector.hpp
+ANN.o: ANN.cpp ANN.hpp BasicSynapticWeight.cpp BasicNeuron.cpp Input.cpp GlobalInformation.cpp BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o 
 	@echo Compiling ANN 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/ANN.o
@@ -45,7 +45,7 @@ GlobalInformation.o: GlobalInformation.cpp GlobalInformation.hpp
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/GlobalInformation.o
 
-MutationControl.o: MutationControl.cpp MutationControl.hpp GlobalInformation.o BasicNeuron.o
+MutationControl.o: MutationControl.cpp MutationControl.hpp GlobalInformation.o BasicNeuron.o ReferenceMap.hpp ReferenceMapVector.hpp
 	@echo Compiling MutationControl 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/MutationControl.o

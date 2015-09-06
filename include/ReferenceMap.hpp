@@ -143,7 +143,8 @@ namespace NEATSpikes
 					std::cout << "Row " << i  << ":\t";
 					referenceNeurons.at(i)->print();
 					std::cout << std::endl;
-				}
+				}  
+				std::cout << "Amount of avaible mutations: " << getAmountOfAvaibleMutations() << std::endl;
 			}
 		private:
 			int currentPosition;

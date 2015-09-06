@@ -4,8 +4,11 @@ using namespace NEATSpikes;
 
 GlobalInformation::GlobalInformation()
 {
-	LayersWithReferences.push_back({LAYER_INPUT,LAYER_INICIAL_INPUT,LAYER_FINAL_INPUT});
-	LayersWithReferences.push_back({LAYER_OUTPUT,LAYER_INICIAL_OUTPUT,LAYER_FINAL_OUTPUT});
+	layerOrderList.push_back(LAYER_INPUT);
+	layerOrderList.push_back(LAYER_OUTPUT);
+	layersReference.push_back({});
+	layersReference.push_back({EMPTY_LAYER});
+	layer = 1;
 }
 
 
@@ -28,41 +31,39 @@ int GlobalInformation::getInnovation( int historicalMarkNeuronInput, int histori
 // Se puede optimizar fácil, por tiempo lo dejo para después. Mas que nada se puede optimizar cuando sí existe el layer.
 int GlobalInformation::getLayer( int layer_input_neuron, int layer_output_neuron )
 {	
-	if(layer_input_neuron == layer_output_neuron)
+	int layerSmaller; // Es el menor layer, no importa si en realidad es un layer en una capa superior lo importante es si fue creado antes o despues por lo tanto es simplemente el de menor valor directamente.
+	int layerBigger;
+
+	if (layer_input_neuron == layer_output_neuron)
 	{
 		return layer_input_neuron;
 	}
-
-	// Lo primero es que para obtener simetría en conexiones hacia atrás estará pensado para layer menor y layer mayor sin pensar si es input u output
-	// ==============================================================================
-		int placeSmaller;
-
-		if(layerToPlace(layer_input_neuron) > layerToPlace(layer_output_neuron) )
-		{
-			placeSmaller = layerToPlace(layer_output_neuron);
-		}
-		else
-		{
-			placeSmaller = layerToPlace(layer_input_neuron);
-		}
-	// ==============================================================================
-
-	for (unsigned int i = 0; i < LayersWithReferences.size(); ++i)
+	else if(layer_input_neuron > layer_output_neuron)
 	{
-		if(LayersWithReferences.at(i).at(1) == layer_input_neuron && LayersWithReferences.at(i).at(2) == layer_output_neuron)
-		{
-			return LayersWithReferences.at(i).at(0);
-		}
-
-		if( layerToPlace( LayersWithReferences.at(i).at(0) ) > placeSmaller )
-		{
-			LayersWithReferences.insert(LayersWithReferences.begin() + i, {layer,layer_input_neuron,layer_output_neuron});
-			return layer++;
-		}
+		layerSmaller = layer_output_neuron;
+		layerBigger = layer_input_neuron;
+	}
+	else
+	{
+		layerSmaller = layer_input_neuron;
+		layerBigger = layer_output_neuron;
 	}
 
-	std::cerr << "ERROR::GlobalInformation::getLayer::Error with argumens of getLayer( int layer_input_neuron, int layer_output_neuron) " << "layer_input_neuron: "  << layer_input_neuron << "\tlayer_output_neuron: " << layer_output_neuron<< std::endl;
-	exit(EXIT_FAILURE);
+	if(layersReference.at(layerBigger).at(layerSmaller) != EMPTY_LAYER)
+	{
+		return layersReference.at(layerBigger).at(layerSmaller);
+	}
+
+	else
+	{
+		layer++;
+		layersReference.at(layerBigger).at(layerSmaller) = layer + 1;
+		std::vector <int> newLayerReferenceComponent(layer + 1,EMPTY_LAYER);
+		layersReference.push_back(newLayerReferenceComponent);
+		layerOrderList.insert(layerOrderList.begin() + layerSmaller + 1, layer);
+		return layer;
+	}
+
 }
 
 int GlobalInformation::getLayer( int historicalMark )
@@ -112,32 +113,14 @@ int GlobalInformation::getHistoricalMark( int historicalMarkNeuronInput, int his
 	return _historicalMark;
 }
 
-/*void GlobalInformation::initialize(int amountOfInputs,int amountOfOutputs )
-{
-	historicalMark = amountOfInputs+amountOfOutputs;
-	innovation = 0;
-	layer=2;
 
-	for (int i = 0; i < amountOfInputs+amountOfOutputs; ++i)
-	{
-		std::vector <int> extension_1 ( 2*i+1, -1);
-		std::vector <int> extension_2 ( 2*i+1, -1);
-
-		neuronsReferencesForCreateNewSynapticWeight.push_back(extension_1);
-		neuronsReferencesForCreateNewNeurons.push_back(extension_2);
-	}
-
-	LayersWithReferences.push_back({LAYER_INPUT,LAYER_INICIAL_INPUT,LAYER_FINAL_INPUT});
-	LayersWithReferences.push_back({LAYER_OUTPUT,LAYER_INICIAL_OUTPUT,LAYER_FINAL_OUTPUT});
-
-}*/
 
 void GlobalInformation::printLayers()
 {
 	std::cout << "Layer Order" << std::endl;
-	for (int i = 0; i < (int)LayersWithReferences.size(); ++i)
+	for (int i = 0; i < (int)layerOrderList.size(); ++i)
 	{
-		std::cout << LayersWithReferences.at(i).at(0) << "\t"; 
+		std::cout << layerOrderList.at(i) << "\t"; 
 	}
 	std::cout << std::endl;
 }
@@ -170,37 +153,22 @@ std::tuple < int,int >  GlobalInformation::vectorToHistoricalMark(std:: vector<i
 
 int GlobalInformation::layerToPlace(int layer)
 {
-	if(layer == LAYER_INICIAL_INPUT)
-	{
-		return -1;
-	}
-	else if(layer == LAYER_INICIAL_OUTPUT)
-	{
-		return LayersWithReferences.size() + 1;
-	}
-
 	int place=-1;
 
-	for (int i = 0; i < (int)LayersWithReferences.size(); ++i)
+	for (int i = 0; i < (int)layerOrderList.size(); ++i)
 	{
-		if(LayersWithReferences.at(i).at(0) == layer )
+		if(layerOrderList.at(i) == layer )
 		{
 			place = i;
 			break;
 		}
 	}
-
 	return place;
 }
 
 std::vector <int> GlobalInformation::layerOrdererList()
 {
-	std::vector <int> _ordererList;
-	for (int i = 0; i < (int)LayersWithReferences.size(); ++i)
-	{
-		_ordererList.push_back(LayersWithReferences.at(i).at(0));
-	}
-	return _ordererList;
+	return layerOrderList;
 }
 
 int GlobalInformation::getAmountOfNeurons()
@@ -225,8 +193,6 @@ int GlobalInformation::getNeuronInputHistoricalMark()
 	neuronsReferencesForCreateNewSynapticWeight.push_back(extension_1);
 	neuronsReferencesForCreateNewNeurons.push_back(extension_2);
 
-	//Se agergan a los layers
-	getLayer(LAYER_INICIAL_INPUT,LAYER_FINAL_INPUT);
 	
 
 	//Se actualizan los layers
@@ -250,8 +216,7 @@ int GlobalInformation::getNeuronOutputHistoricalMark()
 	neuronsReferencesForCreateNewSynapticWeight.push_back(extension_1);
 	neuronsReferencesForCreateNewNeurons.push_back(extension_2);
 
-	//Se agergan a los layers
-	getLayer(LAYER_INICIAL_OUTPUT,LAYER_FINAL_OUTPUT);
+
 	
 
 	//Se actualizan los layers

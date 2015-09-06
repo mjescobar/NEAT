@@ -145,6 +145,7 @@ namespace NEATSpikes
 				newSynapticWeightMutation();
 			}
 		//=============================================
+		
 	}
 
 	
@@ -256,7 +257,9 @@ namespace NEATSpikes
 
 	void ANN::testPrint()
 	{
+		globalInformation->printLayers();
 		mutationControl->print();
+
 	}
 
 	double ANN::getFitness()

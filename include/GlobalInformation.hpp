@@ -4,10 +4,6 @@
 
 #define LAYER_INPUT 0
 #define LAYER_OUTPUT 1
-#define LAYER_INICIAL_INPUT -1
-#define LAYER_FINAL_INPUT -1
-#define LAYER_INICIAL_OUTPUT -2
-#define LAYER_FINAL_OUTPUT -2
 #define AVAIBLE_MUTATION -1
 #define BACK_CONNECTION -2
 
@@ -19,6 +15,7 @@
 
 #define INPUT_INICIAL_IN_OUT -2
 #define OUTPUT_INICIAL_IN_OUT -3
+#define EMPTY_LAYER -1
 
 namespace NEATSpikes{
 	class GlobalInformation{
@@ -55,8 +52,10 @@ namespace NEATSpikes{
 		int layer;
 		std::vector < std::vector <int> > neuronsReferencesForCreateNewSynapticWeight;
 		std::vector < std::vector <int> > neuronsReferencesForCreateNewNeurons;
-		std::vector < std::vector <int> > LayersWithReferences;
+		//std::vector < std::vector <int> > LayersWithReferences;
+		std::vector < int > layerOrderList;
 		std::vector < int > hytoricalMarkToLayer; // En este vector almacena la conversion desde historical mark a layer
+		std::vector < std::vector <int> > layersReference;
 	};
 }
 

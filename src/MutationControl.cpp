@@ -21,15 +21,6 @@ MutationControl::MutationControl(GlobalInformation * globalInformation, std::vec
 	this->neuronPrototype = neuronPrototype;
 	this->synapticWeightPrototype = synapticWeightPrototype;
 	this->historicalMarkAtLayer = historicalMarkAtLayer;
-
-	//Solo falta agregar las conecciones iniciales.
-	/*for (int in = 0; in < inputAmount; ++in)
-	{
-		for (int out = 0; out < outputAmount; ++out)
-		{
-			referenceMapForSynapticsWeight->set({out, 2*out - in},in*outputAmount+out); //Notar que dado que los input se agregan primeros en el vector de neuronas entonces siempre una coneccion de input a output termina en el vector del output dado la forma en que se agregan los vectores a los mapas, por eso se deben usar esos numeros.
-		}
-	}*/
 }
 
 MutationControl::~MutationControl()
@@ -89,7 +80,7 @@ void MutationControl::mutateNewSynapticWeight()
 	}
 	else if (getAmountOfSynapticWeightMutationAvaible() < 0)
 	{
-		std::cerr << "ERROR::MutationControl::mutateNewSynapticWeight::getAmountOfSynapticWeightMutationAvaible less than 0" << std::endl;
+		std::cerr << "ERROR::MutationControl::mutateNewSynapticWeight::getAmountOfSynapticWeightMutationAvaible less than 0\t getAmountOfSynapticWeightMutationAvaible is:  " << getAmountOfSynapticWeightMutationAvaible() << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }
