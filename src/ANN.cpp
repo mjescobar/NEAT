@@ -27,9 +27,6 @@ namespace NEATSpikes
 		mutationControl = new MutationControl(globalInformation, &neuron_vector,  *ANNCanHaveConnectionsBack, &synapticWeight_vector, &innovationToSynapticWeight, &historicalMarkToNeuron, neuron, synapticWeight , &historicalMarkAtLayer );
 
 		createInitialANN();
-
-		
-
 	}
 
 	ANN::~ANN()
@@ -55,7 +52,15 @@ namespace NEATSpikes
 
 	void ANN::printState()
 	{ 
-		
+
+		for (unsigned int i = 0; i < neuron_vector.size(); ++i)
+		{
+			neuron_vector.at(i)->printState();
+		}
+		for (unsigned int i = 0; i < synapticWeight_vector.size(); ++i)
+		{
+			synapticWeight_vector.at(i)->printState();
+		}
 	}
 
 	vector <double> ANN::eval(vector <double> inputs)
@@ -169,14 +174,39 @@ namespace NEATSpikes
 		int i = 0;
 		while(true)
 		{
+			if(counter == neuronsAmount) // Ya se han agregado todas las neuronas de la madre
+			{
+				break; // Se sale del loop while(true)
+			}
+
 			if(flagIsAdded[i] == 0)
 			{
+
 				int historicalOfNeuronIn = (mother->neuron_vector).at(i)->getInitialNeuronInHistoricalMark();
 				int historicalOfNeuronOut = (mother->neuron_vector).at(i)->getInitialNeuronOutHistoricalMark();
 
-				//Primero se verificara que el historical mark al menos es menor que el mas grande de los que existen en la red neuronal del hijo (que proviene del padre), en otro caso no tiene sentido pensar que existan en esta red neuronal.
-				if((int)(children->historicalMarkToNeuron).size() >= historicalOfNeuronIn &&  (int)(children->historicalMarkToNeuron).size() >= historicalOfNeuronOut )
+				//Primero se verificara si son input o output
+				if(historicalOfNeuronIn == INPUT_INICIAL_IN_OUT || historicalOfNeuronIn == OUTPUT_INICIAL_IN_OUT) 
 				{
+					flagIsAdded[i] = 1; // En cualquiera de los dos casos ya se sabe que esta neurona ya fue procesada.
+					
+					//Con 50% se usa los valores de la madre.
+					if( rand()/(double)RAND_MAX > 0.5 )
+					{
+						//Se copian los valores de la neurona de la madre en la neurona que ya existe (heredada del padre).
+						int neuronPosition = (children->historicalMarkToNeuron).at((mother->neuron_vector).at(i)->getHistoricalMark());
+						(children->neuron_vector).at(neuronPosition)->copyValues((mother->neuron_vector).at(i));
+					}
+					++counter;
+					++i;
+					continue;
+
+				}
+
+				//Primero se verificara que el historical mark al menos es menor que el mas grande de los que existen en la red neuronal del hijo (que proviene del padre), en otro caso no tiene sentido pensar que existan en esta red neuronal.
+				if((int)(children->historicalMarkToNeuron).size() > historicalOfNeuronIn &&  (int)(children->historicalMarkToNeuron).size() > historicalOfNeuronOut )
+				{
+
 					//Ahora se verificara si existen ambos en la red neuronal. 
 					if((children->historicalMarkToNeuron).at(historicalOfNeuronIn) != -1 && (children->historicalMarkToNeuron).at(historicalOfNeuronOut) != -1)
 					{
@@ -190,7 +220,7 @@ namespace NEATSpikes
 							if( (children->historicalMarkToNeuron).at((mother->neuron_vector).at(i)->getHistoricalMark()) != -1)
 							{
 								//En este punto hay un 0.5 de probabildiad de que la neurona finalmente sea de la madre.
-								if( rand()/RAND_MAX > 0.5 )
+								if( rand()/(double)RAND_MAX > 0.5 )
 								{
 									//Se copian los valores de la neurona de la madre en la neurona que ya existe (heredada del padre).
 									int neuronPosition = (children->historicalMarkToNeuron).at((mother->neuron_vector).at(i)->getHistoricalMark());
@@ -209,10 +239,7 @@ namespace NEATSpikes
 							children->addNeuron ( newNeuron );
 						}
 
-						if(counter == neuronsAmount) // Ya se han agregado todas las neuronas de la madre
-						{
-							break; // Se sale del loop while(true)
-						}	
+							
 					}
 						
 				}
@@ -226,15 +253,28 @@ namespace NEATSpikes
 		for (unsigned int i = 0; i < (mother->synapticWeight_vector).size() ; ++i)
 		{
 			//Primero se revizara si el innovation es menor que el maximo innovation que existe al momento.
-			if(  (int)(children->innovationToSynapticWeight).size() >= (mother->synapticWeight_vector).at(i)->getInnovation() )
+			if(  (int)(children->innovationToSynapticWeight).size() > (mother->synapticWeight_vector).at(i)->getInnovation() )
 			{
+
+
 				//Ahora se verificara si existe tal innovacion en la red neuronal actual, de existir entoces deberia existir un mapa desde innovationToSynapticWeight con valor diferente de -1.
 				if( (children->innovationToSynapticWeight).at((mother->synapticWeight_vector).at(i)->getInnovation()) != -1 )
 				{
-					//Dado que existe la coneccion tanto en el padre como en la madre, existira un 0.5 de probabiliad de que los valores sean de la madre (sino se mantiene como esta porque ya es una copia del padre)
-					if (rand()/RAND_MAX > 0.5)
+					int synapticPosition = (children->innovationToSynapticWeight).at((mother->synapticWeight_vector).at(i)->getInnovation());
+					//Si en alguno esta deshabilitado se mantendra deshabilitado
+					if( !(children->synapticWeight_vector).at(synapticPosition)->getEnable() )
+					{
+						continue;
+					}
+					else if(!(mother->synapticWeight_vector).at(i)->getEnable())
 					{
 						int synapticPosition = (children->innovationToSynapticWeight).at((mother->synapticWeight_vector).at(i)->getInnovation());
+						(children->synapticWeight_vector).at(synapticPosition)->copyValues((mother->synapticWeight_vector).at(i));
+					}
+
+					//Dado que existe la coneccion tanto en el padre como en la madre, existira un 0.5 de probabiliad de que los valores sean de la madre (sino se mantiene como esta porque ya es una copia del padre)
+					if (rand()/(double)RAND_MAX > 0.5)
+					{
 						(children->synapticWeight_vector).at(synapticPosition)->copyValues((mother->synapticWeight_vector).at(i));
 					}
 				}

@@ -94,6 +94,10 @@ namespace NEATSpikes{
 			\brief Se carga una red neuronal a través de una anteriormente guardada.
 		*/
 		void load(std::string PathWhereIsSaved);
+		/**
+			\brief Se crea una copia con sus variables en su propia memoria.
+		*/
+		ANN * duplicate();
 	private:
 		/**
 			\brief Se guarda toda la información necesario para definir esta red neuronal y poder así volver a cargarla perfectamente si se desease volverla a entrenar.
@@ -116,7 +120,7 @@ namespace NEATSpikes{
 		/**
 			\brief Se agrega una neurona a la red neurnal con todos los valores ya establecidos. 
 		*/
-		void addNeuron(Neuron * N);
+		void addNeuron( Neuron * N );
 		/**
 			\brief 
 		*/
@@ -140,12 +144,10 @@ namespace NEATSpikes{
 		/*
 			\brief
 		*/
-		//ENCONTRAR UN MEJOR NOMBRE!!!!
 		std::tuple < int,int >  localNeuronsToReferencesNeurons(std:: vector<int> neuron_in_out); // Es muy complicado el nombre pero
 		/**
 			\brief 
 		*/	
-			//ENCONTRAR UN MEJOR NOMBRE!!!!
 		std::tuple < int,int >  referencesNeuronsToLocalNeurons(std:: vector<int> vect_1_vect_2); // Es muy complicado el nombre pero
 		/**
 			\brief Se encuentran las posibles neuronas entre las cuales se generara la mutacion.
@@ -159,10 +161,7 @@ namespace NEATSpikes{
 			\brief Se obtienen los parametros de usuario y globalinformation a traves de los que el prototipo tiene.
 		*/
 		void loadParametersFromPrototype(ANN * prototype);
-		/**
-			\brief Se crea una copia con sus variables en su propia memoria.
-		*/
-		ANN * duplicate();
+		
 	// ==============================================================================================
 	// ==============================   VARIABLES  ==================================================
 	private:

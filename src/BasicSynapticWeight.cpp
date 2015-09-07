@@ -70,7 +70,7 @@ namespace NEATSpikes
 	}
 	void BasicSynapticWeight::printState()
 	{
-		std::cout << "BasicSynapticWeight\t" << "identificator: " << identificator << "\tsynapticWeightValue: " << synapticWeightValue << "\toutput " << output << "\thistoticalMark_Neuron_in: " << historicalMarkOfNeuronIn <<  "\thistoticalMark_Neuron_out: " << historicalMarkOfNeuronOut<< std::endl; 
+		std::cout << "BasicSynapticWeight\t" << "innovation: " << innovation << "\tidentificator: " << identificator << "\tsynapticWeightValue: " << synapticWeightValue << "\toutput " << output << "\thistoticalMark_Neuron_in: " << historicalMarkOfNeuronIn <<  "\thistoticalMark_Neuron_out: " << historicalMarkOfNeuronOut<< "\t enable: " << enable << std::endl; 
 	}
 	SynapticWeight * BasicSynapticWeight::createNew( SynapticWeight * prototype, int histoticalMark_Neuron_in , int histoticalMark_Neuron_out )
 	{
@@ -352,6 +352,7 @@ namespace NEATSpikes
 		if(BSW != NULL)
 		{
 			this->synapticWeightValue = BSW->synapticWeightValue;
+			this->enable = BSW->enable;
 		}
 		else
 		{
@@ -359,5 +360,10 @@ namespace NEATSpikes
 			exit(EXIT_FAILURE);
 		}
 		
+	}
+
+	bool BasicSynapticWeight::getEnable()
+	{
+		return enable;
 	}
 }

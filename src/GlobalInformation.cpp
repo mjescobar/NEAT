@@ -57,13 +57,12 @@ int GlobalInformation::getLayer( int layer_input_neuron, int layer_output_neuron
 	else
 	{
 		layer++;
-		layersReference.at(layerBigger).at(layerSmaller) = layer + 1;
-		std::vector <int> newLayerReferenceComponent(layer + 1,EMPTY_LAYER);
+		layersReference.at(layerBigger).at(layerSmaller) = layer;
+		std::vector <int> newLayerReferenceComponent(layer,EMPTY_LAYER);
 		layersReference.push_back(newLayerReferenceComponent);
 		layerOrderList.insert(layerOrderList.begin() + layerSmaller + 1, layer);
 		return layer;
 	}
-
 }
 
 int GlobalInformation::getLayer( int historicalMark )
@@ -107,8 +106,8 @@ int GlobalInformation::getHistoricalMark( int historicalMarkNeuronInput, int his
 	//==========================================================================
 	int layerInputNeuron = hytoricalMarkToLayer.at(historicalMarkNeuronInput);
 	int layerOutputNeuron = hytoricalMarkToLayer.at(historicalMarkNeuronoutput);
-	int layer = getLayer(layerInputNeuron,layerOutputNeuron);
-	hytoricalMarkToLayer.push_back(layer);
+	int _layer = getLayer(layerInputNeuron,layerOutputNeuron);
+	hytoricalMarkToLayer.push_back(_layer);
 
 	return _historicalMark;
 }

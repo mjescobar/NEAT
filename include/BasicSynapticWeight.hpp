@@ -124,6 +124,8 @@ namespace NEATSpikes{
 		*/
 		void copyValues(SynapticWeight * sw);
 
+		bool getEnable();
+
 	private:
 		/**
 			\brief Dado que no es 100% compatible llamar a un constructor desde otro constructor se crea el método init() el cual inicializa el peso sináptico.

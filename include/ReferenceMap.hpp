@@ -38,9 +38,13 @@ namespace NEATSpikes
 
 			void addNewReferenceMapVector()
 			{
+				std::cerr << "addNewReferenceMapVector::1  " << currentPosition << std::endl;
 				ReferenceMapVector * newReferenceMapVector = new ReferenceMapVector(currentPosition++, globalInformation, neurons, connectionsBack);
+				std::cerr << "addNewReferenceMapVector::2" << std::endl;
 				amountOfAvaibleMutations += newReferenceMapVector->getAmountOfAvaibleMutations();
+				std::cerr << "addNewReferenceMapVector::3" << std::endl;
 				referenceNeurons.push_back(newReferenceMapVector);
+				std::cerr << "addNewReferenceMapVector::4" << std::endl;
 			}
 
 
@@ -85,18 +89,27 @@ namespace NEATSpikes
 			}
 
 
-			ReferenceMap * duplicate()
+			ReferenceMap * duplicate(std::vector < Neuron * > * _neurons)
 			{
 				ReferenceMap * result = new ReferenceMap();
-				for (int i = 0; i < (int)referenceNeurons.size(); ++i)
+				for (int i = 0; i < (int)this->referenceNeurons.size(); ++i)
 				{
-					result->referenceNeurons.push_back( this->referenceNeurons.at(i)->duplicate() );
+					result->referenceNeurons.push_back( this->referenceNeurons.at(i)->duplicate(_neurons) );
 				}
 				result->currentPosition = this->currentPosition;
 				result->amountOfAvaibleMutations = this->amountOfAvaibleMutations;
 				result->globalInformation = this->globalInformation;
 				result->connectionsBack = this->connectionsBack;
-				result->neurons = this->neurons;
+				result->neurons = _neurons;
+				for (int i = 0; i < (int)this->valueToPosition.size(); ++i)
+				{
+					std::vector <int> temp;
+					for (int j = 0; j < (int)valueToPosition.at(i).size(); ++j)
+					{
+						temp.push_back(valueToPosition.at(i).at(j));
+					}
+					result->valueToPosition.push_back( temp );
+				}
 				return result;
 			}
 			 

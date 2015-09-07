@@ -13,6 +13,7 @@ namespace NEATSpikes
 		historicalMarkNeuronInicialIn = historicalMark_inicial_input;
 		historicalMark = globalInformation->getHistoricalMark(historicalMark_inicial_input, historicalMark_inicial_output);
 		layer = globalInformation->getLayer(historicalMark);
+		changeValuesRandomly();
 	}
 	// Este constructor debe ser llamado una sola vez en todo el tiempo
 	BasicNeuron::BasicNeuron(GlobalInformation * information, std::string pathUserDefinitionsAboutBasicNeuron )
@@ -56,7 +57,6 @@ namespace NEATSpikes
 
 			if( rand()/(double)RAND_MAX < *probabilityOfSigmoidConstantRandomMutation )
 			{
-
 				sigmoidConstant = (max - min)*(rand()/(double)RAND_MAX) + min;
 			}
 			else
@@ -268,7 +268,7 @@ namespace NEATSpikes
 
 	void BasicNeuron::addNewOutcomingConection(int innovationOfOutcomingConection)
 	{
-		incomingConections.push_back(innovationOfOutcomingConection);
+		outcomingConections.push_back(innovationOfOutcomingConection);
 	}
 
 	double BasicNeuron::getLastOutput()
@@ -525,6 +525,7 @@ namespace NEATSpikes
 		BN->historicalMark = (BN->globalInformation)->getNeuronOutputHistoricalMark();
 		BN->layer = (BN->globalInformation)->getNeuronOutputLayer();
 		BN->identificator = ++*id;
+		BN->changeValuesRandomly();
 		return BN;
 	}
 	
@@ -538,6 +539,7 @@ namespace NEATSpikes
 		BN->historicalMark = (BN->globalInformation)->getNeuronInputHistoricalMark();
 		BN->layer = (BN->globalInformation)->getNeuronInputLayer();
 		BN->identificator = ++*id;
+		BN->changeValuesRandomly();
 		return BN;
 	}
 

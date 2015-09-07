@@ -45,6 +45,7 @@ namespace NEATSpikes{
 		virtual double getDistance(SynapticWeight * sw)=0;
 		virtual void changeValuesRandomly()=0;
 		virtual void copyValues(SynapticWeight * sw)=0;
+		virtual bool getEnable()=0;
 
 
 
