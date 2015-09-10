@@ -88,8 +88,8 @@ namespace NEATSpikes{
 		int identificator;
 		
 
-		static double distanceThresshold;
-		static int organismLifeExpectation;
+		double * distanceThresshold;
+		int * organismLifeExpectation;
 		static int id;
 	};
 

@@ -2,8 +2,6 @@
 
 namespace NEATSpikes
 {
-	double Niche::distanceThresshold=0.0;
-	int Niche::organismLifeExpectation=0;
 	int Niche::id=0;
 
 	Niche::Niche()
@@ -22,21 +20,39 @@ namespace NEATSpikes
 
 	Niche::~Niche()
 	{
+		// Se eliminan todos los organismos que tiene este nicho para que desocupen memoria.
 
+		for (unsigned int i = 0; i < organism_vector.size(); ++i)
+		{
+			delete organism_vector.at(i);
+		}
+		organism_vector.clear();
+
+		for (unsigned int i = 0; i < newOrganism_vector.size(); ++i)
+		{
+			delete newOrganism_vector.at(i);
+		}
+		newOrganism_vector.clear();
+
+		delete champion;
 	}
 	
 	Organism * Niche::obtainOneOrganismToCrossoverWithAnotherNicheOrganism()
 	{
+		// Se obtiene un valor aleatorio [0,1]
 		double random = rand()/(double)RAND_MAX;
-		double sum=0.0;
+		//Ahora se debe normalizar los fitness de cada organismo parte de este nicho. 
+		double sum=0.0; // esta suma a lo mas va a dar 1.0, dado que es la suma de los fitness de los organismos dividido la cantidad de fitness de todos los organismos juntos.
 		for (unsigned int i = 0; i < organism_vector.size(); ++i)
 		{
-			sum += organism_vector.at(i)->getFitness()/totalFitness; // Se divide por totalFitness para normalizar.
+			// Se divide por totalFitness para normalizar.
+			sum += organism_vector.at(i)->getFitness()/totalFitness; 
 			if(sum >= random)
 			{
 				return organism_vector.at(i);
 			}
 		}
+		// No deberia pasar el for pues random maximo es 1.0 y el sum debe llegar hasta 1.0
 		std::cerr << "ERROR::Niche::obtainOneOrganismToCrossoverWithAnotherNicheOrganism:: Could not find a organism" << std::endl;
 		exit(EXIT_FAILURE);
 	}
@@ -47,8 +63,8 @@ namespace NEATSpikes
 	Organism * Niche::obtainAChildren()
 	{
 		// Primero se encuentra al padre
-		Organism * father=NULL;
-		Organism * mother=NULL;
+		Organism * father = NULL;
+		Organism * mother = NULL;
 		unsigned int fatherPosition=-1;
 		double random = rand()/(double)RAND_MAX;
 		double sum=0.0;
@@ -57,15 +73,13 @@ namespace NEATSpikes
 		// En caso de que no hayan más organismos en este nicho entonces se retorna el mismo organismo pero mutado.
 		if(organism_vector.size() == 1)
 		{
-			ANN * children = new ANN(*organism_vector.at(0));
+			ANN * children = organism_vector.at(0)->duplicate();
 			children->mutate();
 			return children;
 		}
 		// En caso de que no hayan organismos es porque puede ser que el nicho sea un nicho vacío en ese caso es un error porque no debería haber nichos vacíos que hayan sobrevivido hasta este momento o puede ser que sea un nicho nuevo en ese caso sólo hay organismos nuevos de donde obtener hijos.
 		else if (organism_vector.size() == 0)
 		{
-			
-
 			if (newOrganism_vector.size()==0)
 			{
 				std::cerr << "ERROR::Niche::obtainAChildren Niche have no organisms" << std::endl;
@@ -73,7 +87,7 @@ namespace NEATSpikes
 			}
 
 			// Signfica que es un nicho nuevo, por lo tato tiene sólo organismos nuevos. Entonces se crea un nuevo organismo a través de éste.
-			return newOrganism_vector.at(rand()%newOrganism_vector.size())->createOtherFromSeedOrganism();
+			return newOrganism_vector.at(rand()%newOrganism_vector.size())->createNewWithSameTopologieButDiferentValues();
 		}
 
 
@@ -90,7 +104,8 @@ namespace NEATSpikes
 				break;
 			}
 		}
-		if(i == organism_vector.size())
+
+		if(i == organism_vector.size()) // Esto quiere decir que no se encontro padre lo que no tiene sentido a menos que haya una anormalidad
 		{
 			std::cerr << "ERROR::Niche::obtainAChildren::1::totalFitness is not correct" << std::endl;
 			exit(EXIT_FAILURE);
@@ -98,7 +113,7 @@ namespace NEATSpikes
 
 
 		// Ahora se encuentra a la madre
-		double newTotalFitness = totalFitness- father->getFitness(); // Esto se calcula para que el próximo organismo electo (la madre) debe ser diferente al padre.
+		double newTotalFitness = totalFitness - father->getFitness(); // Esto se calcula para que el próximo organismo electo (la madre) debe ser diferente al padre.
 		random = rand()/(double)RAND_MAX; // Es importante obtener un nuevo valor random.
 
 		sum=0.0;
@@ -114,12 +129,16 @@ namespace NEATSpikes
 				}
 			}	
 		}
+
 		if( i == organism_vector.size() )
-		{
+		{ // No se encontro a la madre, esto no deberia ocurrir a menos que haya una anormalidad producto de por ejemplo un error de programacion
 			std::cerr << "ERROR::Niche::obtainAChildren::2::totalFitness is not correct" << std::endl;
 			exit(EXIT_FAILURE);
 		}
+
+		//Dado que tenemos al padre y a la madre simpelemente deben producir al hijo a traves de cruzamiento
 		ANN * children  = crossover( father , mother );
+		//Ademas el hijo tiene la opcion de mutar... OJO que no se le obliga a mutar, el echo de llamar al mutate significa que segun probabilidades que el mismo usuario puede elegir es que pueden mutar ciertas caracteristicas del hijo. Por ejemplo puede cambiar valores de una coneccion sinaptica o crear una nueva
 		children->mutate();
 
 		return children;
@@ -137,7 +156,7 @@ namespace NEATSpikes
 	
 	bool Niche::IsAcepted(Organism * orgm)
 	{
-		if (organismDistance(orgm,representant) < distanceThresshold)
+		if (organismDistance(orgm,representant) < *distanceThresshold)
 		{
 			return true;
 		}
@@ -186,53 +205,57 @@ namespace NEATSpikes
 		//=========================================================================================
 		// Ahora se le da el valor a las variables de usuario y se termina este método. Usando mapas se hace más sencillo y más robusto.
 		//=========================================================================================
-		organismLifeExpectation = (int)UserDefinitions["organismLifeExpectation"];
-		distanceThresshold = UserDefinitions["distanceThresshold"];
+		organismLifeExpectation = new int(UserDefinitions["organismLifeExpectation"]);
+		distanceThresshold = new double(UserDefinitions["distanceThresshold"]);
 		//=========================================================================================
 	}
+
 	Niche Niche::createNew(Organism * initialOrgm)
 	{
 		Niche * n = new Niche();
-		n->champion = new ANN(*initialOrgm);
-		n->representant=initialOrgm;
+		n->champion = initialOrgm->duplicate(); //new ANN(*initialOrgm);
+		n->representant = initialOrgm;
 		n->newOrganism_vector.push_back(initialOrgm);
 		return *n;
 
 	}
 	void Niche::maturation() // Se supone que todos los organismos nuevos son probados antes de hacer uso de este método
 	{
+		//Se pasan todos los organismos nuevos a pasar al vector de los organismos que tienen fitness digase los "viejos"
 		for (unsigned int i = 0; i < newOrganism_vector.size(); ++i)
 		{
 			double fitness =  newOrganism_vector.at(i)->getFitness();
+			//Si aparece uno mejor entonces se le reconoce como campeon
 			if(fitness > champion->getFitness())
 			{
 				delete(champion);
-				champion = new ANN(*newOrganism_vector.at(i)); 
+				champion = newOrganism_vector.at(i)->duplicate();
 			}
 			totalFitness += fitness;
-
+			//Este es el paso importante donde se agregan los nuevos organismos en el vector de organismos con fitness.
 			organism_vector.push_back(newOrganism_vector.at(i));
 		}
+		//Se elimina el vector de organismos nuevos dado que no deberia quedar ninguno.
 		newOrganism_vector.clear();
+		//Esta ultima decision de quien es el representante peude ir variando, segun el gusto del programador.
 		representant = organism_vector.at( rand()%organism_vector.size() );
 	}
 
 	void Niche::epoch() // Se supone que todos los organismos nuevos son probados antes de hacer uso de este método
 	{
+		//Segun la espectativa de vida es que pueden morir o no ciertos organismos.
+
 		for (unsigned int i = 0; i < organism_vector.size(); ++i)
 		{
-			double random = rand()/(double)RAND_MAX;
-			if( random > organismLifeExpectation/(double)(1.0 + organismLifeExpectation) )
+			if( !organism_vector.at(i)->epoch() )
 			{
-				
 				// Entonces el organismo muere.
-				totalFitness-=organism_vector.at(i)->getFitness();
+				totalFitness -= organism_vector.at(i)->getFitness();
 				delete(organism_vector.at(i));
 				organism_vector.erase(organism_vector.begin()+i);
 				i--;
 			}
 		}
-		
 		amountOfGenerationsAlive++;
 	}
 	
@@ -256,7 +279,7 @@ namespace NEATSpikes
 	Niche Niche::createInitial(Organism * initialOrgm, std::string path_Niche_definitions)
 	{
 		Niche * n = new Niche();
-		n->champion = new ANN(*initialOrgm);
+		n->champion = initialOrgm->duplicate();
 		n->setUserDefinitions(path_Niche_definitions);
 		n->representant=initialOrgm;
 		n->newOrganism_vector.push_back(initialOrgm);
@@ -278,7 +301,6 @@ namespace NEATSpikes
 		std::cout << "\ttotalFitness\t" << totalFitness << std::endl;
 		std::cout << "\taverageFitness\t" << getFitnessAverage() << std::endl;
 		std::cout << "\tamount of organism\t" << getAmountOfOrganisms() << std::endl;
-
 		std::cout << "\t======================== " << std::endl;
 	}
 

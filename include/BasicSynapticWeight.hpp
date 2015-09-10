@@ -125,16 +125,16 @@ namespace NEATSpikes{
 		void copyValues(SynapticWeight * sw);
 
 		bool getEnable();
-
+		/**
+			\brief Se obtienen los datos desde el archivo con definiciones y se guarda en las variables estáticas correspondietes. 
+		*/
+		void SetParametersFromUserDefinitionsPath(std::string pathUserDefinitionsAboutBasicSynapticWeight);
 	private:
 		/**
 			\brief Dado que no es 100% compatible llamar a un constructor desde otro constructor se crea el método init() el cual inicializa el peso sináptico.
 		*/
 		void init();
-		/**
-			\brief Se obtienen los datos desde el archivo con definiciones y se guarda en las variables estáticas correspondietes. 
-		*/
-		void SetParametersFromUserDefinitionsPath(std::string pathUserDefinitionsAboutBasicSynapticWeight);
+		
 		/**
 			\brief Se cargan los parametros de usuario a través de otra conexion sinaptica prototupo.
 		*/

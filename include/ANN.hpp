@@ -19,12 +19,15 @@
 #include <iostream>
 #include <cstring>
 #include <algorithm>    // std::copy
-
+#include <sys/stat.h>
+#include <fstream>
 
 using namespace std;
 
-namespace NEATSpikes{
-	class ANN{
+namespace NEATSpikes
+{
+	class ANN
+	{
 	// Primero los métodos y después las variables.
 	// ===================================================================================================
 	// ============================================ MÉTODOS  ================================================
@@ -93,16 +96,23 @@ namespace NEATSpikes{
 		/**
 			\brief Se carga una red neuronal a través de una anteriormente guardada.
 		*/
-		void load(std::string PathWhereIsSaved);
+		void load(std::string PathWhereIsSaved, Neuron * inputPrototype, Neuron * outputPrototype, Neuron * neuron, SynapticWeight * synapticWeight, std::string path_ANN_definitions, GlobalInformation * globalInformation );
 		/**
 			\brief Se crea una copia con sus variables en su propia memoria.
 		*/
 		ANN * duplicate();
-	private:
 		/**
 			\brief Se guarda toda la información necesario para definir esta red neuronal y poder así volver a cargarla perfectamente si se desease volverla a entrenar.
 		*/
 		void saveState(std::string pathToSave);
+		/**
+			\brief Pasa una epoca y se debe saber si este organismo muere o no muere. 
+			\return Si el organismo debe morir entonces retorna false, sino true.
+		*/
+		bool epoch();
+
+		void saveUserDefinitions(std::string pathToSave);
+	private:
 		
 		/**
 			\brief Se obtienen los datos desde el archivo con definiciones y se guarda en las variables estáticas correspondietes. 
@@ -207,6 +217,8 @@ namespace NEATSpikes{
 		double * ConstantOFDiferencesInStructureOfSynapticWeight;
 		double * ConstantOFDiferencesInStructureOfNeurons;
 		bool * ANNCanHaveConnectionsBack;
+		double * organismLifeExpectation;
+		int age;
 	};
 
 	typedef ANN Organism;

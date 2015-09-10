@@ -9,6 +9,7 @@ namespace NEATSpikes
 	ANN::ANN()
 	{
 		identificator = id++;
+		age = 0;
 	}
 
 	//Este metodo se llama una sola vez por todo NEAT
@@ -27,6 +28,7 @@ namespace NEATSpikes
 		mutationControl = new MutationControl(globalInformation, &neuron_vector,  *ANNCanHaveConnectionsBack, &synapticWeight_vector, &innovationToSynapticWeight, &historicalMarkToNeuron, neuron, synapticWeight , &historicalMarkAtLayer );
 
 		createInitialANN();
+		age = 0;
 	}
 
 	ANN::~ANN()
@@ -337,16 +339,130 @@ namespace NEATSpikes
 
 		//=============================================
 		// Neuronas
+		mkdir( (pathToSave + "Neurons/" ).c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
+
+		for (unsigned int i = 0; i < neuron_vector.size(); ++i)
+		{
+			neuron_vector.at(i)->saveState(pathToSave + "Neurons/" );
+		}
+		neuron_vector.at(0)->saveUserDefinitions(pathToSave + "Neurons/" );
 
 
 
 		//=============================================
 		// Conecciones sinapticas
+		mkdir( (pathToSave + "Synapses/" ).c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
+
+		for (unsigned int i = 0; i < synapticWeight_vector.size(); ++i)
+		{
+			synapticWeight_vector.at(i)->saveState(pathToSave + "Synapses/" );
+		}
+		synapticWeight_vector.at(0)->saveUserDefinitions(pathToSave + "Synapses/" );
+
+		// Se guarda la edad.
+
+		std::ofstream parameters;
+		parameters.open(pathToSave + "ANN", std::ios::out);
+		parameters << "age " << age << std::endl;
+		parameters.close();
 
 	}
 
-	void ANN::load(std::string PathWhereIsSaved)
+	void ANN::load(std::string PathWhereIsSaved, Neuron * inputPrototype, Neuron * outputPrototype, Neuron * neuron, SynapticWeight * synapticWeight, std::string path_ANN_definitions, GlobalInformation * globalInformation )
 	{
+
+		FILE * archive; // El archivo es cargado en esta variable
+		//Las siguientes variables son usadas para leer las lineas del archivo
+		char * lineRd = NULL;
+		size_t len = 0;
+		ssize_t read;
+		
+		char * token_1; // Aqui se guardan los strings
+		char * token_2; // y aquí el valor 
+		char * saveptr; // variable para indicar el lugar donde quedó la ultima lectura del strtok_r
+		std::map <std::string, double> parameters; 
+		char delimiters[] = " \n\t"; // Los delimitadores usados.
+		// Se abre el archivo donde están las definiciones de usuario.
+		//=============================saves============================================================
+			archive = fopen( (PathWhereIsSaved + "ANN").c_str() , "r" );
+			if ( archive == NULL )
+			{
+				std::cerr << "ERROR::BasicNeuron::load::Could not read the file" << std::endl;
+				exit( EXIT_FAILURE );
+			}
+		//=========================================================================================
+		//Se lee linea a linea y se guarda en el mapa parameters
+		//=========================================================================================
+			while ( ( read = getline(&lineRd, &len, archive) ) != -1) 
+			{
+				token_1 = strtok_r(lineRd, delimiters, &saveptr); // Por si acaso se desea hacer uso de hilos.
+				token_2 = strtok_r(NULL, delimiters, &saveptr);
+				parameters[token_1]=atof(token_2); // Se comieenza a llenar el mapa.
+			}
+			fclose( archive ); // Ya no se usa el recurso así que se cierra.
+
+		age = int(parameters["age"]);
+
+
+
+		this->inputPrototype = inputPrototype;
+		this->outputPrototype = outputPrototype;
+		this->prototypeNeuron = neuron;
+		this->prototypeSynapticWeight = synapticWeight;
+		this->globalInformation = globalInformation; // Así siempre se tiene una copia de la información de todas las redes neuronales.
+
+		SetParametersFromUserDefinitionsPath( path_ANN_definitions ); // Acá se determinan los valores de las definiciones de usurio.
+
+		identificator = id++;
+
+		mutationControl = new MutationControl(globalInformation, &neuron_vector,  *ANNCanHaveConnectionsBack, &synapticWeight_vector, &innovationToSynapticWeight, &historicalMarkToNeuron, neuron, synapticWeight , &historicalMarkAtLayer );
+
+
+		std::ifstream infile( PathWhereIsSaved + "Neurons/index" );
+		std::string line;
+		//Se procede a cargar las neuronas.
+		//Primero las inputs, luego las outputs y finalmente las hidden, pues ese es el orden natural que poseen y en el que naturalmente tambien fueron guardados.
+
+		for (int i = 0; i < *inputsAmount; ++i)
+		{
+			infile >> line;
+			int position = (neuron_vector).size();
+			inputsInNeuron_vector.push_back(position);
+			Neuron * newNeuron = inputPrototype->createNewInput();
+			newNeuron->load( PathWhereIsSaved + "Neurons/" + "BN" + line ); // OJO E BN, no deberia ir.
+			mutationControl->AddInitialNeuron( newNeuron );
+		}
+
+		 
+		for (int i = 0; i < *outputsAmount; ++i)
+		{
+			infile >> line;
+			int position = (neuron_vector).size();
+			outputsInNeuron_vector.push_back(position);
+			Neuron * newNeuron = outputPrototype->createNewOutput();
+			newNeuron->load( PathWhereIsSaved + "Neurons/" + "BN" + line ); // OJO E BN, no deberia ir.
+			mutationControl->AddInitialNeuron( newNeuron );
+		}
+
+		while ((infile >> line).good())
+		{
+				Neuron * newNeuron = prototypeNeuron->createNew(0,0);
+				newNeuron->load( PathWhereIsSaved + "Neurons/" + "BN" + line ); // OJO E BN, no deberia ir.
+				mutationControl->addNeuron( newNeuron );
+		}
+
+		infile.close();
+
+
+		std::ifstream infileSynapses( PathWhereIsSaved + "Synapses/index" );
+
+		while ((infileSynapses >> line).good())
+		{
+				SynapticWeight * newNeuron = prototypeSynapticWeight->createNew(prototypeSynapticWeight,0,0);
+				newNeuron->load( PathWhereIsSaved + "Synapses/" + "BSW" + line ); // OJO E BN, no deberia ir.
+				mutationControl->addSynapticWeight( newNeuron );
+		}
+
 
 	}
 
@@ -365,7 +481,7 @@ namespace NEATSpikes
 		std::map <std::string, double> UserDefinitions; 
 		char delimiters[] = " \n\t"; // Los delimitadores usados.
 		// Se abre el archivo donde están las definiciones de usuario.
-		//=========================================================================================
+		//=============================saves============================================================
 			archive = fopen( pathUserDefinitionsAboutANN.c_str() , "r" );
 			if ( archive == NULL )
 			{
@@ -395,6 +511,7 @@ namespace NEATSpikes
 			ConstantOFDiferencesInStructureOfSynapticWeight = new double(UserDefinitions[ "ConstantOFDiferencesInStructureOfSynapticWeight" ]);
 			ConstantOFDiferencesInStructureOfNeurons = new double(UserDefinitions[ "ConstantOFDiferencesInStructureOfNeurons" ]);
 			ANNCanHaveConnectionsBack = new bool(UserDefinitions[ "ANNCanHaveConnectionsBack" ]);
+			organismLifeExpectation = new double(UserDefinitions[ "organismLifeExpectation" ]);
 		//=========================================================================================
 		
 		// =========================================================================================
@@ -419,9 +536,31 @@ namespace NEATSpikes
 				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error probabilityOfSynapticWeightMutation must be on interval [0,1]" << std::endl;
 				exit(EXIT_FAILURE);
 			}
+
+			if( *organismLifeExpectation < 0 || *organismLifeExpectation > 1)
+			{
+				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error organismLifeExpectation must be on interval [0,1]" << std::endl;
+				exit(EXIT_FAILURE);
+			}
 		//=========================================================================================
 	}
 
+	void ANN::saveUserDefinitions(std::string pathToSave)
+	{
+		std::ofstream userDefinitions;
+		userDefinitions.open(pathToSave+"userDefinitions", std::ios::out);
+		userDefinitions << "Probability_Of_Synaptic_Weight_Mutation " << *probabilityOfSynapticWeightMutation  << std::endl;
+		userDefinitions << "Probability_Of_Neuron_Mutation " << *probabilityOfNeuronMutation  << std::endl;
+		userDefinitions << "Probability_Of_New_Neuron_Mutation " << *probabilityOfNewNeuronMutation  << std::endl;
+		userDefinitions << "Probability_Of_New_Synaptic_Weight_Mutation " << *probabilityOfNewSynapticWeightMutation << std::endl;
+		userDefinitions << "inputsAmount " << *inputsAmount  << std::endl;
+		userDefinitions << "outputsAmount " << *outputsAmount  << std::endl;
+		userDefinitions << "ConstantOFDiferencesInStructureOfSynapticWeight " << *ConstantOFDiferencesInStructureOfSynapticWeight  << std::endl;
+		userDefinitions << "ConstantOFDiferencesInStructureOfNeurons " << *ConstantOFDiferencesInStructureOfNeurons  << std::endl;
+		userDefinitions << "ANNCanHaveConnectionsBack " << *ANNCanHaveConnectionsBack  << std::endl;
+		userDefinitions << "organismLifeExpectation " << *organismLifeExpectation  << std::endl;
+		userDefinitions.close();
+	}
 
 	void ANN::newNeuronMutation()
 	{
@@ -718,6 +857,28 @@ namespace NEATSpikes
 		final->inputPrototype = this->inputPrototype;
 		final->outputPrototype = this->outputPrototype;
 
+		final->age = 0;
+
 		return final;
+	}
+
+
+	bool ANN::epoch()
+	{
+		// Si es su primera epoca definitivamente se le deja vivir 
+		if(age == 0)
+		{
+			age++;
+			return true;
+		}
+		
+		double random = rand()/(double)RAND_MAX;
+		// Se usa una desigualdad tal que la esperanza de vida sea en probabilidad la que el usuario puso.
+		if( random > *organismLifeExpectation/(double)(1.0 + *organismLifeExpectation) )
+		{
+			return false;
+		}
+		age++;
+		return true;
 	}
 }

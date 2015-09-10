@@ -38,13 +38,9 @@ namespace NEATSpikes
 
 			void addNewReferenceMapVector()
 			{
-				std::cerr << "addNewReferenceMapVector::1  " << currentPosition << std::endl;
 				ReferenceMapVector * newReferenceMapVector = new ReferenceMapVector(currentPosition++, globalInformation, neurons, connectionsBack);
-				std::cerr << "addNewReferenceMapVector::2" << std::endl;
 				amountOfAvaibleMutations += newReferenceMapVector->getAmountOfAvaibleMutations();
-				std::cerr << "addNewReferenceMapVector::3" << std::endl;
 				referenceNeurons.push_back(newReferenceMapVector);
-				std::cerr << "addNewReferenceMapVector::4" << std::endl;
 			}
 
 
@@ -146,7 +142,6 @@ namespace NEATSpikes
 					}
 				}
 				
-				std::cerr << "ERROR::ReferenceMap::getPlaceOfValue::Value has not been stored in the map before this call." << std::endl;
 				exit(EXIT_FAILURE);
 			}
 			void print()

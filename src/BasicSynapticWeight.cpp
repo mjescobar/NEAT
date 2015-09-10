@@ -2,7 +2,6 @@
 
 namespace NEATSpikes
 {
-
 	//Este es el metodo con el que se debe comenzar la primera conexion sinaptica de todas, luego todas las que vienen son duplicas de esta.
 	BasicSynapticWeight::BasicSynapticWeight(std::string pathUserDefinitionsAboutBasicSynapticWeight, GlobalInformation * Info)
 	{
@@ -72,7 +71,7 @@ namespace NEATSpikes
 	{
 		std::cout << "BasicSynapticWeight\t" << "innovation: " << innovation << "\tidentificator: " << identificator << "\tsynapticWeightValue: " << synapticWeightValue << "\toutput " << output << "\thistoticalMark_Neuron_in: " << historicalMarkOfNeuronIn <<  "\thistoticalMark_Neuron_out: " << historicalMarkOfNeuronOut<< "\t enable: " << enable << std::endl; 
 	}
-	SynapticWeight * BasicSynapticWeight::createNew( SynapticWeight * prototype, int histoticalMark_Neuron_in , int histoticalMark_Neuron_out )
+	SynapticWeight * BasicSynapticWeight::createNew(SynapticWeight * prototype, int histoticalMark_Neuron_in , int histoticalMark_Neuron_out )
 	{
 		BasicSynapticWeight * BSW = new BasicSynapticWeight( prototype, histoticalMark_Neuron_in, histoticalMark_Neuron_out );
 		return BSW;
@@ -174,7 +173,7 @@ namespace NEATSpikes
 		// Se crea el archivo y se guardan los datos.
 		std::ofstream finalFile;
 		finalFile.open(finalArchive);
-		finalFile << "identificator " << identificator << "\nsynapticWeightValue " << synapticWeightValue << "\noutput " << output << "\nenable "<< enable  << "\nhistoricalMarkOfNeuronIn "<< historicalMarkOfNeuronIn  << "\nhistoricalMarkOfNeuronOut "<< historicalMarkOfNeuronOut;
+		finalFile << "identificator " << identificator << "\nsynapticWeightValue " << synapticWeightValue << "\noutput " << output << "\nenable "<< enable  << "\nhistoricalMarkOfNeuronIn "<< historicalMarkOfNeuronIn  << "\nhistoricalMarkOfNeuronOut "<< historicalMarkOfNeuronOut << "\ninnovation " << innovation;
 		finalFile.close();
 	}
 	void BasicSynapticWeight::load(std::string PathWhereIsSaved)
@@ -211,6 +210,7 @@ namespace NEATSpikes
 		enable = loadData["enable"];
 		historicalMarkOfNeuronIn = loadData["historicalMarkOfNeuronIn"];
 		historicalMarkOfNeuronOut = loadData["historicalMarkOfNeuronOut"];
+		innovation = loadData["innovation"];
 		//=========================================================================================
 		fclose(archive);
 	}

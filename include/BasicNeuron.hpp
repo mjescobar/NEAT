@@ -150,11 +150,11 @@ namespace NEATSpikes{
 			*/
 			void copyValues(Neuron * neuron);
 
-		private:
 			/**
 				\brief Se obtienen los datos desde el archivo con definiciones y se guarda en las variables estáticas correspondietes. 
 			*/
 			void SetParametersFromUserDefinitionsPath(std::string pathUserDefinitionsAboutBasicNeuron);
+		private:
 			/**
 				\brief Se inicializa una neurona con sus variables de forma random.
 			*/

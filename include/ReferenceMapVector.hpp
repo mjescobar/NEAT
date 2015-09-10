@@ -34,7 +34,6 @@ namespace NEATSpikes
 
 			ReferenceMapVector(int position, GlobalInformation * globalInformation, std::vector < Neuron * > * neurons, bool connectionsBack)
 			{
-				std::cerr << "ReferenceMapVector::1" << std::endl;
 				// Se crea este vector y se setean los valores.
 				this->position = position;
 				this->connectionsBack = connectionsBack;
@@ -43,45 +42,34 @@ namespace NEATSpikes
 				amountOfAvaibleMutations = initialSize;
 				this->neurons = neurons;
 				this->globalInformation = globalInformation;
-				std::cerr << "ReferenceMapVector::2" << std::endl;
 				std::fill_n(coordinates, initialSize, AVAIBLE_MUTATION);
-				std::cerr << "ReferenceMapVector::3" << std::endl;
 
 				// En caso de que se prohiba conecciones recursivas se deben eliminar todas las opciones recursivas.
-				std::cerr << "ReferenceMapVector::4" << std::endl;
 				if(!connectionsBack)
 				{
-				std::cerr << "ReferenceMapVector::5" << std::endl;
 					coordinates[position] = NOT_CONNECTIONS_BACK;
 					amountOfAvaibleMutations --;
 
 					amountOfAvaibleMutations -= (initialSize-1)/2;
-				std::cerr << "neuronsize " << (*neurons).size() << "\t" << position << std::endl;
 					int thisNeuronLayerPlace = globalInformation->layerToPlace((*neurons).at(position)->getLayer());
 					//Se mira la primera mitad nada mas pues la siguiente mitad es inverso.
-				std::cerr << "ReferenceMapVector::6" << std::endl;
 					for (int i = 0; i < (initialSize-1)/2; ++i)
 					{
 						int otherNeuronLayerPlace = globalInformation->layerToPlace((*neurons).at(i)->getLayer()); 
-				std::cerr << "ReferenceMapVector::7" << std::endl;
 						if( thisNeuronLayerPlace >= otherNeuronLayerPlace )
 						{
 							coordinates[i] = NOT_CONNECTIONS_BACK;
 							coordinates[initialSize -1 -i] = -1;
-				std::cerr << "ReferenceMapVector::8" << std::endl;
 							if(thisNeuronLayerPlace == otherNeuronLayerPlace)
 							{
 								coordinates[initialSize - 1 -i] = NOT_CONNECTIONS_BACK;
 								amountOfAvaibleMutations--;
-				std::cerr << "ReferenceMapVector::9" << std::endl;
 							}
 						}
 						else
 						{
-				std::cerr << "ReferenceMapVector::10" << std::endl;
 							coordinates[initialSize -1 -i] = NOT_CONNECTIONS_BACK;
 							coordinates[i] = -1;
-				std::cerr << "ReferenceMapVector::11" << std::endl;
 
 						}
 					}

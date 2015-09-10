@@ -6,8 +6,10 @@
 
 #include <string>
 #include <iostream>
-namespace NEATSpikes{
-	class SynapticWeight{
+namespace NEATSpikes
+{
+	class SynapticWeight
+	{
 	public:
 		virtual ~SynapticWeight(){};
 		/**
@@ -46,8 +48,8 @@ namespace NEATSpikes{
 		virtual void changeValuesRandomly()=0;
 		virtual void copyValues(SynapticWeight * sw)=0;
 		virtual bool getEnable()=0;
-
-
+		virtual void SetParametersFromUserDefinitionsPath(std::string pathUserDefinitionsAboutBasicSynapticWeight)=0;
+		virtual void saveUserDefinitions(std::string pathToSave)=0;
 
 	};
 }
