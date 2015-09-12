@@ -25,6 +25,10 @@ int main(int argc, char ** argv)
 
 	std::cout << "ANN 1\n============================================================\n";
 	ann->testPrint();
+	std::cout << "1!BOOOOOL: " << ann->epoch() << std::endl;
+	std::cout << "1!BOOOOOL: " << ann->epoch() << std::endl;
+	std::cout << "1!BOOOOOL: " << ann->epoch() << std::endl;
+	std::cout << "1!BOOOOOL: " << ann->epoch() << std::endl;
 	//ann->printState();
 
 	std::cout << "ANN 2\n============================================================\n";
@@ -32,6 +36,10 @@ int main(int argc, char ** argv)
 	//ann2->mutate();
 	//ann2->mutate();
 
+	std::cout << "2!BOOOOOL: " << ann2->epoch() << std::endl;
+	std::cout << "2!BOOOOOL: " << ann2->epoch() << std::endl;
+	std::cout << "2!BOOOOOL: " << ann2->epoch() << std::endl;
+	std::cout << "2!BOOOOOL: " << ann2->epoch() << std::endl;
 	ann2->testPrint();
 	//ann2->printState();
 
@@ -43,7 +51,10 @@ int main(int argc, char ** argv)
 
 	std::vector <double> input = {2.0*((double)rand()/RAND_MAX) -1.0 , 2.0*((double)rand()/RAND_MAX) -1.0};
 	std::cerr << "input: {" << input.at(0) << "," << input.at(1) << "}\toutput: "  <<  ann3->eval(input).at(0) << std::endl;
-
+	std::cout << "BOOOOOL: " << ann3->epoch() << std::endl;
+	std::cout << "BOOOOOL: " << ann3->epoch() << std::endl;
+	std::cout << "BOOOOOL: " << ann3->epoch() << std::endl;
+	std::cout << "BOOOOOL: " << ann3->epoch() << std::endl;
 	ann3->saveState("./save/");
 
 	ANN * ann4 = new ANN;

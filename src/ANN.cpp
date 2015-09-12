@@ -54,7 +54,7 @@ namespace NEATSpikes
 
 	void ANN::printState()
 	{ 
-
+		std::cout << "ANN id: " << identificator << "\nFitness: " << fitness <<  "\nAge: " << age << std::endl;
 		for (unsigned int i = 0; i < neuron_vector.size(); ++i)
 		{
 			neuron_vector.at(i)->printState();
@@ -404,7 +404,6 @@ namespace NEATSpikes
 		age = int(parameters["age"]);
 
 
-
 		this->inputPrototype = inputPrototype;
 		this->outputPrototype = outputPrototype;
 		this->prototypeNeuron = neuron;
@@ -537,9 +536,9 @@ namespace NEATSpikes
 				exit(EXIT_FAILURE);
 			}
 
-			if( *organismLifeExpectation < 0 || *organismLifeExpectation > 1)
+			if( *organismLifeExpectation < 0.0)
 			{
-				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error organismLifeExpectation must be on interval [0,1]" << std::endl;
+				std::cerr << "Error::BasicNeuron::SetParametersFromUserDefinitionsPath::Error organismLifeExpectation must be greater than 0" << std::endl;
 				exit(EXIT_FAILURE);
 			}
 		//=========================================================================================
@@ -797,6 +796,7 @@ namespace NEATSpikes
 		ConstantOFDiferencesInStructureOfSynapticWeight  = prototype->ConstantOFDiferencesInStructureOfSynapticWeight ;
 		ConstantOFDiferencesInStructureOfNeurons = prototype->ConstantOFDiferencesInStructureOfNeurons;
 		ANNCanHaveConnectionsBack = prototype->ANNCanHaveConnectionsBack;
+		organismLifeExpectation = prototype->organismLifeExpectation;
 	}
 
 	ANN * ANN::duplicate()
@@ -856,6 +856,7 @@ namespace NEATSpikes
 		final->prototypeSynapticWeight = this->prototypeSynapticWeight;
 		final->inputPrototype = this->inputPrototype;
 		final->outputPrototype = this->outputPrototype;
+		
 
 		final->age = 0;
 
@@ -865,12 +866,14 @@ namespace NEATSpikes
 
 	bool ANN::epoch()
 	{
+		std::cerr << "1" << std::endl;
 		// Si es su primera epoca definitivamente se le deja vivir 
 		if(age == 0)
 		{
 			age++;
 			return true;
 		}
+		std::cerr << "2: "  << organismLifeExpectation << std::endl;
 		
 		double random = rand()/(double)RAND_MAX;
 		// Se usa una desigualdad tal que la esperanza de vida sea en probabilidad la que el usuario puso.
@@ -878,7 +881,9 @@ namespace NEATSpikes
 		{
 			return false;
 		}
+		std::cerr << "3" << std::endl;
 		age++;
+		std::cerr << "4" << std::endl;
 		return true;
 	}
 }

@@ -6,22 +6,23 @@ namespace NEATSpikes
 
 	Niche::Niche()
 	{
-		identificator=id++;
-		amountOfGenerationsAlive=0;	
-		totalFitness=0;
+		
 	}
 
-	Niche::Niche(std::string PathWhereIsSaved)
+	Niche::Niche(Organism * initialOrgm, std::string path_Niche_definitions)
 	{
 		identificator=id++;
 		amountOfGenerationsAlive=0;	
 		totalFitness=0;
+		champion = initialOrgm->duplicate();
+		setUserDefinitions(path_Niche_definitions);
+		representant=initialOrgm;
+		newOrganism_vector.push_back(initialOrgm);
 	}
 
 	Niche::~Niche()
 	{
 		// Se eliminan todos los organismos que tiene este nicho para que desocupen memoria.
-
 		for (unsigned int i = 0; i < organism_vector.size(); ++i)
 		{
 			delete organism_vector.at(i);
@@ -205,18 +206,17 @@ namespace NEATSpikes
 		//=========================================================================================
 		// Ahora se le da el valor a las variables de usuario y se termina este método. Usando mapas se hace más sencillo y más robusto.
 		//=========================================================================================
-		organismLifeExpectation = new int(UserDefinitions["organismLifeExpectation"]);
 		distanceThresshold = new double(UserDefinitions["distanceThresshold"]);
 		//=========================================================================================
 	}
 
-	Niche Niche::createNew(Organism * initialOrgm)
+	Niche * Niche::createNew(Organism * initialOrgm)
 	{
 		Niche * n = new Niche();
 		n->champion = initialOrgm->duplicate(); //new ANN(*initialOrgm);
 		n->representant = initialOrgm;
 		n->newOrganism_vector.push_back(initialOrgm);
-		return *n;
+		return n;
 
 	}
 	void Niche::maturation() // Se supone que todos los organismos nuevos son probados antes de hacer uso de este método
@@ -276,14 +276,14 @@ namespace NEATSpikes
 	{
 		return newOrganism_vector.size();
 	}
-	Niche Niche::createInitial(Organism * initialOrgm, std::string path_Niche_definitions)
+	Niche * Niche::createInitial(Organism * initialOrgm, std::string path_Niche_definitions)
 	{
 		Niche * n = new Niche();
 		n->champion = initialOrgm->duplicate();
 		n->setUserDefinitions(path_Niche_definitions);
 		n->representant=initialOrgm;
 		n->newOrganism_vector.push_back(initialOrgm);
-		return *n;
+		return n;
 	}
 
 	int Niche::getAge()

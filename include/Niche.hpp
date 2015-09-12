@@ -13,6 +13,8 @@ namespace NEATSpikes{
 	// ============================================ Métodos ==========================================================
 	public:
 		Niche();
+		Niche(Organism * initialOrgm, std::string path_Niche_definitions);
+		
 		/**	
 			\brief Se carga el nicho a partir del lugar donde fue guardado anteriormete
 		*/
@@ -52,8 +54,8 @@ namespace NEATSpikes{
 
 		void setUserDefinitions(std::string PathWhereUserDefIsSaved);
 
-		static Niche createNew(Organism * initialOrgm);
-		static Niche createInitial(Organism * initialOrgm, std::string path_Niche_definitions);
+		Niche * createNew(Organism * initialOrgm);
+		Niche * createInitial(Organism * initialOrgm, std::string path_Niche_definitions);
 
 		void maturation();
 
@@ -89,7 +91,6 @@ namespace NEATSpikes{
 		
 
 		double * distanceThresshold;
-		int * organismLifeExpectation;
 		static int id;
 	};
 
