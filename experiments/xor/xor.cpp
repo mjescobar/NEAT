@@ -26,18 +26,19 @@ double fitness(Organism * organism){
 
 	error_sum =  fabs( output.at( 0 ) )+ fabs( output.at( 3 ) ) + fabs( 1 - output.at( 1 ) ) + fabs( 1 - output.at( 2 ) )  ;
 
-	cerr << "\tfitness: " << pow(4 - error_sum, 2) << "\terror_sum: " <<fabs( output.at( 0 ) )+ fabs( output.at( 3 ) ) + fabs(1 - output.at( 1 ) ) + fabs( 1 - output.at( 2 ) ) << "\t eval( 0 , 0 ): " <<  output.at(0)<< "\t eval( 0 , 1 ):" << output.at(1)<< "\t eval( 1 , 0 ):" <<  output.at(2) << "\t eval( 1 , 1 ):" <<  output.at(3)  << endl;
+	cout  << "\tfitness: " << pow(4 - error_sum, 2) << "\terror_sum: " <<fabs( output.at( 0 ) )+ fabs( output.at( 3 ) ) + fabs(1 - output.at( 1 ) ) + fabs( 1 - output.at( 2 ) ) << "\t eval( 0 , 0 ): " <<  output.at(0)<< "\t eval( 0 , 1 ):" << output.at(1)<< "\t eval( 1 , 0 ):" <<  output.at(2) << "\t eval( 1 , 1 ):" <<  output.at(3)  << endl;
 	output.clear();
 	return pow(4 - error_sum, 2);
 }
 
 
 int main(int argc, char** argv){
+
 	srand(time(0)); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
 	GlobalInformation * ilo = new GlobalInformation();
-	BasicSynapticWeight * BSW = new BasicSynapticWeight("./BSWUserDef", ilo);
-	BasicNeuron * BN = new BasicNeuron("./BNUserDef");
-	Life NeatPopulation = Life("./LifeUserDef", "./NicheUserDef",BN,BSW,"./ANNUserDef",ilo );
+	BasicNeuron * BN = new BasicNeuron(ilo, "./BasicNeuronUserDefinitions");
+	BasicSynapticWeight * BSW = new BasicSynapticWeight("./BasicSynapticUserDefinitions" , ilo);
+	Life NeatPopulation = Life("./LifeUserDef", "./NicheUserDef", BN, BN, BN, BSW, "./userDefANN", ilo );
 
 	for (int j = 0; j < NeatPopulation.getGenerations(); ++j)
 	{

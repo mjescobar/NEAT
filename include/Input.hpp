@@ -21,6 +21,8 @@ namespace NEATSpikes
 			~Input();
 			Input(const Input & in);
 			Input(GlobalInformation * globalInformation);
+			void SetParametersFromUserDefinitionsPath(std::string pathUserDefinitionsAboutBasicNeuron){};
+			void saveUserDefinitions(std::string pathToSave){};
 			/**
 				\brief Bajo cierta probabilidad pueden cambiar características de esta neurona.
 			*/

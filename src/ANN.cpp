@@ -641,36 +641,48 @@ namespace NEATSpikes
 		double DW = 0.0;
 		double W = 0.0;
 		double N = 0.0;
-	
 		// NEURONAS
 		//========================================================================
 		for ( int i = 0; i < (int)(ann2->neuron_vector).size() ; ++i )
 		{
 			int historicalMarkMotherNeuron = (ann2->neuron_vector).at( i )->getHistoricalMark();
-			int localNeuronPositionInFather = (ann1->historicalMarkToNeuron).at( historicalMarkMotherNeuron );
-			if(  localNeuronPositionInFather == 0 && historicalMarkMotherNeuron != 0) // entonces no existe en el padre.
+			//Puede ser que la marca historica sea mayor que la mas grande de la red neuronal 1 por lo tanto primero hay que revizar eso y en caso de que sucediera entonces es porque definitivamente ann1 no posee tal neurona.
+			if(historicalMarkMotherNeuron >= (int)ann1->historicalMarkToNeuron.size())
 			{
-				// Hay una diferencia
 				DN++;
 			}
 			else
-			{ 
-				//ann2->neuron_vector.at( i )->printState();
-				//std::cerr << "localNeuronPositionInFather: " << localNeuronPositionInFather << "\thistoricalMarkMotherNeuron: "<<historicalMarkMotherNeuron << std::endl;
-				//ann1->neuron_vector.at( localNeuronPositionInFather )->printState();
-				N += (ann1->neuron_vector).at( localNeuronPositionInFather )->getDistance( (ann2->neuron_vector).at( i ) );
-			}
+			{
+				int localNeuronPositionInFather = (ann1->historicalMarkToNeuron).at( historicalMarkMotherNeuron );
+				if(  localNeuronPositionInFather == -1) // entonces no existe en el padre.
+				{
+					// Hay una diferencia
+					DN++;
+				}
+				else
+				{ 
+					N += (ann1->neuron_vector).at( localNeuronPositionInFather )->getDistance( (ann2->neuron_vector).at( i ) );
+				}
+			}	
 		}
 
 		// Hay que hacer lo inverso para contabilizar los casos en que la neurona pertenece al padre nada mas.
 		for (int i = 0; i < (int)(ann1->neuron_vector).size(); ++i)
 		{
 			int historicalMarkFatherNeuron = (ann1->neuron_vector).at( i )->getHistoricalMark();
-			int localNeuronPositionInMother = (ann2->historicalMarkToNeuron).at( historicalMarkFatherNeuron );
-			if(  localNeuronPositionInMother == 0 && historicalMarkFatherNeuron != 0) // entonces no existe en el padre.
+			//Puede ser que la marca historica sea mayor que la mas grande de la red neuronal 2 por lo tanto primero hay que revizar eso y en caso de que sucediera entonces es porque definitivamente ann2 no posee tal neurona.
+			if(historicalMarkFatherNeuron >= (int)ann2->historicalMarkToNeuron.size())
 			{
-				// Hay una diferencia
 				DN++;
+			}
+			else
+			{
+				int localNeuronPositionInMother = ann2->historicalMarkToNeuron.at( historicalMarkFatherNeuron );
+				if(  localNeuronPositionInMother == -1) // entonces no existe en el padre.
+				{
+					// Hay una diferencia
+					DN++;
+				}
 			}
 		}
 
@@ -679,26 +691,42 @@ namespace NEATSpikes
 		for (int i = 0; i < (int)(ann2->synapticWeight_vector).size(); ++i)
 		{
 			int innovationMother = (ann2->synapticWeight_vector).at(i)->getInnovation();
-			int localInnovationPositionFather = (ann1->innovationToSynapticWeight).at(innovationMother);
-
-			if(  localInnovationPositionFather == 0 && innovationMother !=0 ) // entonces no existe en el padre.
+			if(innovationMother >= (int)ann1->innovationToSynapticWeight.size())
 			{
 				DW++;
 			}
 			else
-			{ // Existe uno en el padre.
-				W += (ann1->synapticWeight_vector).at(localInnovationPositionFather)->getDistance((ann2->synapticWeight_vector).at(i));
-			}
+			{
+				int localInnovationPositionFather = (ann1->innovationToSynapticWeight).at(innovationMother);
+
+				if(  localInnovationPositionFather == -1) // entonces no existe en el padre.
+				{
+					DW++;
+				}
+				else
+				{ // Existe uno en el padre.
+					W += (ann1->synapticWeight_vector).at(localInnovationPositionFather)->getDistance((ann2->synapticWeight_vector).at(i));
+				}
+			}	
 		}
+
 		for (int i = 0; i < (int)(ann1->synapticWeight_vector).size(); ++i)
 		{
 			int innovationFather = (ann1->synapticWeight_vector).at(i)->getInnovation();
-			int localInnovationPositionMother = (ann2->innovationToSynapticWeight).at(innovationFather);
-
-			if(  localInnovationPositionMother == 0 && innovationFather !=0 ) // entonces no existe en el padre.
+			if(innovationFather >= (int)ann2->innovationToSynapticWeight.size())
 			{
 				DW++;
 			}
+			else
+			{
+				int localInnovationPositionMother = (ann2->innovationToSynapticWeight).at(innovationFather);
+
+				if(  localInnovationPositionMother == -1) // entonces no existe en el padre.
+				{
+					DW++;
+				}
+			}
+				
 		}
 	
 		double distance =W + N + DW * (* (ann1->ConstantOFDiferencesInStructureOfSynapticWeight)) + DN * (* (ann1->ConstantOFDiferencesInStructureOfNeurons));
@@ -866,14 +894,12 @@ namespace NEATSpikes
 
 	bool ANN::epoch()
 	{
-		std::cerr << "1" << std::endl;
 		// Si es su primera epoca definitivamente se le deja vivir 
 		if(age == 0)
 		{
 			age++;
 			return true;
 		}
-		std::cerr << "2: "  << organismLifeExpectation << std::endl;
 		
 		double random = rand()/(double)RAND_MAX;
 		// Se usa una desigualdad tal que la esperanza de vida sea en probabilidad la que el usuario puso.
@@ -881,9 +907,7 @@ namespace NEATSpikes
 		{
 			return false;
 		}
-		std::cerr << "3" << std::endl;
 		age++;
-		std::cerr << "4" << std::endl;
 		return true;
 	}
 }

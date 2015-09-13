@@ -9,6 +9,19 @@ namespace NEATSpikes
 		
 	}
 
+	Niche::Niche(Organism * initialOrgm, Niche * seedNiche)
+	{
+		// Hay ciertos parametros que son necesarios obtener desde el nicho semilla.
+		identificator=id++;
+		this->distanceThresshold = seedNiche->distanceThresshold;
+
+		amountOfGenerationsAlive=0;	
+		totalFitness=0;
+		champion = initialOrgm->duplicate();
+		representant=initialOrgm;
+		newOrganism_vector.push_back(initialOrgm);
+	}
+
 	Niche::Niche(Organism * initialOrgm, std::string path_Niche_definitions)
 	{
 		identificator=id++;
@@ -88,7 +101,9 @@ namespace NEATSpikes
 			}
 
 			// Signfica que es un nicho nuevo, por lo tato tiene sólo organismos nuevos. Entonces se crea un nuevo organismo a través de éste.
-			return newOrganism_vector.at(rand()%newOrganism_vector.size())->createNewWithSameTopologieButDiferentValues();
+			ANN * organismFinal = newOrganism_vector.at(rand()%newOrganism_vector.size())->createNewWithSameTopologieButDiferentValues();
+			organismFinal->mutate();
+			return organismFinal;
 		}
 
 
@@ -137,7 +152,7 @@ namespace NEATSpikes
 			exit(EXIT_FAILURE);
 		}
 
-		//Dado que tenemos al padre y a la madre simpelemente deben producir al hijo a traves de cruzamiento
+		//Dado que tenemos al padre y a la madre simplemente deben producir al hijo a traves de cruzamiento
 		ANN * children  = crossover( father , mother );
 		//Ademas el hijo tiene la opcion de mutar... OJO que no se le obliga a mutar, el echo de llamar al mutate significa que segun probabilidades que el mismo usuario puede elegir es que pueden mutar ciertas caracteristicas del hijo. Por ejemplo puede cambiar valores de una coneccion sinaptica o crear una nueva
 		children->mutate();
@@ -157,7 +172,7 @@ namespace NEATSpikes
 	
 	bool Niche::IsAcepted(Organism * orgm)
 	{
-		if (organismDistance(orgm,representant) < *distanceThresshold)
+		if ( organismDistance(orgm,representant) < *distanceThresshold)
 		{
 			return true;
 		}
@@ -187,7 +202,7 @@ namespace NEATSpikes
 		char delimiters[] = " \n\t"; // Los delimitadores usados.
 		// Se abre el archivo donde están las definiciones de usuario.
 		//=========================================================================================
-		archive = fopen(PathWhereIsSaved.c_str(),"r");
+		archive = fopen(PathWhereIsSaved.c_str() , "r");
 		if (archive == NULL)
 		{
 			std::cerr << "ERROR::BasicNeuron::SetParametersFromUserDefinitionsPath::Could not read the file" << std::endl;
@@ -212,8 +227,8 @@ namespace NEATSpikes
 
 	Niche * Niche::createNew(Organism * initialOrgm)
 	{
-		Niche * n = new Niche();
-		n->champion = initialOrgm->duplicate(); //new ANN(*initialOrgm);
+		Niche * n = new Niche(initialOrgm, this);
+		n->champion = initialOrgm->duplicate(); 
 		n->representant = initialOrgm;
 		n->newOrganism_vector.push_back(initialOrgm);
 		return n;

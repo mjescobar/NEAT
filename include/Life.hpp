@@ -19,7 +19,7 @@ namespace NEATSpikes{
 	// ============================================ Métodos  ==================================================
 	public:
 		Life();
-		Life(std::string path_Life_definitions, std::string path_Niche_definitions, Neuron * neuron, SynapticWeight * synapticWeight, std::string path_ANN_definitions, GlobalInformation * information);
+		Life(std::string path_Life_definitions, std::string path_Niche_definitions, Neuron * neuronInputPrototype,Neuron * neuronOutputPrototype,  Neuron * neuron, SynapticWeight * synapticWeight, std::string path_ANN_definitions, GlobalInformation * information);
 		/**
 			\brief Se carga la vida a partir del lugar donde fue guardada anteriormete.
 			\param PathWhereIsSaved es la ruta al archivo donde está guarada la vida que se desea cargar.
@@ -72,8 +72,8 @@ namespace NEATSpikes{
 	// ===========================================   Variables =======================================================
 	private:
 		vector <Organism *> organismFIFOWaitingForCreateNewNiches;
-		vector <Niche>  old_niches_vector;
-		vector <Niche> new_niches_vector;
+		vector <Niche *>  old_niches_vector;
+		vector <Niche *> new_niches_vector;
 		static int generationsThatDefineAnOldNiche;
 		static int amountOfOrganismInANewNiche;
 		static int MaxAmountOfNewNiches;

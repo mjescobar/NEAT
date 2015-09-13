@@ -13,6 +13,7 @@ namespace NEATSpikes{
 	// ============================================ Métodos ==========================================================
 	public:
 		Niche();
+		Niche(Organism * initialOrgm, Niche * seedNiche);
 		Niche(Organism * initialOrgm, std::string path_Niche_definitions);
 		
 		/**	

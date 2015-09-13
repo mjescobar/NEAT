@@ -23,6 +23,47 @@ int main(int argc, char ** argv)
 	ann_vector.at(0)->setFitness(1.0);
 	niche->maturation();
 	niche->obtainOneOrganismToCrossoverWithAnotherNicheOrganism()->printState();
+	ANN * ann2 = niche->obtainAChildren();
+	std::cerr << "UNOOOOOOOOOO\n";
+	if(niche->IsAcepted(ann2) )
+	{
+		std::cout << "FUE ACEPTADOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
+		niche->addOrganism(ann2);
+	}
+	ann_vector = niche->getNewOrganismVector();
+	for (unsigned int i = 0; i < ann_vector.size(); ++i)
+	{
+		ann_vector.at(i)->setFitness( i + 1.0);
+	}
+	niche->maturation();
+
+	ann2->printState();
+	ANN * ann3 = niche->obtainAChildren();
+	ann3->printState();
+
+	ann_vector = niche->getNewOrganismVector();
+	for (unsigned int i = 0; i < ann_vector.size(); ++i)
+	{
+		ann_vector.at(i)->setFitness( i + 1.0);
+	}
+	niche->printState();
+	niche->maturation();
+	ann_vector = niche->getOrganismVector();
+	niche->printState();
+	std::cerr << "EL TAMAANO Es  " << ann_vector.size() << std::endl;
+	niche->epoch();
+	ann_vector = niche->getOrganismVector();
+	niche->printState();
+	std::cerr << "EL TAMAANO Es  " << ann_vector.size() << std::endl;
+	niche->epoch();
+	ann_vector = niche->getOrganismVector();
+	niche->printState();
+	std::cerr << "EL TAMAANO Es  " << ann_vector.size() << std::endl;
+	niche->epoch();
+	ann_vector = niche->getOrganismVector();
+	niche->printState();
+	std::cerr << "EL TAMAANO Es  " << ann_vector.size() << std::endl;
+	niche->epoch();
 
 
 	return 0;

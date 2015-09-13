@@ -17,7 +17,9 @@ Input::~Input()
 
 Input::Input(const Input & in)
 {
-	
+	this->globalInformation = in.globalInformation;
+	identificator=id++;
+	lastOutput=0.0;
 }
 // Este metodo se debe usar una sola vez por NEAT
 Input::Input(GlobalInformation * globalInformation)
