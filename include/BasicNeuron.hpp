@@ -11,7 +11,7 @@
 #include <stdio.h> // getline
 #include <fstream> // ofstream
 #include <cmath> // exp
-#include <GlobalInformation.hpp>
+#include "GlobalInformation.hpp"
 
 namespace NEATSpikes{
 	class BasicNeuron : public Neuron 
