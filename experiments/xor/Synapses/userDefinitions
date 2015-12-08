@@ -1,0 +1,6 @@
+Max_Weight_Value 4
+Min_Weight_Value -4
+Maximum_Weight_Variation_By_Mutation 0.7
+Probability_Of_Weight_Random_Mutation 0.8
+probabilityOfEnableADisabledConnection 0.1
+ConstantDistanceOfSynapticWeightValue 0.2

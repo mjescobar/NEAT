@@ -28,7 +28,16 @@ double fitness(Organism * organism){
 
 	cout  << "\tfitness: " << pow(4 - error_sum, 2) << "\terror_sum: " <<fabs( output.at( 0 ) )+ fabs( output.at( 3 ) ) + fabs(1 - output.at( 1 ) ) + fabs( 1 - output.at( 2 ) ) << "\t eval( 0 , 0 ): " <<  output.at(0)<< "\t eval( 0 , 1 ):" << output.at(1)<< "\t eval( 1 , 0 ):" <<  output.at(2) << "\t eval( 1 , 1 ):" <<  output.at(3)  << endl;
 	output.clear();
-	return pow(4 - error_sum, 2);
+
+	if ( std::isnan(pow(4 - error_sum, 2)+ 0.0000001) ) // isnan es parte de c++11
+	{
+		cerr << "ERROR::fitness:: fitness is not a number. The organism will be printed bellow."<< endl;	
+		organism->printState();
+		organism->saveState("./");
+		exit(EXIT_FAILURE);
+	}
+
+	return pow(4 - error_sum, 2)+ 0.0000001;
 }
 
 
@@ -53,5 +62,5 @@ int main(int argc, char** argv){
 		
 		NeatPopulation.epoch();
 	}
-	return 0;
+	return 0 ;
 }

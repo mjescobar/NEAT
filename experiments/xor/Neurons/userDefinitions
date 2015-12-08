@@ -1,0 +1,14 @@
+Use_Bias 1
+Min_Bias 0
+Max_Bias 0.1
+Maximum_Bias_Variation_By_Mutation 0.99
+Probability_Of_Bias_Random_Mutation 0.2
+ConstantDistanceOfBias 0.1
+Predefined_Bias 0
+Use_Sigmoid_Constant_Mutation 1
+Max_Sigmoid_Constant 2
+Min_Sigmoid_Constant 5
+Maximum_Sigmoid_Constant_Variation_By_Mutation 0.5
+Probability_Of_Sigmoid_Constant_Random_Mutation 0.2
+ConstantDistanceOfSigmoidConstant 0.1
+Predefined_Sigmoid_Constat 0.5

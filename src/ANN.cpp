@@ -33,6 +33,7 @@ namespace NEATSpikes
 
 	ANN::~ANN()
 	{
+		std::cerr << "FITNESS ANTES DE MORIR:: " << fitness << std::endl;
 		for (unsigned int i = 0; i < (neuron_vector).size(); ++i)
 		{
 			delete((neuron_vector).at(i));
@@ -772,14 +773,18 @@ namespace NEATSpikes
 						std::vector <int> incomingConnections = (neuron_vector).at( positionInNeuronVector )->getIncomingConnections();
 						for ( unsigned int k = 0; k < incomingConnections.size(); ++k )
 						{
+
 							int positionInSynapticWeightVector = (innovationToSynapticWeight).at( incomingConnections.at( k ) );
-							// Por cada conexión entrante se suma al voltaje entrante a la neurona.
-							(neuron_vector).at( positionInNeuronVector )->sumIncomingConnectionsOutputs( (synapticWeight_vector).at( positionInSynapticWeightVector )->getOutput( ) );
+							if( synapticWeight_vector.at( positionInSynapticWeightVector)->getEnable()) 
+							{
+								// Por cada conexión entrante se suma al voltaje entrante a la neurona.
+								(neuron_vector).at( positionInNeuronVector )->sumIncomingConnectionsOutputs( (synapticWeight_vector).at( positionInSynapticWeightVector )->getOutput( ) );
+							}
 						}
 					//=====================================================================
 
 					// Dado que ya están todas las conexiones entrantes ya evaluadas se puede proceder a evaluar la salida de la neurona.
-					double outputOfNeuron = (neuron_vector).at( positionInNeuronVector )->eval();
+					double outputOfNeuron = neuron_vector.at( positionInNeuronVector )->eval();
 
 
 					// La salida de la neurona es pasada a la entrada de todas las conexiones sinápticas que comienzan de esta neurona.
@@ -788,8 +793,12 @@ namespace NEATSpikes
 						for (unsigned int k = 0; k < outcomingConnections.size(); ++k)
 						{
 							int positionInSynapticWeightVector = (innovationToSynapticWeight).at( outcomingConnections.at( k ) );
-							synapticWeightThatStartInThisLayer.push_back( positionInSynapticWeightVector );
-							(synapticWeight_vector).at(positionInSynapticWeightVector)->setInput( outputOfNeuron );
+							if((synapticWeight_vector).at(positionInSynapticWeightVector)->getEnable() )
+							{
+								synapticWeightThatStartInThisLayer.push_back( positionInSynapticWeightVector );
+								synapticWeight_vector.at(positionInSynapticWeightVector)->setInput( outputOfNeuron );
+							}
+							
 						}
 					//=====================================================================
 				}
@@ -799,7 +808,7 @@ namespace NEATSpikes
 			//  Se actualiza el valor de todas las conexiones sinápticas que comienzan desde esta capa.
 			// Esto se realiza al final para mantener la simetria en la red neuronal, imaginar caso en que existan dos neuronas en la misma capa que tienen conexiones entre ellas, no es correcto que  una conexion actualice su salida antes que la segunda neurona calcule su entrada porque no pasaría lo mismo con la primera neurona y sería un problema sólo de orden.
 			//=======================================================================
-				for (unsigned int k = 0; k < synapticWeightThatStartInThisLayer.size(); ++k)
+				for (unsigned int k = 0; k 	< synapticWeightThatStartInThisLayer.size(); ++k)
 				{
 					(synapticWeight_vector).at( synapticWeightThatStartInThisLayer.at( k ) )->spread();
 				}
@@ -828,10 +837,11 @@ namespace NEATSpikes
 	}
 
 	ANN * ANN::duplicate()
-	{
+	{ 
 		ANN * final = new ANN();
 		final->loadParametersFromPrototype(this);
 		final->mutationControl = this->mutationControl->duplicate( &final->neuron_vector, &final->synapticWeight_vector, &final->innovationToSynapticWeight, &final->historicalMarkToNeuron, &final->historicalMarkAtLayer);
+		final->fitness = this->fitness;
 		for (unsigned int i = 0; i < (this->neuron_vector).size(); ++i)
 		{
 			(final->neuron_vector).push_back( (this->neuron_vector).at(i)->duplicate());
@@ -907,6 +917,7 @@ namespace NEATSpikes
 		{
 			return false;
 		}
+
 		age++;
 		return true;
 	}

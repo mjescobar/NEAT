@@ -2,8 +2,8 @@ Max_Bias 0.1
 Min_Bias 0.0
 Maximum_Bias_Variation_By_Mutation 0.99
 Maximum_Sigmoid_Constant_Variation_By_Mutation 0.5
-Probability_Of_Bias_Random_Mutation 0.8
-Probability_Of_Sigmoid_Constant_Random_Mutation 0.8
+Probability_Of_Bias_Random_Mutation 0.2
+Probability_Of_Sigmoid_Constant_Random_Mutation 0.2
 ConstantDistanceOfBias 0.1
 ConstantDistanceOfSigmoidConstant 0.1
 Use_Bias 1.0

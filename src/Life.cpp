@@ -175,6 +175,7 @@ namespace NEATSpikes
 				}
 			}
 
+			
 			else 
 			{ 
 				// Este es el caso típico, donde todos los nichos se "pelean" la opción de tener un hijo. 
@@ -194,8 +195,12 @@ namespace NEATSpikes
 						break;
 					}
 				}
+				if( i == old_niches_vector.size() )
+				{
+					std::cerr << "ERROR::Life::epoch::Not niche founded" << std::endl;
+					exit(EXIT_FAILURE);
+				}
 				// Una vez tenido el hijo hay que buscarle un nicho al que pertenezca, se debe partir viendo si lo aceptan en el nicho del cual proviene.
-
 				if(old_niches_vector.at(i)->IsAcepted(children) ) // Primero se prueba en su propio nicho.
 				{ 
 					// entonces es aceptado con el nicho padre.

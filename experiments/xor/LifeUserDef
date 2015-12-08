@@ -1,6 +1,6 @@
 generationsThatDefineAnOldNiche 10
 amountOfOrganismInANewNiche 15
 MaxAmountOfNewNiches 10
-AmountOfTotalOrganismFromAllOldNiches 200
+AmountOfTotalOrganismFromAllOldNiches 100
 probabilityOfInterspaceMating 0.00001
 generations 100
