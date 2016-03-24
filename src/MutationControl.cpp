@@ -173,7 +173,7 @@ void MutationControl::addNeuron(Neuron * neuron)
 	{
 		(*historicalMarkToNeuron).push_back(-1);
 	}
-	(*historicalMarkToNeuron).at(neuron->getHistoricalMark()) = (*neurons).size() - 1;
+	(*historicalMarkToNeuron).at( neuron->getHistoricalMark() ) = (*neurons).size() - 1;
 
 	//Se agrega esta neurona en el layer correspondiente
 	//========================================================================================
@@ -201,8 +201,8 @@ void MutationControl::addSynapticWeight( SynapticWeight * synapticWeight )
 	// Se calculan primero el lugar que corresponde a las neuronas input y output en el mapa
 	// =====================================================================================
 
-	int neuronsPositionOfInitialIn =  (*historicalMarkToNeuron).at(historicalMarkInitionIn);
-	int neuronsPositionOfInitialOut =  (*historicalMarkToNeuron).at(historicalMarkInitionOut);
+	int neuronsPositionOfInitialIn =  ( *historicalMarkToNeuron ).at( historicalMarkInitionIn );
+	int neuronsPositionOfInitialOut =  ( *historicalMarkToNeuron ).at( historicalMarkInitionOut );
 
 	int mapCoordinateOne;
 	int mapCoordinateTwo;
@@ -221,7 +221,7 @@ void MutationControl::addSynapticWeight( SynapticWeight * synapticWeight )
 	
 
 	//En el mapa de referencias para conecciones se da el valor en la coordenada antes obtenida aleatoriamente y se disminuye en uno la cantidad de posibles mutaciones de coneccion.
-	referenceMapForSynapticsWeight->set ( {mapCoordinateOne,mapCoordinateTwo} , synapticWeight->getInnovation() );
+	referenceMapForSynapticsWeight->set ( {mapCoordinateOne, mapCoordinateTwo} , synapticWeight->getInnovation() );
 
 
 	// Se agrega al vector de conexiones sinapticas de la red neuronal
@@ -231,7 +231,7 @@ void MutationControl::addSynapticWeight( SynapticWeight * synapticWeight )
 	//Se actualiza valor de innovationToSynapticWeight para que todo funcione bien.
 	//===============================================================================================
 
-	while( synapticWeight->getInnovation() >= (int)(*innovationToSynapticWeight).size())
+	while( synapticWeight->getInnovation() >= (int)(*innovationToSynapticWeight).size() )
 	{
 		(*innovationToSynapticWeight).push_back(-1);
 	}

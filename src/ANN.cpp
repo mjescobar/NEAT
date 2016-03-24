@@ -72,10 +72,10 @@ namespace NEATSpikes
 		// Este método es uno de los métodos escenciales de NEAT, el método que el usuario finalmente utilizar en sus experimentos.
 		std::vector <double> final; // la variable que finalmente será devuelta.
 		// En caso que se ingresen incorrectamente  la cantidad de entradas entonces el programa da alarma y termina.
-		if(inputs.size() != inputsInNeuron_vector.size())
+		if( inputs.size() != inputsInNeuron_vector.size() )
 		{	
 			std::cerr << "ERROR::ANN::eval::Incorrect amount of inputs" << std::endl;
-			exit(EXIT_FAILURE);
+			exit( EXIT_FAILURE );
 		}
 
 		// Lo primero es ingresar las entradas que el usuario de a la red neuronal a las neuronas inputs correspondientes. 
@@ -83,10 +83,10 @@ namespace NEATSpikes
 
 		// Paso 1: Sumar las entradas a los inputs correspondientes.
 		//=====================================================================
-			for (unsigned int i = 0; i < inputsInNeuron_vector.size(); ++i)
+			for ( unsigned int i = 0; i < inputsInNeuron_vector.size(); ++i )
 			{
-				int input_i = (historicalMarkToNeuron).at( inputsInNeuron_vector.at( i ) );
-				(neuron_vector).at( input_i )->sumIncomingConnectionsOutputs( inputs.at( i ) );
+				int input_i =  inputsInNeuron_vector.at( i ) ;
+				neuron_vector.at( input_i )->sumIncomingConnectionsOutputs( inputs.at( i ) );
 			}
 		//=====================================================================
 
@@ -98,9 +98,9 @@ namespace NEATSpikes
 
 		// PASO 3: Finalmente se compone la salida de la red neuronal.
 		//=====================================================================
-			for (unsigned int i = 0; i < outputsInNeuron_vector.size(); ++i)
+			for ( unsigned int i = 0; i < outputsInNeuron_vector.size(); ++i )
 			{
-				int localNeuronOutput = (historicalMarkToNeuron).at( outputsInNeuron_vector.at( i ) );
+				int localNeuronOutput = ( historicalMarkToNeuron ).at( outputsInNeuron_vector.at( i ) );
 				final.push_back( (neuron_vector).at( localNeuronOutput )->getLastOutput( ) );
 			}
 		//=====================================================================
@@ -426,8 +426,8 @@ namespace NEATSpikes
 		for (int i = 0; i < *inputsAmount; ++i)
 		{
 			infile >> line;
-			int position = (neuron_vector).size();
-			inputsInNeuron_vector.push_back(position);
+			int position = neuron_vector.size();
+			inputsInNeuron_vector.push_back( position );
 			Neuron * newNeuron = inputPrototype->createNewInput();
 			newNeuron->load( PathWhereIsSaved + "Neurons/" + "BN" + line ); // OJO E BN, no deberia ir.
 			mutationControl->AddInitialNeuron( newNeuron );
@@ -437,7 +437,7 @@ namespace NEATSpikes
 		for (int i = 0; i < *outputsAmount; ++i)
 		{
 			infile >> line;
-			int position = (neuron_vector).size();
+			int position = neuron_vector.size();
 			outputsInNeuron_vector.push_back(position);
 			Neuron * newNeuron = outputPrototype->createNewOutput();
 			newNeuron->load( PathWhereIsSaved + "Neurons/" + "BN" + line ); // OJO E BN, no deberia ir.
@@ -642,6 +642,7 @@ namespace NEATSpikes
 		double DW = 0.0;
 		double W = 0.0;
 		double N = 0.0;
+
 		// NEURONAS
 		//========================================================================
 		for ( int i = 0; i < (int)(ann2->neuron_vector).size() ; ++i )

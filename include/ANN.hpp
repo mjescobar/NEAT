@@ -174,9 +174,9 @@ namespace NEATSpikes
 		
 	// ==============================================================================================
 	// ==============================   VARIABLES  ==================================================
-	private:
+	
 		double fitness; // Indicador del comportamiendo de la red neuronal, entre mejor realice el experimento mayor fitness debe tener.
-		int identificator; // Es unico para cada red neuronal.
+		int identificator; //Es unico para cada red neuronal.
 
 		//============================================================
 		// ======RELATIVO A LA MUTACION PARA CREAR NUEVAS NEURONAS O CONEXIONES SINÁPTICAS===

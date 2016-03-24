@@ -141,7 +141,6 @@ namespace NEATSpikes{
 		void loadParametersFromPrototype(SynapticWeight * prototype);
 	// =========================================================================================================================
 	// ==========================================   Variables ========================================================================
-	private:
 		double output;
 		double input;
 		double synapticWeightValue;

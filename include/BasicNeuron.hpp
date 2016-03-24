@@ -148,7 +148,7 @@ namespace NEATSpikes{
 			/**
 				 \brief Se copian los valores desde neuron, este metodo se llama desde ANN en crossover, el supuesto es que ya existe una neurona pero con valores diferentes. Se copian solo los valores que caracterizan a la neurona, no se deben copiar por ejemplo las listas de neuronas entrantes por ejemplo.
 			*/
-			void copyValues(Neuron * neuron);
+			void copyValuesFrom(Neuron * neuron);
 
 			/**
 				\brief Se obtienen los datos desde el archivo con definiciones y se guarda en las variables estáticas correspondietes. 

@@ -187,10 +187,10 @@ int GlobalInformation::getNeuronInputHistoricalMark()
 
 
 	//Se actualizan los mapas.
-	std::vector <int> extension_1 ( 2*historicalMark+1, -1);
-	std::vector <int> extension_2 ( 2*historicalMark+1, -1);
-	neuronsReferencesForCreateNewSynapticWeight.push_back(extension_1);
-	neuronsReferencesForCreateNewNeurons.push_back(extension_2);
+	std::vector <int> extension_1 ( 2 * historicalMark + 1, -1);
+	std::vector <int> extension_2 ( 2 * historicalMark + 1, -1);
+	neuronsReferencesForCreateNewSynapticWeight.push_back( extension_1 );
+	neuronsReferencesForCreateNewNeurons.push_back( extension_2 );
 
 	
 

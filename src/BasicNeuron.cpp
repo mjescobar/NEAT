@@ -8,14 +8,15 @@ namespace NEATSpikes
 	{
 		loadParametersFromPrototype( prototype );
 		init();
-		identificator = ++*id;
 		historicalMarkNeuronInicialOut = historicalMark_inicial_output;
 		historicalMarkNeuronInicialIn = historicalMark_inicial_input;
-		historicalMark = globalInformation->getHistoricalMark(historicalMark_inicial_input, historicalMark_inicial_output);
-		layer = globalInformation->getLayer(historicalMark);
+		historicalMark = globalInformation->getHistoricalMark( historicalMark_inicial_input, historicalMark_inicial_output);
+		layer = globalInformation->getLayer( historicalMark );
 		changeValuesRandomly();
 	}
-	// Este constructor debe ser llamado una sola vez en todo el tiempo
+	
+	// Este constructor debe ser llamado una sola vez en todo el tiempo.
+	// De aqui se generara el prototipo.
 	BasicNeuron::BasicNeuron(GlobalInformation * information, std::string pathUserDefinitionsAboutBasicNeuron )
 	{
 		globalInformation = information;
@@ -26,6 +27,7 @@ namespace NEATSpikes
 	
 	BasicNeuron::BasicNeuron()
 	{
+
 	}
 
 	BasicNeuron::~BasicNeuron()
@@ -33,19 +35,20 @@ namespace NEATSpikes
 		// No hay nada que borrar.
 	}
 
-	// Recordar que se tiene la premisa de obtener un código modular y entendible antes que 100% óptimo en rendimiento, las expresiones usadas para lograr el objetivo podrían ser adhoc pero no lograrían el mejor entendimiento ni tampoco la mejor flexibilidad.
+	// Recordar que se tiene la premisa de obtener un codigo modular y entendible antes que 100% optimo en rendimiento, las expresiones usadas para lograr el objetivo podrían ser adhoc pero no lograrían el mejor entendimiento ni tampoco la mejor flexibilidad.
 	void BasicNeuron::mutate()
 	{
-		// El procedimiento que se realiza es un procedimiento genérico el cual realiza 4 pasos importantes.
-		// se da por supuesto que los valores finales después de la mutación deben pertenecer al intervalo [min, max]
+		// El procedimiento que se realiza es un procedimiento generico el cual realiza 4 pasos importantes.
+		// se da por supuesto que los valores finales despues de la mutacion deben pertenecer al intervalo [min, max] segun los correspondientes min y max de cada caracteristica de la neurona.
 		// Pasos
 		// ====
 		// 1) pasar los valores actuales que están en el intervalo [min,max] al intervalo [0,1] a través de una transformación afin.
-		// 2) obtener valor random en intervalo [0,1]
-		// 3) se ponderan ambos valores según ponderaciones se indican en el archivo de definiciones de usuario.
-		// 4) el resultado es devuelto al intervalo [min, max] a través de la inverza a la función afin usada. 
+		// 2) Obtener valor random en intervalo [0,1]
+		// 3) Se ponderan ambos valores según se indican en el archivo de definiciones de usuario.
+		// 4) El resultado es devuelto al intervalo [min, max] a través de la inverza a la función afin usada. 
 		// OBSERVACIÓN: Existe la posibilidad que el valor deba ser obtenido de forma absolutamente aleatoria, ese caso es más sencillo.
 
+		// RECORDAR: esta funcion entra desde ANN, donde ya se decidio que esta neurona debe mutar, lo que no se sabe es si sera una mutacion donde el valor nuevo sera absolutamente random o sera el anterior mas un delta (delta tiene un maximo).
 		double max, min, random_normalized, sigmoidConstant_normalized, bias_normalized;
 
 		// ===================== SIGMOID CONSTANT ==========================
@@ -59,6 +62,7 @@ namespace NEATSpikes
 			{
 				sigmoidConstant = (max - min)*(rand()/(double)RAND_MAX) + min;
 			}
+
 			else
 			{
 				// paso 1
@@ -72,8 +76,6 @@ namespace NEATSpikes
 			}
 		}
 		
-
-
 		// ========================BIAS==================================
 	 	// los valores límites del bias son obtenidos y se usan las definiciones del usuario para calcularlos.
 		if( *useBias )
@@ -130,13 +132,13 @@ namespace NEATSpikes
 
 		// Se agrega el organismo en el index
 		std::ofstream index;
-		index.open(pathToSave+"index", std::ios::out | std::ios::app);
+		index.open( pathToSave + "index", std::ios::out | std::ios::app);
 		index << identificator << std::endl;
 		index.close();
 
 		// Se crea el archivo y se guardan los datos.
 		std::ofstream finalFile;
-		finalFile.open(finalArchive);
+		finalFile.open( finalArchive );
 		finalFile << "identificator " << identificator << "\nsigmoidConstant " << sigmoidConstant << "\nbias "   << bias << "\nlastOutputVoltage " << lastOutputVoltage<< "\nlayer "   << layer << "\nhistoricalMark "   << historicalMark << "\nhistoricalMarkNeuronInicialIn " << historicalMarkNeuronInicialIn << "\nhistoricalMarkNeuronInicialOut " << historicalMarkNeuronInicialOut;
 		finalFile.close();
 	}
@@ -318,7 +320,6 @@ namespace NEATSpikes
 		std::cerr << "ERROR::BasicNeuron::getDistance::Input must to be a pointer to BasicNeuron wrapped like pointer of Neuron" << std::endl;
 		neuron->printState();
 		exit( EXIT_FAILURE );
-		
 	}
 
 	void BasicNeuron::changeValuesRandomly()
@@ -482,7 +483,7 @@ namespace NEATSpikes
 
 	void BasicNeuron::init()
 	{
-		lastOutputVoltage=0.0;
+		lastOutputVoltage = 0.0;
 		identificator = ++(*id);
 	}
 
@@ -515,6 +516,8 @@ namespace NEATSpikes
 			exit(EXIT_FAILURE);
 		}
 	}
+
+
 	Neuron * BasicNeuron::createNewOutput()
 	{
 		BasicNeuron * BN =  new BasicNeuron;
@@ -544,7 +547,7 @@ namespace NEATSpikes
 	}
 
 
-	void BasicNeuron::copyValues(Neuron * neuron)
+	void BasicNeuron::copyValuesFrom(Neuron * neuron)
 	{
 		BasicNeuron * BN = NULL;
 		BN = dynamic_cast < BasicNeuron * > (neuron) ;

@@ -142,14 +142,14 @@ std::vector <int> Input::getIncomingConnections()
 }
 
 
-void Input::addNewIncomingConection(int innovationOfIncomingConection)
+void Input::addNewIncomingConection( int innovationOfIncomingConection )
 {
-	incomingConections.push_back(innovationOfIncomingConection);
+	incomingConections.push_back( innovationOfIncomingConection );
 }
 
-void Input::addNewOutcomingConection(int innovationOfOutcomingConection)
+void Input::addNewOutcomingConection( int innovationOfOutcomingConection )
 {
-	outcomingConections.push_back(innovationOfOutcomingConection);
+	outcomingConections.push_back( innovationOfOutcomingConection );
 }
 
 

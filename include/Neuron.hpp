@@ -74,7 +74,7 @@ namespace NEATSpikes
 
 		virtual void changeValuesRandomly()=0;
 
-		virtual void copyValues(Neuron * neuron){std::cerr << "ERROR::Neuron::copyValues::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
+		virtual void copyValuesFrom(Neuron * neuron){std::cerr << "ERROR::Neuron::copyValues::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
 
 		virtual void SetParametersFromUserDefinitionsPath(std::string pathUserDefinitionsAboutBasicNeuron)=0; 
 

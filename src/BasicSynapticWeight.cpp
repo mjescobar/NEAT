@@ -24,16 +24,19 @@ namespace NEATSpikes
 	BasicSynapticWeight::BasicSynapticWeight()
 	{	
 	}
+
 	BasicSynapticWeight::~BasicSynapticWeight()
 	{
 	}
+
 	void BasicSynapticWeight::init()
 	{
 		identificator = ++(*id);
 		enable = true;
-		input=0.0;
-		output=0.0;
+		input = 0.0;
+		output = 0.0;
 	}
+	
 	void BasicSynapticWeight::mutate()
 	{
 		// El procedimiento que se realiza es un procedimiento genérico el cual realiza 4 pasos importantes.
@@ -67,15 +70,18 @@ namespace NEATSpikes
 			}
 		}	
 	}
+
 	void BasicSynapticWeight::printState()
 	{
 		std::cout << "BasicSynapticWeight\t" << "innovation: " << innovation << "\tidentificator: " << identificator << "\tsynapticWeightValue: " << synapticWeightValue << "\toutput " << output << "\thistoticalMark_Neuron_in: " << historicalMarkOfNeuronIn <<  "\thistoticalMark_Neuron_out: " << historicalMarkOfNeuronOut<< "\t enable: " << enable << std::endl; 
 	}
+
 	SynapticWeight * BasicSynapticWeight::createNew(SynapticWeight * prototype, int histoticalMark_Neuron_in , int histoticalMark_Neuron_out )
 	{
 		BasicSynapticWeight * BSW = new BasicSynapticWeight( prototype, histoticalMark_Neuron_in, histoticalMark_Neuron_out );
 		return BSW;
 	}
+
 	void BasicSynapticWeight::saveUserDefinitions(std::string pathToSave)
 	{
 		std::ofstream userDefinitions;
@@ -88,6 +94,7 @@ namespace NEATSpikes
 		userDefinitions << "ConstantDistanceOfSynapticWeightValue " << *ConstantDistanceOfSynapticWeightValue << std::endl;
 		userDefinitions.close();
 	}
+
 	// Se sabe que el formato es:
 	//  Max_Weight_Value	0.123456
 	// Maximum_Weight_Variation_By_Mutation 	0.123456
