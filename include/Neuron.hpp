@@ -74,12 +74,28 @@ namespace NEATSpikes
 
 		virtual void changeValuesRandomly()=0;
 
-		virtual void copyValuesFrom(Neuron * neuron){std::cerr << "ERROR::Neuron::copyValues::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
+		virtual void copyValues(Neuron * neuron){std::cerr << "ERROR::Neuron::copyValues::Method is called in Neuron class that have no implementation." << std::endl; exit(EXIT_FAILURE);};
 
 		virtual void SetParametersFromUserDefinitionsPath(std::string pathUserDefinitionsAboutBasicNeuron)=0; 
 
 		virtual void saveUserDefinitions(std::string pathToSave)=0;
 
+		
+			
+		// Tomar en cuenta que para el correcto uso de estos metodos se deben tener instalados 
+		// varias librerias externas de opengl como glfw GL GLU glut glfw GLEW.
+		
+		/**
+			\brief Se dibuja la neurona a traves de openGL
+		*/
+		virtual void display()=0;
+		/**
+			\brief Se escriben los valores de la neurona en la gui de informacion.
+		*/
+		virtual void displayInformationInGUI()=0;
+
+
+	
 	};
 
 }

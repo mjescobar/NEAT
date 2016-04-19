@@ -3,6 +3,7 @@
 
 #include "ANN.hpp"
 #include <string>
+#include "OpenGLInitialization.hpp"
 
 using namespace std;
 

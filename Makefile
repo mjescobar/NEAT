@@ -1,55 +1,58 @@
 VPATH=include:src:objects
 COMPILER=g++ -std=c++11
-CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -frtti -O3 -g
+OPENGLCOMPILATIONFLAG=-DOPENGL_COMPILATION 
+CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -frtti -O3 -g $(OPENGLCOMPILATIONFLAG)
 OBJS = ./objects/Life.o ./objects/Niche.o ./objects/ANN.o ./objects/BasicSynapticWeight.o ./objects/BasicNeuron.o ./objects/Input.o ./objects/GlobalInformation.o
 
 .PHONY: all clean install git
 
-all: Life.o Niche.o ANN.o BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o MutationControl.o
+all: Life.o Niche.o ANN.o BasicSynapticWeight.o BasicNeuron.o Input.o GlobalInformation.o MutationControl.o OpenGLInitialization.o
 	@echo All NEAT Compiled 
 
-
-Life.o: Life.cpp Niche.cpp Niche.o GlobalInformation.o
+Life.o: Life.cpp Life.hpp 
 	@echo Compiling Life 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Life.o
 
-ANN.o: ANN.cpp ANN.hpp BasicSynapticWeight.cpp BasicNeuron.cpp  GlobalInformation.cpp BasicSynapticWeight.o BasicNeuron.o  GlobalInformation.o 
+ANN.o: ANN.cpp ANN.hpp  
 	@echo Compiling ANN 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/ANN.o
 	
-BasicSynapticWeight.o: BasicSynapticWeight.cpp BasicSynapticWeight.hpp GlobalInformation.cpp GlobalInformation.o 
+BasicSynapticWeight.o: BasicSynapticWeight.cpp BasicSynapticWeight.hpp 
 	@echo Compiling BasicSynapticWeight 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicSynapticWeight.o
 
-BasicNeuron.o: BasicNeuron.cpp GlobalInformation.o
+BasicNeuron.o: BasicNeuron.cpp BasicNeuron.hpp Neuron.hpp
 	@echo Compiling BasicNeuron 
 	@mkdir -p objects
-	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicNeuron.o
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicNeuron.o 
 
-Input.o: Input.cpp GlobalInformation.o
+Input.o: Input.cpp Input.hpp Neuron.hpp
 	@echo Compiling Input 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Input.o
 
-Niche.o: Niche.cpp ANN.cpp
+Niche.o: Niche.cpp Niche.hpp
 	@echo Compiling Niche 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Niche.o
-
    
 GlobalInformation.o: GlobalInformation.cpp GlobalInformation.hpp
 	@echo Compiling GlobalInformation 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/GlobalInformation.o
 
-MutationControl.o: MutationControl.cpp MutationControl.hpp GlobalInformation.o BasicNeuron.o ReferenceMap.hpp ReferenceMapVector.hpp
+MutationControl.o: MutationControl.cpp MutationControl.hpp
 	@echo Compiling MutationControl 
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/MutationControl.o
-	
+
+OpenGLInitialization.o: OpenGLInitialization.cpp OpenGLInitialization.hpp
+	@echo Compiling OpenGLInitialization 
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/OpenGLInitialization.o
 
 clean:
 	@rm -Rf objects

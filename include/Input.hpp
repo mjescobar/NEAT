@@ -78,6 +78,23 @@ namespace NEATSpikes
 
 			void copyValues(Neuron * neuron){};
 
+			
+
+			// Tomar en cuenta que para el correcto uso de estos metodos se deben tener instalados 
+			// varias librerias externas de opengl como glfw GL GLU glut glfw GLEW.
+			/**
+				\brief Se dibuja la neurona a traves de openGL
+			*/
+			void display();
+			/**
+				\brief Se escriben los valores de la neurona en la gui de informacion.
+			*/
+			void displayInformationInGUI();
+
+
+			
+
+
 
 		GlobalInformation * globalInformation;
 

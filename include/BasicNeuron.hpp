@@ -12,6 +12,21 @@
 #include <fstream> // ofstream
 #include <cmath> // exp
 #include "GlobalInformation.hpp"
+#include "OpenGLInitialization.hpp"
+//================= OPENGL
+// Include GLEW
+#include <GL/glew.h>
+// Include GLFW
+#include <GLFW/glfw3.h>
+// Include GLM
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+
+#define BASIC_NEURON_TRIANGLES_AMOUNT 36
+#define BASIC_NEURON_VERTEX_AMOUNT (BASIC_NEURON_TRIANGLES_AMOUNT * 3)
+#define BASIC_NEURON_VERTICES_AMOUNT (BASIC_NEURON_VERTEX_AMOUNT * 3)
+
 
 namespace NEATSpikes{
 	class BasicNeuron : public Neuron 
@@ -148,12 +163,32 @@ namespace NEATSpikes{
 			/**
 				 \brief Se copian los valores desde neuron, este metodo se llama desde ANN en crossover, el supuesto es que ya existe una neurona pero con valores diferentes. Se copian solo los valores que caracterizan a la neurona, no se deben copiar por ejemplo las listas de neuronas entrantes por ejemplo.
 			*/
-			void copyValuesFrom(Neuron * neuron);
+			void copyValues(Neuron * neuron);
 
 			/**
 				\brief Se obtienen los datos desde el archivo con definiciones y se guarda en las variables estáticas correspondietes. 
 			*/
 			void SetParametersFromUserDefinitionsPath(std::string pathUserDefinitionsAboutBasicNeuron);
+		
+			// GPU methods: Si se desea se pude dejar estos fuera de la compilacion para 
+			// Asegurar que compile en servidores que no tengan compatibilidad con opengl.
+
+			
+			//============================================ OPENGL METODOS Y VARIABLES.
+			// Tomar en cuenta que para el correcto uso de estos metodos se deben tener instalados 
+			// varias librerias externas de opengl como glfw GL GLU glut glfw GLEW.
+			/**
+				\brief Se dibuja la neurona a traves de openGL
+			*/
+			void display();
+			/**
+				\brief Se escriben los valores de la neurona en la gui de informacion.
+			*/
+			void displayInformationInGUI();
+			static GLfloat * generateBufferData();
+			static const GLfloat * g_buffer_data;
+			static GLuint vertexbuffer;
+	
 		private:
 			/**
 				\brief Se inicializa una neurona con sus variables de forma random.
@@ -165,7 +200,7 @@ namespace NEATSpikes{
 			void loadParametersFromPrototype(Neuron * prototype);
 		// ====================================================================================================
 		// ===================================   Variables ====================================================
-		private:
+		
 			int * id; // Variable usada para que toda neurona tenga un identificator diferente. 
 			GlobalInformation * globalInformation;
 			double lastOutputVoltage; // El voljade de entrada de la iteracion anterior.
