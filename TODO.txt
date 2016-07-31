@@ -1,0 +1,3 @@
+contador: 1
+
+TODO 001: Hacer un programa de test para BasicNeuron.
