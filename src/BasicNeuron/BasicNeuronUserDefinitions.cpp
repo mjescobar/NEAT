@@ -1,9 +1,8 @@
-#include "BasicNeuron/BasicNeuronUserDefinitions.hpp"
+#include "BasicNeuronUserDefinitions.hpp"
 
 #include <fstream> // ofstream
 #include <map> // map
 #include <iostream>
-#include <algorithm>    // For std::remove()
 #include <cstring>
 
 namespace NEAT
@@ -38,18 +37,38 @@ BasicNeuronUserDefinitions::BasicNeuronUserDefinitions( std::string path )
 	useSigmoidConstant = bool( loadData["useSigmoidConstant"] );
 	maxBias = float( loadData["maxBias"] );
 	minBias = float( loadData["minBias"] );
-	maximumBiasVariation = float( loadData["maximumBiasVariation"] );
+	maximumBiasPercentVariation = float( loadData["maximumBiasPercentVariation"] );
 	probabilityOfBiasRandomMutation = float( loadData["probabilityOfBiasRandomMutation"] );
 	constantDistanceOfBias = float( loadData["constantDistanceOfBias"] );
 	maxSigmoidConstant = float( loadData["maxSigmoidConstant"] );
 	minSigmoidConstant = float( loadData["minSigmoidConstant"] );
 	probabilityOfSigmoidConstantRandomMutation = float( loadData["probabilityOfSigmoidConstantRandomMutation"] );
-	maximumSigmoidConstantVariation = float( loadData["maximumSigmoidConstantVariation"] );
+	maximumSigmoidConstantPercentVariation = float( loadData["maximumSigmoidConstantPercentVariation"] );
 	constantDistanceOfSigmoidConstant = float( loadData["constantDistanceOfSigmoidConstant"] );
 	predefinedBias = float( loadData["predefinedBias"] );
-	predefinedSigmoidConstat = float( loadData["predefinedSigmoidConstat"] );
+	predefinedSigmoidConstant = float( loadData["predefinedSigmoidConstant"] );
 
 	loadData.clear();
+}
+
+void BasicNeuronUserDefinitions::printInfo()
+{
+	std::cout << 
+	"useBias: " << useBias << "\n"<<
+	"useSigmoidConstant: " << useSigmoidConstant << "\n"<<
+	"maxBias: " << maxBias << "\n"<<
+	"minBias: " << minBias << "\n"<<
+	"maximumBiasPercentVariation: " << maximumBiasPercentVariation << "\n"<<
+	"probabilityOfBiasRandomMutation: " << probabilityOfBiasRandomMutation << "\n"<<
+	"constantDistanceOfBias: " << constantDistanceOfBias << "\n"<<
+	"maxSigmoidConstant: " << maxSigmoidConstant << "\n"<<
+	"minSigmoidConstant: " << minSigmoidConstant << "\n"<<
+	"probabilityOfSigmoidConstantRandomMutation: " << probabilityOfSigmoidConstantRandomMutation << "\n"<<
+	"maximumSigmoidConstantPercentVariation: " << maximumSigmoidConstantPercentVariation << "\n"<<
+	"constantDistanceOfSigmoidConstant: " << constantDistanceOfSigmoidConstant << "\n"<<
+	"predefinedBias: " << predefinedBias << "\n"<<
+	"predefinedSigmoidConstant: " << predefinedSigmoidConstant << "\n";
+
 }
 
 }

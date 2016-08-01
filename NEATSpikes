@@ -1,0 +1,8 @@
+#include "NEATSPIKES_include/Neuron.hpp"
+#include "NEATSPIKES_include/BasicNeuron.hpp"
+#include "NEATSPIKES_include/BasicNeuronUserDefinitions.hpp"
+#include "NEATSPIKES_include/Parameter.hpp"
+#include "NEATSPIKES_include/SynapticWeight.hpp"
+#include "NEATSPIKES_include/PlatformDefinitions.hpp"
+#include "NEATSPIKES_include/BasicSynapticWeight.hpp"
+#include "NEATSPIKES_include/BasicSynapticWeightUserDefinitions.hpp"

@@ -12,8 +12,7 @@ public:
 
 	Parameter( float defaultValue ); // In case that is not mutable
 	Parameter( float probabilityOfRandomMutation, 
-		float probabilityOfDeltaMutation,
-		float maximumVariation,
+		float maximumPercentVariation,
 		float maxAdmissibleValue,
 		float minAdmissibleValue);
 	void mutate();
@@ -25,10 +24,9 @@ private:
 	bool isMutable;
 
 	float probabilityOfRandomMutation;
-	float probabilityOfDeltaMutation;
 
 	// Delta info
-	float maximumVariation;
+	float maximumPercentVariation;
 
 	// value Limits
 	float maxAdmissibleValue;

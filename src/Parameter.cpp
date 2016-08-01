@@ -10,16 +10,17 @@ Parameter::Parameter( float defaultValue )
 }
 
 Parameter::Parameter( float probabilityOfRandomMutation, 
-		float probabilityOfDeltaMutation,
-		float maximumVariation,
+		float maximumPercentVariation,
 		float maxAdmissibleValue,
 		float minAdmissibleValue)
 {
 	isMutable = true;
 	this->probabilityOfRandomMutation = probabilityOfRandomMutation;
-	this->maximumVariation = maximumVariation; 
+	this->maximumPercentVariation = maximumPercentVariation; 
 	this->maxAdmissibleValue = maxAdmissibleValue; 
 	this->minAdmissibleValue = minAdmissibleValue;
+	//Se asigna un valor inicial aleatorio al parametro.
+	value = (maxAdmissibleValue - minAdmissibleValue)  * rand()/(double)RAND_MAX + minAdmissibleValue;	
 }
 	
 void Parameter::mutate()
@@ -41,19 +42,19 @@ void Parameter::mutate()
 
 		if( rand()/(double)RAND_MAX < probabilityOfRandomMutation )
 		{
-			value = (maximumVariation - minAdmissibleValue)*(rand()/(double)RAND_MAX) + minAdmissibleValue;
+			value = (maxAdmissibleValue - minAdmissibleValue)  * rand()/(double)RAND_MAX + minAdmissibleValue;
 		}
 
 		else
 		{
 			// paso 1
-			float value_normalized = (value - minAdmissibleValue)/(maximumVariation - minAdmissibleValue);
+			float value_normalized = (value - minAdmissibleValue)/(maximumPercentVariation - minAdmissibleValue);
 			// paso 2
 			float random_normalized = rand()/(double)RAND_MAX;
 			// paso 3
-			value_normalized = value_normalized * (1 - maximumVariation) + random_normalized * maximumVariation;
+			value_normalized = value_normalized * (1 - maximumPercentVariation) + random_normalized * maximumPercentVariation;
 		 	// paso 4
-		 	value = (maximumVariation - minAdmissibleValue) * value_normalized + minAdmissibleValue;	
+		 	value = (maximumPercentVariation - minAdmissibleValue) * value_normalized + minAdmissibleValue;	
 		}
 	}
 }

@@ -1,14 +1,43 @@
-#include "BasicNeuron/BasicNeuron.hpp"
+#include "BasicNeuron.hpp"
 
-#include <cmath> // exp
+#include <cmath> // exp fabs
+#include <iostream>
 
 namespace NEAT
 {
 
-BasicNeuron::BasicNeuron( std::shared_ptr < BasicNeuronUserDefinitions > basicNeuronUserDefinitions )
+BasicNeuron::BasicNeuron( const BasicNeuronUserDefinitions& basicNeuronUserDefinitions )
 {
 	inputVoltageAccum = 0.f;
-	this->basicNeuronUserDefinitions = std::move( basicNeuronUserDefinitions );
+	lastOutputVoltage = 0.f;
+	constantDistanceOfBias = basicNeuronUserDefinitions.constantDistanceOfBias;
+	constantDistanceOfSigmoidConstant = basicNeuronUserDefinitions.constantDistanceOfSigmoidConstant;
+
+	if ( basicNeuronUserDefinitions.useBias )
+	{
+			bias = std::make_unique < Parameter > ( basicNeuronUserDefinitions.probabilityOfBiasRandomMutation,
+				basicNeuronUserDefinitions.maximumBiasPercentVariation,
+				basicNeuronUserDefinitions.maxBias,
+				basicNeuronUserDefinitions.minBias
+				 ) ;
+	}
+	else
+	{
+		bias = std::make_unique < Parameter > ( basicNeuronUserDefinitions.predefinedBias );
+	}
+
+	if ( basicNeuronUserDefinitions.useSigmoidConstant )
+	{
+			sigmoidConstant = std::make_unique < Parameter > ( basicNeuronUserDefinitions.probabilityOfSigmoidConstantRandomMutation,
+				basicNeuronUserDefinitions.maximumSigmoidConstantPercentVariation,
+				basicNeuronUserDefinitions.maxSigmoidConstant,
+				basicNeuronUserDefinitions.minSigmoidConstant
+				 ) ;
+	}
+	else
+	{
+		sigmoidConstant = std::make_unique < Parameter > ( basicNeuronUserDefinitions.predefinedSigmoidConstant );
+	}
 }
 
 
@@ -26,9 +55,16 @@ void BasicNeuron::sumIncomingVoltage( float inputVoltage )
 	inputVoltageAccum += inputVoltage;
 }
 
-float BasicNeuron::getDistance( const Neuron& neuron )
+float BasicNeuron::getDistance( const Neuron * otherNeuron )
 {
-	return 0;
+	const BasicNeuron * otherBasicNeuron = dynamic_cast < const BasicNeuron *  > (  otherNeuron );
+	if(otherBasicNeuron == NULL)
+	{
+		std::cerr << "BasicNeuron::getDistance::otherNeuron is not BasicNeuron type." << std::endl;
+		exit( EXIT_FAILURE );
+	}
+
+	return this->constantDistanceOfBias * ( fabs(this->bias->value - otherBasicNeuron->bias->value)  )  + this->constantDistanceOfSigmoidConstant * ( fabs(this->sigmoidConstant->value - otherBasicNeuron->sigmoidConstant->value)  ) ;
 }
 
 float BasicNeuron::eval()
@@ -37,6 +73,11 @@ float BasicNeuron::eval()
 	inputVoltageAccum = 0.0; // Se descarga la neurona y su potencial de entrada vuelve a cero.
 	lastOutputVoltage = result; 
 	return result;
+}
+
+void BasicNeuron::printInfo()
+{
+	std::cout << "Bias: " << bias->value << "\tSigmoidConstant: " << sigmoidConstant->value << std::endl;
 }
 
 }

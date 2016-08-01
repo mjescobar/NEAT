@@ -17,7 +17,7 @@ public:
 	Neuron(  );
 	virtual void mutate() = 0;
 	virtual void sumIncomingVoltage(float inputVoltage) = 0;
-	virtual float getDistance( const Neuron& neuron ) = 0;
+	virtual float getDistance( const Neuron * neuron ) = 0;
 	virtual float eval() = 0;
 
 	// Manejo de las conexiones entrantes y salientes.

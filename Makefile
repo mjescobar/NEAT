@@ -1,12 +1,13 @@
 
-VPATH=include:src:objects
+VPATH=include:src:objects:include/BasicNeuron:src/BasicNeuron:include/BasicSynapticWeight:src/BasicSynapticWeight
 COMPILER=g++ -std=c++14
-CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -O3 
-OBJS = ./objects/Life.o ./objects/Niche.o ./objects/ANN.o ./objects/BasicSynapticWeight.o ./objects/BasicNeuron.o ./objects/Input.o ./objects/GlobalInformation.o
+CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -O3 -I./include/BasicNeuron -I./src/BasicNeuron -I./include/BasicSynapticWeight -I./src/BasicSynapticWeight
 
-# .PHONY: all clean install git
+OBJS = ./objects/Neuron.o ./objects/SynapticWeight.o ./objects/BasicNeuron.o ./objects/Parameter.o ./objects/BasicNeuronUserDefinitions.o ./objects/BasicSynapticWeight.o ./objects/BasicSynapticWeightUserDefinitions.o 
 
-all: Neuron.o Parameter.o BasicNeuronUserDefinitions.o BasicNeuron.o
+.PHONY: all clean install git
+
+all: Neuron.o SynapticWeight.o Parameter.o BasicNeuronUserDefinitions.o BasicNeuron.o BasicSynapticWeightUserDefinitions.o BasicSynapticWeight.o 
 	@echo All NEAT Compiled 
 
 
@@ -15,17 +16,48 @@ Neuron.o: Neuron.cpp
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Neuron.o
 
+
+SynapticWeight.o: SynapticWeight.cpp 
+	@echo Compiling SynapticWeight class
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/SynapticWeight.o
+
 Parameter.o: Parameter.cpp 
 	@echo Compiling Parameter class
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Parameter.o
 
-BasicNeuronUserDefinitions.o: ./src/BasicNeuron/BasicNeuronUserDefinitions.cpp
+BasicNeuronUserDefinitions.o: BasicNeuronUserDefinitions.cpp
 	@echo Compiling BasicNeuronUserDefinitions
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicNeuronUserDefinitions.o
 
-BasicNeuron.o: ./src/BasicNeuron/BasicNeuron.cpp
+BasicNeuron.o: BasicNeuron.cpp
 	@echo Compiling BasicNeuron
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicNeuron.o
+
+BasicSynapticWeight.o: BasicSynapticWeight.cpp
+	@echo Compiling BasicSynapticWeight
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicSynapticWeight.o
+
+BasicSynapticWeightUserDefinitions.o: BasicSynapticWeightUserDefinitions.cpp
+	@echo Compiling BasicSynapticWeightUserDefinitions
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicSynapticWeightUserDefinitions.o
+
+install:
+	@g++ -shared -Wl,-soname,libneatspikes.so.1 -o libneatspikes.so.1.0 $(OBJS)
+	@ln -sf libneatspikes.so.1.0 libneatspikes.so
+	@ln -sf libneatspikes.so.1.0 libneatspikes.so.1
+	@mv libneatspikes.so.1.0 libneatspikes.so libneatspikes.so.1 /usr/lib
+	@mkdir -p /usr/include/NEATSPIKES_include/
+	@find ./include -type f -exec cp {} /usr/include/NEATSPIKES_include/ \;
+	@cp NEATSpikes /usr/include
+	@chmod go+r --recursive /usr/include/NEATSPIKES_include/*
+	@chmod go+r --recursive /usr/include/NEATSpikes
+	@echo Installation was successful
+
+clean:
+	rm -rf objects

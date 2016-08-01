@@ -1,3 +1,4 @@
-contador: 1
+contador: 2
 
-TODO 001: Hacer un programa de test para BasicNeuron.
+
+TODO 002: Arreglar los parametros de BasicNeuron a como se hizo en BasicSynapticWeight .
