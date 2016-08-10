@@ -23,8 +23,8 @@ int main()
 		std::cout << " BN2: " << std::endl;
 		BN2->printInfo();
 		std::cout << "Distance: " << BN2->getDistance( BN1.get() ) << std::endl;
-		BN1->mutate();
-		BN2->mutate();
+		BN1->mightMutate();
+		BN2->mightMutate();
 	}
 
 	return 0;

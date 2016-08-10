@@ -1,3 +1,4 @@
+#include <cstdlib> //rand
 #include "Parameter.hpp"
 
 namespace NEAT
@@ -22,8 +23,22 @@ Parameter::Parameter( float probabilityOfRandomMutation,
 	//Se asigna un valor inicial aleatorio al parametro.
 	value = (maxAdmissibleValue - minAdmissibleValue)  * rand()/(double)RAND_MAX + minAdmissibleValue;	
 }
-	
-void Parameter::mutate()
+
+Parameter::Parameter ( const Parameter & other) : Parameter( other.probabilityOfRandomMutation, 
+		other.maximumPercentVariation,
+		other.maxAdmissibleValue,
+		other.minAdmissibleValue )
+{
+	value = other.value;
+}
+
+
+void Parameter::random()
+{
+	value = (maxAdmissibleValue - minAdmissibleValue)  * rand()/(double)RAND_MAX + minAdmissibleValue;	
+}
+
+void Parameter::mightMutate()
 {
 	// El procedimiento que se realiza es un procedimiento generico el cual realiza 4 pasos importantes.
 	// se da por supuesto que los valores finales despues de la mutacion deben pertenecer al intervalo [min, max] segun los correspondientes min y max de cada caracteristica.
@@ -48,15 +63,21 @@ void Parameter::mutate()
 		else
 		{
 			// paso 1
-			float value_normalized = (value - minAdmissibleValue)/(maximumPercentVariation - minAdmissibleValue);
+			float value_normalized = (value - minAdmissibleValue)/ ( maxAdmissibleValue - minAdmissibleValue );
 			// paso 2
 			float random_normalized = rand()/(double)RAND_MAX;
 			// paso 3
 			value_normalized = value_normalized * (1 - maximumPercentVariation) + random_normalized * maximumPercentVariation;
 		 	// paso 4
-		 	value = (maximumPercentVariation - minAdmissibleValue) * value_normalized + minAdmissibleValue;	
+		 	value = (maxAdmissibleValue - minAdmissibleValue) * value_normalized + minAdmissibleValue;	
 		}
 	}
 }
+
+std::unique_ptr < Parameter > Parameter::clone()
+{
+	return std::move( std::make_unique < Parameter >( *this ) );
+}
+
 
 }

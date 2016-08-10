@@ -9,16 +9,26 @@
 namespace NEAT
 {
 
-class Neuron
+class Neuron // Es una clase abstracta, no se puede crear instancias de esta sino que de las que implementen sus metodos abstractos ( de forma: virtual retunr-type function ( params ) = 0; )
 {
 
 public:
 	// Primero las funciones que tienen que ser sobre escritas en cualquier instancia de neurona. (BasicNeuron o SpikeNeuron por ejemplo)
 	Neuron(  );
-	virtual void mutate() = 0;
-	virtual void sumIncomingVoltage(float inputVoltage) = 0;
-	virtual float getDistance( const Neuron * neuron ) = 0;
-	virtual float eval() = 0;
+	virtual void mightMutate() = 0;
+	virtual float getDistance( const Neuron * neuron ) const = 0;
+	virtual void spread() = 0;
+	virtual std::unique_ptr < Neuron > clone() const = 0;
+	virtual std::unique_ptr < Neuron > createNew() const = 0; 
+
+	// Las siguientes son opcionales si se desea o no sobre escribirlas
+	virtual void printInfo() const {};
+	virtual void sumIncomingVoltage(float inputVoltage);
+	virtual float getOutput() const;
+	virtual void receiveInccommingVoltage(); 
+	virtual void sendVoltageToOutcomingSynapticWeights();
+	virtual std::unique_ptr < Neuron > crossOver( const Neuron & other ) const;
+
 
 	// Manejo de las conexiones entrantes y salientes.
 	void addIncomingSynapticWeight( std::shared_ptr < SynapticWeight > incomingSynapticWeight );
@@ -26,13 +36,14 @@ public:
 	const std::vector < std::shared_ptr < SynapticWeight > >& getIncomingSynapticWeights();
 	const std::vector < std::shared_ptr < SynapticWeight > >& getOutcomingSynapticWeights();
 
-private:
-	
+protected:
+
+	float inputVoltageAccum;
+	float output;	
 	// Cada neurona tiene una coleccion de conexiones sinapticas entrantes y salientes
 	std::vector< std::shared_ptr < SynapticWeight > > incomingSynapticWeights;
 	std::vector< std::shared_ptr < SynapticWeight > > outcomingSynapticWeights;
-
-
+	
 
 };
 

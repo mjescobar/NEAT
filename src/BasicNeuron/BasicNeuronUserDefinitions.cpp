@@ -8,6 +8,11 @@
 namespace NEAT
 {
 
+BasicNeuronUserDefinitions::BasicNeuronUserDefinitions(  ): BasicNeuronUserDefinitions( "./BNUD" )
+{
+
+}
+
 BasicNeuronUserDefinitions::BasicNeuronUserDefinitions( std::string path )
 {
 	std::map <std::string, double> loadData; // Se guardara la informacion en el mapa primero y luego se pasara a las variables.
@@ -33,8 +38,6 @@ BasicNeuronUserDefinitions::BasicNeuronUserDefinitions( std::string path )
 	}
 
 	// Se cargan todas las variables con los datos.
-	useBias = bool( loadData["useBias"] );
-	useSigmoidConstant = bool( loadData["useSigmoidConstant"] );
 	maxBias = float( loadData["maxBias"] );
 	minBias = float( loadData["minBias"] );
 	maximumBiasPercentVariation = float( loadData["maximumBiasPercentVariation"] );
@@ -45,8 +48,8 @@ BasicNeuronUserDefinitions::BasicNeuronUserDefinitions( std::string path )
 	probabilityOfSigmoidConstantRandomMutation = float( loadData["probabilityOfSigmoidConstantRandomMutation"] );
 	maximumSigmoidConstantPercentVariation = float( loadData["maximumSigmoidConstantPercentVariation"] );
 	constantDistanceOfSigmoidConstant = float( loadData["constantDistanceOfSigmoidConstant"] );
-	predefinedBias = float( loadData["predefinedBias"] );
-	predefinedSigmoidConstant = float( loadData["predefinedSigmoidConstant"] );
+	mutateProbability = float( loadData["mutateProbability"] );
+
 
 	loadData.clear();
 }
@@ -54,8 +57,6 @@ BasicNeuronUserDefinitions::BasicNeuronUserDefinitions( std::string path )
 void BasicNeuronUserDefinitions::printInfo()
 {
 	std::cout << 
-	"useBias: " << useBias << "\n"<<
-	"useSigmoidConstant: " << useSigmoidConstant << "\n"<<
 	"maxBias: " << maxBias << "\n"<<
 	"minBias: " << minBias << "\n"<<
 	"maximumBiasPercentVariation: " << maximumBiasPercentVariation << "\n"<<
@@ -66,8 +67,7 @@ void BasicNeuronUserDefinitions::printInfo()
 	"probabilityOfSigmoidConstantRandomMutation: " << probabilityOfSigmoidConstantRandomMutation << "\n"<<
 	"maximumSigmoidConstantPercentVariation: " << maximumSigmoidConstantPercentVariation << "\n"<<
 	"constantDistanceOfSigmoidConstant: " << constantDistanceOfSigmoidConstant << "\n"<<
-	"predefinedBias: " << predefinedBias << "\n"<<
-	"predefinedSigmoidConstant: " << predefinedSigmoidConstant << "\n";
+	"mutateProbability: " << mutateProbability << "\n";
 
 }
 

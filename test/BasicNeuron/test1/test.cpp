@@ -20,7 +20,7 @@ int main()
 	for (int i = 0; i < 30; ++i)
 	{
 		BN->printInfo();
-		BN->mutate();
+		BN->mightMutate();
 	}
 
 	return 0;

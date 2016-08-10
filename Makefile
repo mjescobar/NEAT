@@ -3,11 +3,11 @@ VPATH=include:src:objects:include/BasicNeuron:src/BasicNeuron:include/BasicSynap
 COMPILER=g++ -std=c++14
 CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -O3 -I./include/BasicNeuron -I./src/BasicNeuron -I./include/BasicSynapticWeight -I./src/BasicSynapticWeight
 
-OBJS = ./objects/Neuron.o ./objects/SynapticWeight.o ./objects/BasicNeuron.o ./objects/Parameter.o ./objects/BasicNeuronUserDefinitions.o ./objects/BasicSynapticWeight.o ./objects/BasicSynapticWeightUserDefinitions.o 
+OBJS = ./objects/Neuron.o ./objects/SynapticWeight.o ./objects/BasicNeuron.o ./objects/Parameter.o ./objects/BasicNeuronUserDefinitions.o ./objects/BasicSynapticWeight.o ./objects/BasicSynapticWeightUserDefinitions.o ./objects/Layer.o  ./objects/ANN.o ./objects/ANNUserDefinitions.o
 
 .PHONY: all clean install git
 
-all: Neuron.o SynapticWeight.o Parameter.o BasicNeuronUserDefinitions.o BasicNeuron.o BasicSynapticWeightUserDefinitions.o BasicSynapticWeight.o 
+all: Neuron.o SynapticWeight.o Parameter.o BasicNeuronUserDefinitions.o BasicNeuron.o BasicSynapticWeightUserDefinitions.o BasicSynapticWeight.o Layer.o ANNUserDefinitions.o ANN.o
 	@echo All NEAT Compiled 
 
 
@@ -46,6 +46,21 @@ BasicSynapticWeightUserDefinitions.o: BasicSynapticWeightUserDefinitions.cpp
 	@echo Compiling BasicSynapticWeightUserDefinitions
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/BasicSynapticWeightUserDefinitions.o
+
+ANNUserDefinitions.o: ANNUserDefinitions.cpp
+	@echo Compiling ANNUserDefinitions
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/ANNUserDefinitions.o
+
+ANN.o: ANN.cpp
+	@echo Compiling ANN
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/ANN.o
+
+Layer.o: Layer.cpp
+	@echo Compiling Layer
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Layer.o
 
 install:
 	@g++ -shared -Wl,-soname,libneatspikes.so.1 -o libneatspikes.so.1.0 $(OBJS)

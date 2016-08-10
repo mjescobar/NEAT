@@ -8,6 +8,11 @@
 namespace NEAT
 {
 
+BasicSynapticWeightUserDefinitions::BasicSynapticWeightUserDefinitions() : BasicSynapticWeightUserDefinitions("./BSWUD")
+{
+
+}
+
 BasicSynapticWeightUserDefinitions::BasicSynapticWeightUserDefinitions( std::string path )
 {
 	std::map <std::string, double> loadData; // Se guardara la informacion en el mapa primero y luego se pasara a las variables.
@@ -39,6 +44,7 @@ BasicSynapticWeightUserDefinitions::BasicSynapticWeightUserDefinitions( std::str
 	probabilityOfWeightRandomMutation = float( loadData["probabilityOfWeightRandomMutation"] );
 	probabilityOfEnableADisabledConnection = float( loadData["probabilityOfEnableADisabledConnection"] );
 	constantDistanceOfSynapticWeightValue = float( loadData["constantDistanceOfSynapticWeightValue"] );
+	mutationProbability = float( loadData["mutationProbability"] );
 }
 
 
@@ -50,6 +56,7 @@ void BasicSynapticWeightUserDefinitions::printInfo()
 	"maximumWeightPercentVariation: "<< maximumWeightPercentVariation << "\n" <<
 	"probabilityOfWeightRandomMutation: "<< probabilityOfWeightRandomMutation << "\n" <<
 	"probabilityOfEnableADisabledConnection: "<< probabilityOfEnableADisabledConnection << "\n" <<
+	"mutationProbability: "<< mutationProbability << "\n" <<
 	"constantDistanceOfSynapticWeightValue: "<< constantDistanceOfSynapticWeightValue << "\n";
 }
 

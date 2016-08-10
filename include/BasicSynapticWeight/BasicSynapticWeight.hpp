@@ -1,30 +1,30 @@
 #ifndef NEAT_BASICSYNAPTICWEIGHT_HPP
 #define NEAT_BASICSYNAPTICWEIGHT_HPP
 
+
 #include "SynapticWeight.hpp"
 #include "BasicSynapticWeightUserDefinitions.hpp"
 #include "Parameter.hpp"
-#include <memory>
 
 namespace NEAT
 {
 class BasicSynapticWeight : public SynapticWeight
 {
 public:
-	BasicSynapticWeight( BasicSynapticWeightUserDefinitions& userdef );
-	void mutate() override;
+	BasicSynapticWeight( const BasicSynapticWeightUserDefinitions& userdef );
+	BasicSynapticWeight( const BasicSynapticWeight& other );
+	void mightMutate() override;
 	void spread() override;
-	float getOutput() override;
-	float getDistance( const SynapticWeight * sw ) override;
-
-	void printInfo();
+	float getDistance( const SynapticWeight * sw ) const override;
+	std::unique_ptr < SynapticWeight > clone() const override;
+	std::unique_ptr < SynapticWeight > createNew() const override;
+	void printInfo() const;
 
 private:
 
 	std::unique_ptr < Parameter > weight;
-	float input;
-	float output;
 	float constantDistanceOfSynapticWeightValue;
+	float mutationProbability;
 
 };
 }

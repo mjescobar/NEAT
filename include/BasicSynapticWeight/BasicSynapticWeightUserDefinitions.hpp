@@ -7,6 +7,7 @@ namespace NEAT
 class BasicSynapticWeightUserDefinitions
 {
 public:
+	BasicSynapticWeightUserDefinitions();
 	BasicSynapticWeightUserDefinitions( std::string path );
 
 	void printInfo();
@@ -17,6 +18,7 @@ public:
 	float probabilityOfWeightRandomMutation;
 	float probabilityOfEnableADisabledConnection;
 	float constantDistanceOfSynapticWeightValue;
+	float mutationProbability;
 };
 }
 #endif

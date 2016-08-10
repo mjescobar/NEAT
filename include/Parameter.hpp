@@ -1,8 +1,8 @@
 #ifndef NEAT_PARAMETER
 #define NEAT_PARAMETER
 
+#include <memory> // unique_ptr
 #include "PlatformDefinitions.hpp"
-#include <cstdlib> //random
 
 namespace NEAT
 {
@@ -15,8 +15,10 @@ public:
 		float maximumPercentVariation,
 		float maxAdmissibleValue,
 		float minAdmissibleValue);
-	void mutate();
-
+	Parameter ( const Parameter & other);
+	void mightMutate();
+	std::unique_ptr < Parameter > clone();
+	void random();
 	float value;
 
 private:

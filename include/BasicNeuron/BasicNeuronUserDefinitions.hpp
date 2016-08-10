@@ -10,12 +10,12 @@ namespace NEAT
 class BasicNeuronUserDefinitions
 {
 public:
+	BasicNeuronUserDefinitions();
 	BasicNeuronUserDefinitions( std::string path );
 	void printInfo();
 
 	//Se mantienen publicos por simplicidad en su uso.
-	bool useBias;
-	bool useSigmoidConstant;
+	float mutateProbability;
 	float maxBias;
 	float minBias;
 	float maximumBiasPercentVariation;
@@ -26,8 +26,6 @@ public:
 	float probabilityOfSigmoidConstantRandomMutation;
 	float maximumSigmoidConstantPercentVariation;
 	float constantDistanceOfSigmoidConstant;
-	float predefinedBias;
-	float predefinedSigmoidConstant;
 };
 
 }

@@ -1,6 +1,7 @@
 
 #include "Neuron.hpp"
 
+#include <cstdlib> //rand
 namespace NEAT
 {
 
@@ -30,5 +31,39 @@ const std::vector < std::shared_ptr < SynapticWeight > >& Neuron::getOutcomingSy
 {
 	return outcomingSynapticWeights;
 }
+
+void Neuron::sumIncomingVoltage(float inputVoltage)
+{
+	inputVoltageAccum += inputVoltage;
+}
+
+float Neuron::getOutput() const
+{
+	return output;
+}
+
+
+void Neuron::receiveInccommingVoltage()
+{
+	for ( auto SW : incomingSynapticWeights )
+	{
+		SW->spread();
+		sumIncomingVoltage( SW->getOutput() );
+	}
+}
+
+void Neuron::sendVoltageToOutcomingSynapticWeights()
+{
+	for ( auto SW : outcomingSynapticWeights )
+	{
+		SW->setInput( output );	
+	}
+}
+
+std::unique_ptr < Neuron > Neuron::crossOver( const Neuron & other ) const
+{
+	return std::move( ( rand()/(double)RAND_MAX > 0.5 ) ? this->clone(): other.clone()); // 50% de probabilidades
+}
+
 
 }
