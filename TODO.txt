@@ -1,4 +1,6 @@
 contador: 2
 
-
-TODO 002: Arreglar los parametros de BasicNeuron a como se hizo en BasicSynapticWeight .
+TODO 003: chequear que las mismas innovaciones no provoquen dos species diferentes.
+TODO 004: revizar si los limites en las probabilidades estan correctos o hay organismos que no son posibles de escojer en cada uno de los casos de Race (ojala en todas las clases tb pero no creo que sea necesario)
+TODO 005: Agregar un constructor en BasicNeuron y BSW que cargue por si solos el userDef
+TODO 006: cambiar los shared por unique dado que en verdad no son shared.

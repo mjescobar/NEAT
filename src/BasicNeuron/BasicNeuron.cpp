@@ -6,6 +6,8 @@
 namespace NEAT
 {
 
+BasicNeuron::BasicNeuron() : BasicNeuron(  BasicNeuronUserDefinitions() ){}
+
 BasicNeuron::BasicNeuron( const BasicNeuronUserDefinitions& basicNeuronUserDefinitions )
 {
 	inputVoltageAccum = 0.f;

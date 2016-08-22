@@ -11,6 +11,7 @@ namespace NEAT
 class BasicSynapticWeight : public SynapticWeight
 {
 public:
+	BasicSynapticWeight();
 	BasicSynapticWeight( const BasicSynapticWeightUserDefinitions& userdef );
 	BasicSynapticWeight( const BasicSynapticWeight& other );
 	void mightMutate() override;

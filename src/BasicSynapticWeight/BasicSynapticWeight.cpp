@@ -6,6 +6,8 @@
 namespace NEAT
 {
 
+BasicSynapticWeight::BasicSynapticWeight():BasicSynapticWeight(BasicSynapticWeightUserDefinitions()){};
+
 BasicSynapticWeight::BasicSynapticWeight(const BasicSynapticWeightUserDefinitions& userdef )
 {
 	// Se crean los parametros, luego se otorgan los valores iniciales del resto de las variables importantes.

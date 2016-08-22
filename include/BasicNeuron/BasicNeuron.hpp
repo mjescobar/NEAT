@@ -15,6 +15,7 @@ namespace NEAT
 class BasicNeuron : public Neuron
 {
 public:
+	BasicNeuron();
 	BasicNeuron( const BasicNeuronUserDefinitions&  basicNeuronUserDefinitions );
 	BasicNeuron( const BasicNeuron & );
 

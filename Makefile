@@ -3,11 +3,11 @@ VPATH=include:src:objects:include/BasicNeuron:src/BasicNeuron:include/BasicSynap
 COMPILER=g++ -std=c++14
 CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -O3 -I./include/BasicNeuron -I./src/BasicNeuron -I./include/BasicSynapticWeight -I./src/BasicSynapticWeight
 
-OBJS = ./objects/Neuron.o ./objects/SynapticWeight.o ./objects/BasicNeuron.o ./objects/Parameter.o ./objects/BasicNeuronUserDefinitions.o ./objects/BasicSynapticWeight.o ./objects/BasicSynapticWeightUserDefinitions.o ./objects/Layer.o  ./objects/ANN.o ./objects/ANNUserDefinitions.o
+OBJS = ./objects/Neuron.o ./objects/SynapticWeight.o ./objects/BasicNeuron.o ./objects/Parameter.o ./objects/BasicNeuronUserDefinitions.o ./objects/BasicSynapticWeight.o ./objects/BasicSynapticWeightUserDefinitions.o ./objects/Layer.o  ./objects/ANN.o ./objects/ANNUserDefinitions.o ./objects/Organism.o ./objects/OrganismUserDefinitions.o ./objects/Race.o ./objects/RaceUserDefinitions.o ./objects/ANNTools.o ./objects/RaceTools.o ./objects/SpiciesTools.o ./objects/Spicies.o ./objects/SpiciesUserDefinitions.o ./objects/Life.o ./objects/LifeUserDefinitions.o
 
 .PHONY: all clean install git
 
-all: Neuron.o SynapticWeight.o Parameter.o BasicNeuronUserDefinitions.o BasicNeuron.o BasicSynapticWeightUserDefinitions.o BasicSynapticWeight.o Layer.o ANNUserDefinitions.o ANN.o
+all: Neuron.o SynapticWeight.o Parameter.o BasicNeuronUserDefinitions.o BasicNeuron.o BasicSynapticWeightUserDefinitions.o BasicSynapticWeight.o Layer.o ANNUserDefinitions.o ANN.o OrganismUserDefinitions.o Organism.o RaceUserDefinitions.o Race.o ANNTools.o RaceTools.o SpiciesTools.o Spicies.o SpiciesUserDefinitions.o Life.o LifeUserDefinitions.o
 	@echo All NEAT Compiled 
 
 
@@ -56,6 +56,62 @@ ANN.o: ANN.cpp
 	@echo Compiling ANN
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/ANN.o
+
+ANNTools.o: ANNTools.cpp
+	@echo Compiling ANNTools
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/ANNTools.o
+
+OrganismUserDefinitions.o: OrganismUserDefinitions.cpp
+	@echo Compiling OrganismUserDefinitions
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/OrganismUserDefinitions.o
+
+Organism.o: Organism.cpp
+	@echo Compiling Organism
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Organism.o
+
+RaceUserDefinitions.o: RaceUserDefinitions.cpp
+	@echo Compiling RaceUserDefinitions
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/RaceUserDefinitions.o
+
+Race.o: Race.cpp
+	@echo Compiling Race
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Race.o
+
+SpiciesUserDefinitions.o: SpiciesUserDefinitions.cpp
+	@echo Compiling SpiciesUserDefinitions
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/SpiciesUserDefinitions.o
+
+Spicies.o: Spicies.cpp
+	@echo Compiling Spicies
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Spicies.o
+
+LifeUserDefinitions.o: LifeUserDefinitions.cpp
+	@echo Compiling LifeUserDefinitions
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/LifeUserDefinitions.o
+
+Life.o: Life.cpp
+	@echo Compiling Life
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Life.o
+
+
+RaceTools.o: RaceTools.cpp
+	@echo Compiling RaceTools
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/RaceTools.o
+
+SpiciesTools.o: SpiciesTools.cpp
+	@echo Compiling SpiciesTools
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/SpiciesTools.o
 
 Layer.o: Layer.cpp
 	@echo Compiling Layer

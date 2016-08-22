@@ -77,5 +77,18 @@ float Layer::getDistance( const Layer& other ) const
 	return std::move(result);
 }
 
+std::unique_ptr <Layer> Layer::clone()
+{
+	auto result = std::make_unique <Layer>( seedNeuron, layerId );
+
+	// 50% probabilidad de heredar la neurona de cualquiera de sus padres. neurona a neurona.
+	for (uint i = 0; i < this->neurons.size(); ++i)
+	{
+		result->neurons.push_back(std::move(this->neurons.at(i)->clone())) ;
+	}	
+	return std::move(result);
+}
+
+
 
 }
