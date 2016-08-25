@@ -30,7 +30,6 @@ BasicNeuron::BasicNeuron( const BasicNeuronUserDefinitions& basicNeuronUserDefin
 	lastInputAccum = 0.f;
 }
 
-
 BasicNeuron::BasicNeuron( const BasicNeuron & other) 
 {
 	inputVoltageAccum = 0.f;
@@ -39,12 +38,9 @@ BasicNeuron::BasicNeuron( const BasicNeuron & other)
 	constantDistanceOfBias = other.constantDistanceOfBias;
 	constantDistanceOfSigmoidConstant = other.constantDistanceOfSigmoidConstant;
 	mutateProbability = other.mutateProbability;
-
 	bias = other.bias->clone();
 	sigmoidConstant = other.sigmoidConstant->clone();
 }
-
-
 
 void BasicNeuron::mightMutate()
 {
@@ -83,8 +79,6 @@ void BasicNeuron::printInfo() const
 	std::cout << "Bias: " << bias->value << "\tSigmoidConstant: " << sigmoidConstant->value << "\tlastInputAccum: "<< lastInputAccum << "\tinputVoltageAccum: " << inputVoltageAccum << "\toutput: " << output << std::endl;
 }
 
-
-
 std::unique_ptr < Neuron > BasicNeuron::clone() const 
 {
 	return std::move( std::make_unique < BasicNeuron > (*this) );
@@ -98,4 +92,4 @@ std::unique_ptr < Neuron > BasicNeuron::createNew() const
 	return std::move( tmp );
 }
 
-}
+} // End namespace NEAT

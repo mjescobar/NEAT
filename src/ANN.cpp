@@ -84,6 +84,9 @@ std::unique_ptr < ANN > ANN::crossOver( const ANN&  other ) const
 		result->layersMap.at( std::get<1>(historicalMark) )->neurons.at(std::get<0>(historicalMark))->addIncomingSynapticWeight( result->synapticWeights.back() );
 		result->layersMap.at(std::get<3>(historicalMark))->neurons.at(std::get<2>(historicalMark))->addIncomingSynapticWeight( result->synapticWeights.back() );
 	}
+	// ========================MIGHT MUTATE=======================
+	result->mightMutate(); // Este paso es de vital importancia y produce la complexificacion de la red
+	//============================================================
 	return std::move( result );
 }
 
@@ -144,8 +147,8 @@ void ANN::mightMutate(){
 		newUniqueSynapticWeight();
 		isNewSpecies = true;
 	}
-
 }
+
 float ANN::getDistance( const ANN& other) const
 {
 	auto sum = 0.f;
@@ -158,7 +161,6 @@ float ANN::getDistance( const ANN& other) const
 	}
 	return std::move(sum);
 }
-
 
 std::unique_ptr <ANN> ANN::clone() const
 {

@@ -64,7 +64,7 @@ void Race::epoch( uint amountOfChildrens ) // no se especifica en caso de ser yo
 float Race::getFitnessMean()
 {
 	this->updateTotalFitness();
-	return raceTotalFitness/(float)oldOrganisms.size();
+	return raceTotalFitness/(float)(oldOrganisms.size() + newOrganisms.size());
 }
 
 bool Race::belongsAtThisRace(const Organism& orgm ) 
@@ -91,6 +91,24 @@ bool Race::isYoung()
 std::vector < std::unique_ptr< Organism> > & Race::getNewOrganisms_ref()
 {
 	return newOrganisms;
+}
+
+void Race::printInfo()const
+{
+	std::cout << "RACE USER DEF: " << std::endl
+	<< "years: " << years << std::endl
+	<< "maxYearsYoungRace: " << maxYearsYoungRace << std::endl
+	<< "maximumRaceDistance: " << maximumRaceDistance << std::endl
+	<< "raceTotalFitness: " << raceTotalFitness << std::endl
+	<< "youngRace: " << youngRace << std::endl
+	<< "youngRaceMaxPopulation: " << youngRaceMaxPopulation << std::endl
+	<< "maxStackNewRaceCandidates: " << maxStackNewRaceCandidates << std::endl
+	<< "maxStackNewSpiciesCandidates: " << maxStackNewSpiciesCandidates << std::endl
+	<< "Race structure: " << std::endl
+	<< "newOrganisms size:" << newOrganisms.size() << std::endl 
+	<< "oldOrganisms size:" << oldOrganisms.size() << std::endl
+	<< "newRaceOrgmCandidate size:" << newRaceOrgmCandidate.size() << std::endl
+	<< "newSpicieOrgmCandidate size: " << newSpicieOrgmCandidate.size() << std::endl; 
 }
 
 }

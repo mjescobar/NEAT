@@ -13,7 +13,7 @@
 int main()
 {
 	std::srand(std::time(0)); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
-	auto BNUD = std::make_unique < NEAT::BasicNeuronUserDefinitions > ( "./BN_userdef" );
+	auto BNUD = std::make_unique < NEAT::BasicNeuronUserDefinitions > ( "./BNUD" );
 	auto BN = std::make_unique < NEAT::BasicNeuron > ( *BNUD );
 	BNUD->printInfo();
 

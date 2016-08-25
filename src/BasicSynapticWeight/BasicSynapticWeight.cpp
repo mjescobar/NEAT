@@ -31,7 +31,6 @@ BasicSynapticWeight::BasicSynapticWeight( const BasicSynapticWeight& other )
 	weight = other.weight->clone();
 }
 
-
 float BasicSynapticWeight::getDistance( const SynapticWeight * sw ) const
 {
 	const BasicSynapticWeight *  bsw = dynamic_cast < const BasicSynapticWeight * > ( sw );
@@ -52,14 +51,10 @@ void BasicSynapticWeight::spread()
 	output = input * weight->value; 
 }
 
-
-
 void BasicSynapticWeight::printInfo() const
 {
 	std::cout << "weight: " << weight->value<< "\tHin(L,N): {" << layerInput << "," << neuronPlaceInLayerVector_IN <<"}" << "\tHout(L,N): {" << layerOutput << "," << neuronPlaceInLayerVector_OUT <<"}"  << "\tinput: " << input << "\toutput: " << output << std::endl;
 }
-
-
 
 std::unique_ptr < SynapticWeight > BasicSynapticWeight::clone() const
 {
@@ -73,6 +68,4 @@ std::unique_ptr < SynapticWeight > BasicSynapticWeight::createNew() const
 	return std::move( tmp );
 }
 
-
-}
-
+} // end namespace NEAT

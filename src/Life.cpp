@@ -5,17 +5,13 @@
 namespace NEAT
 {
 
-
 Life::Life(std::unique_ptr<ANN> annSeed )
 {
 	auto lud = std::make_unique <LifeUserDefinitions>();
 	// Se crea la primera especie.
-	auto  oud = std::make_unique<OrganismUserDefinitions> ();  
-	auto firstOrganism = std::make_unique <Organism>( *oud, std::move(annSeed) );
-	auto rud = std::make_unique<RaceUserDefinitions>();  
-	auto firstRace = std::make_unique <Race>( *rud, std::move(firstOrganism) );
-	auto sud = std::make_unique< SpiciesUserDefinitions > ();
-	auto firstSpicie = std::make_unique<Spicies>(*sud, std::move(firstRace));
+	auto firstOrganism = std::make_unique <Organism>(  std::move(annSeed) );
+	auto firstRace = std::make_unique <Race>( std::move(firstOrganism) );
+	auto firstSpicie = std::make_unique<Spicies>( std::move(firstRace));
 	spicies.push_back( std::move(firstSpicie) );
 	maxAmountOfSpicies = lud->maxAmountOfSpicies;
 	generator = std::make_unique < std::default_random_engine > (std::chrono::system_clock::now().time_since_epoch().count());
@@ -25,11 +21,11 @@ void Life::epoch()
 {
 	createDecendence();
 	createSpiciesFromOrganismCandidates();
-	deleteExtinctedRaces();
+	deleteExtinctedSpicies();
 	currentGeneration++;
 }
 
-void Life::deleteExtinctedRaces()
+void Life::deleteExtinctedSpicies()
 {
 	for (uint i = 0; i < spicies.size(); ++i)
 	{
@@ -65,7 +61,6 @@ void Life::createDecendence()
 	}
 }
 
-
 void Life::fillFitnessVector (std::vector <float> & fitnessVector)
 {
 	fitnessVector.clear();
@@ -88,12 +83,11 @@ void Life::createSpiciesFromOrganismCandidates()
 		auto organism = spicies.at(spiciePos)->getOrganismNewSpiciesCandidate();
 		if( organism != nullptr ) // If is diferent than nullptr then one orgm was founded
 		{
-
+			
 		}
 	}
 		
 }
-
 
 uint Life::getCurrentGeneration(){return currentGeneration;}
 

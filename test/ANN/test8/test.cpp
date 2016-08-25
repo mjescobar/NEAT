@@ -1,4 +1,5 @@
-// Se desea probar el comportamiento de createSimilar
+// Se desea probar el comportamiento de crossOver
+// Es dificil de ver porque el metodo crossOver produce en si mutaciones y por lo tanto hay que fijarse bien.
 
 
 

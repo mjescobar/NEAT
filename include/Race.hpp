@@ -28,11 +28,11 @@ public:
 	std::unique_ptr <Race> createNew( std::unique_ptr <Organism> organism );
 	bool isExtincted();
 	bool isYoung();
-	std::vector < std::unique_ptr< Organism> > & getNewOrganisms_ref();
+	std::vector < std::unique_ptr< Organism > > & getNewOrganisms_ref();
+	void printInfo()const;
 	
-
-	std::vector <std::unique_ptr <Organism> > newRaceOrgmCandidate;
-	std::vector <std::unique_ptr <Organism> > newSpicieOrgmCandidate;
+	std::vector <std::unique_ptr<Organism>> newRaceOrgmCandidate;
+	std::vector <std::unique_ptr<Organism>> newSpicieOrgmCandidate;
 private:
 	Organism& getRandomOrganism_ref();
 	void addOrganismCandidateToNewRace( std::unique_ptr <Organism> candidate );

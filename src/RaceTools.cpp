@@ -26,12 +26,17 @@ void Race::addOrganismCandidateToNewSpicies( std::unique_ptr <Organism> candidat
 void Race::updateTotalFitness()
 {
 	raceTotalFitness = 0.f;
+	for( const auto& orgm : newOrganisms )
+	{
+		std:: cout << "[1]orgm->getFitness(): " <<  orgm->getFitness() << std::endl ;
+		raceTotalFitness += orgm->getFitness();
+	}
 	for( const auto& orgm : oldOrganisms )
 	{
+		std:: cout << "[2]orgm->getFitness(): " <<  orgm->getFitness() << std::endl ;
 		raceTotalFitness += orgm->getFitness();
 	}
 }
-
 
 void Race::fillFitnessVector (std::vector <float> & fitnessVector)
 {
@@ -78,7 +83,6 @@ Organism& Race::getRandomOrganism_ref()
 
 void Race::organismsGrowUp()
 {
-
 	for (uint i = 0; i < newOrganisms.size(); ++i)
 	{
 		oldOrganisms.push_back( std::move(newOrganisms.at(i)) );
@@ -92,6 +96,7 @@ void Race::organismsGrowUp()
 
 void Race::createDecendence(const uint amountOfChildrens )
 {
+	if(amountOfChildrens == 0){return;}
 	std::vector <float> fitnessVector;
 	fillFitnessVector (fitnessVector); // Se llenaron los fitness en orden.
 	std::discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());

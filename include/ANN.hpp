@@ -20,9 +20,9 @@ class ANN
 {
 public:
 	ANN(std::shared_ptr <Neuron> seedNeuron, std::shared_ptr <SynapticWeight> seedSynapticWeihgt);
+	ANN(const ANN& other); // Usado para crossOver, para crear una copia usar metodo clone()
 	ANN( const ANNUserDefinitions& userdef, std::shared_ptr <Neuron> seedNeuron, std::shared_ptr <SynapticWeight> seedSynapticWeihgt );
 	~ANN();
-	ANN(const ANN& other); // Usado para crossOver
 	void setInputs( std::vector <float> inputs ) const;
 	void spread();
 	std::vector <float> getOutputs() const;
@@ -34,8 +34,9 @@ public:
 	std::unique_ptr <ANN> createSimilar() const; // Para poblar una nueva especie con otros con misma topología.
 	bool getIsNewSpicie() const;
 	
-	std::string innovationMsg;
+	std::string innovationMsg; // Is used to prevent produce two similar species with the same topologie. (this could ocur but from diferent species and is unlikely and is not dangerous but cpu cost because find two times the same topology and could be two diferent in the same time.)
 private:
+	
 	// Por mejor vizualisacion los metodos privados estan implementados en ANNTools.cpp 
 	void newNeuronInlayer();
 	void newSynapticWeight(); // puede crear una misma conexion dos veces.

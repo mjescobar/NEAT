@@ -9,3 +9,7 @@
 #include "NEATSPIKES_include/Layer.hpp"
 #include "NEATSPIKES_include/ANNUserDefinitions.hpp"
 #include "NEATSPIKES_include/ANN.hpp"
+#include "NEATSPIKES_include/Organism.hpp"
+#include "NEATSPIKES_include/Race.hpp"
+#include "NEATSPIKES_include/Spicies.hpp"
+#include "NEATSPIKES_include/Life.hpp"

@@ -22,7 +22,7 @@ public:
 	void epoch();
 	uint getCurrentGeneration();
 private:
-	void deleteExtinctedRaces();
+	void deleteExtinctedSpicies();
 	void createSpiciesFromOrgmCandidates();
 	void createDecendence();
 	void fillFitnessVector (std::vector <float> & fitnessVector);

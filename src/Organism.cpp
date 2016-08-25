@@ -1,4 +1,6 @@
 #include "Organism.hpp"
+#include <iostream>
+
 namespace NEAT
 {
 
@@ -12,12 +14,28 @@ Organism::Organism( const OrganismUserDefinitions& userDef, std::unique_ptr <ANN
 	ann = annSeed->createSimilar();
 }
 
-Organism::Organism( const Organism& other ) // Create a similar organism but not equal.
-{
+Organism::Organism( const Organism& other ) // copy constructor
+{ 
 	years = 0;
 	lifeExpectative = other.lifeExpectative;
-	fitness = 0;
-	ann = other.ann->createSimilar();
+	fitness = 0.f;
+	ann = other.ann->clone();
+}
+
+Organism::Organism( std::unique_ptr <ANN> ann,  uint lifeExpectative  ) // used in crossOver
+{
+	years = 0;
+	this->lifeExpectative = lifeExpectative;
+	fitness = 0.f;
+	this->ann = std::move(ann);
+}
+
+Organism::Organism( const ANN& ann, uint lifeExpectative ) // Used in create similar
+{
+	years = 0;
+	this->lifeExpectative = lifeExpectative;
+	fitness = 0.f;
+	this->ann = ann.createSimilar();
 }
 
 bool Organism::surviveNewEpoch() 
@@ -47,7 +65,7 @@ bool Organism::getIsNewSpicie() const
 
 std::unique_ptr <Organism> Organism::createSimilar() const
 {
-	return std::move( std::make_unique <Organism>(*this) );
+	return std::move( std::make_unique <Organism>(*ann, lifeExpectative) );
 }
 
 void Organism::setFitness( const float fitness )
@@ -63,5 +81,18 @@ float Organism::getDistance(const Organism& other ) const
 {
 	return this->ann->getDistance(*other.ann);
 }
+
+std::unique_ptr <Organism> Organism::crossOver( const Organism& other ) const
+{
+	return std::move( std::make_unique<Organism>( std::move(this->ann->crossOver(*other.ann)), lifeExpectative  ) );
+}
+
+void Organism::printInfo()
+{
+	std::cout << "years: " << years <<  "\tlifeExpectative: " << lifeExpectative << "\tfitness: " <<  fitness << std::endl;
+	std::cout << "Internal ANN" << std::endl;
+	ann->printInfo(); 
+}
+
 
 }
