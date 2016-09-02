@@ -45,6 +45,7 @@ RaceUserDefinitions::RaceUserDefinitions( std::string path )
 	youngRaceMaxPopulation = uint( loadData["youngRaceMaxPopulation"] ) ;
 	maxStackNewRaceCandidates = uint( loadData["maxStackNewRaceCandidates"] ) ; 
 	maxStackNewSpiciesCandidates = uint( loadData["maxStackNewSpiciesCandidates"] ) ; 	
+	maxYears = uint( loadData["maxYears"] ) ; 	
 
 	loadData.clear();
 }
@@ -52,6 +53,7 @@ RaceUserDefinitions::RaceUserDefinitions( std::string path )
 void RaceUserDefinitions::printInfo()
 {
 	std::cout << 
+	"maxYears: " << maxYears <<
 	"maxYearsYoungRace: " << maxYearsYoungRace <<
 	"maximumRaceDistance: " << maximumRaceDistance <<
 	"youngRaceMaxPopulation: " << youngRaceMaxPopulation <<

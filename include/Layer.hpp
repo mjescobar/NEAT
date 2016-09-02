@@ -13,7 +13,7 @@ namespace NEAT
 class Layer
 {
 public:
-	Layer( std::shared_ptr < Neuron > seedNeuron  , unsigned int layerId );
+	Layer( std::unique_ptr < Neuron > seedNeuron  , unsigned int layerId );
 	void addNewNeuron();
 	void addNeuron( std::unique_ptr < Neuron > neuron); // se llama en cruzamientos
 	void spread();
@@ -26,7 +26,7 @@ public:
 	std::vector < std::unique_ptr < Neuron > > neurons; // Por simplicidad y una mejor notacion se deje neurons en publico
 
 private:
-	std::shared_ptr < Neuron > seedNeuron;
+	std::unique_ptr < Neuron > seedNeuron;
 	unsigned int layerId;
 };
 

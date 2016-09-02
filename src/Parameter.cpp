@@ -62,6 +62,11 @@ void Parameter::mightMutate()
 
 		else
 		{
+			if(maxAdmissibleValue == minAdmissibleValue )
+			{
+				value = maxAdmissibleValue;
+				return;
+			}
 			// paso 1
 			float value_normalized = (value - minAdmissibleValue)/ ( maxAdmissibleValue - minAdmissibleValue );
 			// paso 2

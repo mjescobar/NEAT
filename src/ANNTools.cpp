@@ -10,11 +10,12 @@ void ANN::newLayer()
 {
 	uint neuronIn, layerIn, neuronOut, layerOut;
 	uint layerId = layersMap.size() - 1; 
-	layersMap.emplace( layerId, std::make_unique< Layer >( seedNeuron, layerId ) );
+	layersMap.emplace( layerId, std::make_unique< Layer >( std::move(seedNeuron->clone()), layerId ) );
 	std::tie(layerIn, neuronIn) = findRandNeuronBehindLayer( layerId );
 	std::tie(layerOut,neuronOut) = findRandNeuronInAheadLayer( layerId );
 	layersMap.at( layerId )->addNewNeuron();
   	innovationMsg += "NL;";
+	isNewSpecies = true;
 	addSynapticWeight( layerIn, neuronIn, layerId, 0 );
   	addSynapticWeight( layerId, 0, layerOut, neuronOut );  
 }
@@ -39,6 +40,7 @@ void ANN::newNeuronInlayer()
   	layersMap.at( randomLayerIdNewNeuron )->addNewNeuron();
   	// Se deben crear dos conexiones que comuniquen esta neurona con la red neuronal, una conexion que llegue a esta neurona y una que salga de ella. Aqui es importante saber si se permiten las conexiones en ambas direcciones.
   	innovationMsg += "nN(" +  std::to_string(randomLayerIdNewNeuron) + "  );";
+	isNewSpecies = true;
   	addSynapticWeight( layerIn, neuronIn, randomLayerIdNewNeuron, layersMap.at( randomLayerIdNewNeuron )->neurons.size()-1 );
   	addSynapticWeight( randomLayerIdNewNeuron, layersMap.at( randomLayerIdNewNeuron )->neurons.size() -1, layerOut, neuronOut );  	
 }
@@ -95,6 +97,7 @@ void ANN::addSynapticWeight( const uint layerIn, const uint neuronIn, const uint
 	layersMap.at(layerIn)->neurons.at(neuronIn)->addOutcomingSynapticWeight( synapticWeights.back() );
 	synapticWeights.back()->setMark( neuronIn, layerIn, neuronOut, layerOut ); // HistorialMark
 	innovationMsg += "SW(" + std::to_string(layerIn) + " ," + std::to_string(neuronIn )+ "," + std::to_string(layerOut) + "," + std::to_string(neuronOut) +  ");"; 
+	isNewSpecies = true;
 }
 
 std::tuple < uint, uint > ANN::findRandNeuron() const  {

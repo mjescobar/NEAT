@@ -17,7 +17,7 @@ public:
 	void printInfo();
 	
 	uint maxAmountOfRacesPerSpicie;	
-
+	uint maxYears;
 };
 
 }

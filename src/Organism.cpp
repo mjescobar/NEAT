@@ -46,7 +46,7 @@ bool Organism::surviveNewEpoch()
 		years++;
 		return true;
 	}
-	
+	if(lifeExpectative == 0) {return false;}
 	double random = rand()/(double)RAND_MAX;
 	// Se usa una desigualdad tal que la esperanza de vida sea en probabilidad la que el usuario puso.
 	if( random > lifeExpectative/(double)(1.0 + lifeExpectative) )
@@ -89,7 +89,9 @@ std::unique_ptr <Organism> Organism::crossOver( const Organism& other ) const
 
 void Organism::printInfo()
 {
+
 	std::cout << "years: " << years <<  "\tlifeExpectative: " << lifeExpectative << "\tfitness: " <<  fitness << std::endl;
+	
 	std::cout << "Internal ANN" << std::endl;
 	ann->printInfo(); 
 }

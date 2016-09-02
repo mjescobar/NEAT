@@ -1,0 +1,25 @@
+Comments of the tested behavior in the test.cpp file.
+
+To compile:
+----------
+
+This code use the library <NEATSpikes>, to install the library you have to be in the base folder and run 
+
+$ make
+$ sudo make install
+
+then come back to this folder and run:
+
+$ make
+
+
+To run:
+------
+
+In this folder use the command
+
+$ make run
+
+
+
+Tested on Arch Linux 

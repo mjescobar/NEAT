@@ -41,6 +41,7 @@ SpiciesUserDefinitions::SpiciesUserDefinitions( std::string path )
 
 	// Se cargan todas las variables con los datos.
 	maxAmountOfRacesPerSpicie = uint( loadData["maxAmountOfRacesPerSpicie"] ) ;	
+	maxYears = uint( loadData["maxYears"] ) ;	
 
 	loadData.clear();
 }
@@ -48,7 +49,8 @@ SpiciesUserDefinitions::SpiciesUserDefinitions( std::string path )
 void SpiciesUserDefinitions::printInfo()
 {
 	std::cout << 
-	"maxAmountOfRacesPerSpicie: " << maxAmountOfRacesPerSpicie <<
+	"maxAmountOfRacesPerSpicie: " << maxAmountOfRacesPerSpicie << std::endl <<
+	"maxYears: " << maxYears <<
 	std::endl;
 }
 

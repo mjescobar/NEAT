@@ -28,12 +28,10 @@ void Race::updateTotalFitness()
 	raceTotalFitness = 0.f;
 	for( const auto& orgm : newOrganisms )
 	{
-		std:: cout << "[1]orgm->getFitness(): " <<  orgm->getFitness() << std::endl ;
 		raceTotalFitness += orgm->getFitness();
 	}
 	for( const auto& orgm : oldOrganisms )
 	{
-		std:: cout << "[2]orgm->getFitness(): " <<  orgm->getFitness() << std::endl ;
 		raceTotalFitness += orgm->getFitness();
 	}
 }
@@ -49,13 +47,13 @@ void Race::fillFitnessVector (std::vector <float> & fitnessVector)
 
 void Race::populateFromCurrentsOrganisms( uint amountOfChildrens )
 {
-	const uint attempts = 2; // Solo dos intentos de que los organismos sean de la misma raza
+	const uint attempts = 4; // Solo dos intentos de que los organismos sean de la misma raza
 	for (uint i = 0; i < amountOfChildrens; ++i) // Se intentara crear esta cantidad de hijos pero no es seguro dado que puede que aparezcan muchos hijos que no pertenezcan y para no parar el cpu solo hay dos intentos por ciclo de que se logre.
 	{
 		auto& fatherOrgm = getRandomOrganism_ref();
 		for(uint j= 0; j< attempts; j++)
 		{
-			auto sonOrgm = fatherOrgm.createSimilar();
+			auto sonOrgm = fatherOrgm.createSimilar(); // no puede ser de otra especie el resultado dado que es de la misma topologia.
 			if( fatherOrgm.getDistance( *sonOrgm ) <= maximumRaceDistance )
 			{
 				newOrganisms.push_back( std::move(sonOrgm) );
@@ -71,6 +69,7 @@ void Race::populateFromCurrentsOrganisms( uint amountOfChildrens )
 Organism& Race::getRandomOrganism_ref()
 {
 	const uint amountOfOrganisms = newOrganisms.size() + oldOrganisms.size();
+	if( amountOfOrganisms == 0 ) {std::cerr << "ERROR::getRandomOrganism_ref:: no Organisms to select" << std::endl;}
 	std::uniform_int_distribution<uint> randomOrganism(0, amountOfOrganisms-1);
 	const uint orgmSelct =randomOrganism(*generator);
 	if(orgmSelct >= newOrganisms.size())
@@ -83,6 +82,7 @@ Organism& Race::getRandomOrganism_ref()
 
 void Race::organismsGrowUp()
 {
+
 	for (uint i = 0; i < newOrganisms.size(); ++i)
 	{
 		oldOrganisms.push_back( std::move(newOrganisms.at(i)) );
@@ -101,7 +101,7 @@ void Race::createDecendence(const uint amountOfChildrens )
 	fillFitnessVector (fitnessVector); // Se llenaron los fitness en orden.
 	std::discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
 
-	uint attempts = 2; // Si dos veces no se obtiene un organismo que sea de esta raza simplemente no se intenta de nuevo, para no dejar el cpu muy colapsado en esta operacion.
+	uint attempts = 4; // Si dos veces no se obtiene un organismo que sea de esta raza simplemente no se intenta de nuevo, para no dejar el cpu muy colapsado en esta operacion.
 	for (uint i = 0; i < amountOfChildrens; ++i)
 	{
 		for (uint j = 0; j < attempts; ++j)
@@ -115,6 +115,7 @@ void Race::createDecendence(const uint amountOfChildrens )
 			auto& motherOrgm =  *oldOrganisms.at(mother).get();
 
 			std::unique_ptr <Organism> sonOrgm = fatherOrgm.crossOver( motherOrgm );
+
 
 			if( sonOrgm->getIsNewSpicie() )
 			{

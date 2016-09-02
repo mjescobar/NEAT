@@ -1,5 +1,6 @@
 #include "Spicies.hpp"
 #include <algorithm>
+#include <iostream>
 namespace NEAT
 {
 
@@ -8,16 +9,23 @@ Spicies::Spicies( std::unique_ptr <Race> founderRace  ): Spicies(SpiciesUserDefi
 Spicies::Spicies( const SpiciesUserDefinitions& userdef, std::unique_ptr <Race> founderRace  )
 {
 	maxAmountOfRacesPerSpicie = userdef.maxAmountOfRacesPerSpicie;
+	maxYears = userdef.maxYears;
 	youngRaces.push_back(std::move(founderRace));
 	generator = std::make_unique < std::default_random_engine > (std::chrono::system_clock::now().time_since_epoch().count());
+	years = 0;
+	extincted = false;
 }
 
 // Only old Races hava to fight for childrens the young races have not.
 void Spicies::epoch( const uint childrenAmount )
 {
+	if(childrenAmount == 0 && oldRaces.size() >= 1){ extincted = true; return; }
+	if(years >= maxYears){ extincted = true; return; }
 	createDecendence(childrenAmount);
-	createRacesFromOrganismCandidates();
 	deleteExtinctedRaces();
+	if(youngRaces.size() + oldRaces.size() == 0) {extincted = true; return;}
+	createRacesFromOrganismCandidates();
+	years ++;
 }
 
 std::unique_ptr <Organism> Spicies::getOrganismNewSpiciesCandidate()
@@ -34,25 +42,20 @@ std::unique_ptr <Organism> Spicies::getOrganismNewSpiciesCandidate()
 			auto selected = randomOrganism(*generator);
 			std::unique_ptr< Organism > result = std::move( race.newSpicieOrgmCandidate.at(selected) );
 			race.newSpicieOrgmCandidate.erase( race.newSpicieOrgmCandidate.begin() + selected );
-			return std::move (result);
+			if(!detectRepeatedInnovation(*result))
+			{
+				return std::move (result);
+			}
 		}
 	}
 	return nullptr; // in case was not posible to found a organism 
 }
 
-bool Spicies::isExtincted()
+bool Spicies::isExtinct()
 {
-	oldRaces.erase(  std::remove_if(oldRaces.begin(), oldRaces.end(),
-        [](std::unique_ptr<Race>& race)->bool { return race->isExtincted(); }),
-    	oldRaces.end());
-	youngRaces.erase(  std::remove_if(youngRaces.begin(), youngRaces.end(),
-        [](std::unique_ptr<Race>& race)->bool { return race->isExtincted(); }),
-    	youngRaces.end());
-	return oldRaces.size() == 0 && youngRaces.size() == 0; // Si no quedan razas entonces esta extinta esta especie.
+	extincted = extincted || (oldRaces.size() == 0 && youngRaces.size() == 0);
+	return extincted; // Si no quedan razas entonces esta extinta esta especie.
 }
-
-
-
 
 float Spicies::getMeanFitnessOfOldRaces()
 {
@@ -66,4 +69,18 @@ float Spicies::getMeanFitnessOfOldRaces()
 	return std::move(mean);
 }
 
+void Spicies::printInfo() const
+{
+	std::cout <<
+	"years: " << years <<  std::endl <<
+	"oldRaces size: " << oldRaces.size() << std::endl <<
+	"young races size: " << youngRaces.size() << std::endl <<
+	"maxAmountOfRacesPerSpicie: " << maxAmountOfRacesPerSpicie << std::endl <<
+	"INNOV MAPs: " << std::endl;
+	for( auto& pair : innovMsgMap )
+	{
+		std::cout << "Key: " << pair.first << "  Value: " << pair.second << std::endl;
+	}
 }
+
+} // end Namespace NEAT

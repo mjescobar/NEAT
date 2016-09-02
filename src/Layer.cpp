@@ -7,7 +7,7 @@
 namespace NEAT
 {
 
-Layer::Layer ( std::shared_ptr < Neuron > seedNeuron, unsigned int layerId) 
+Layer::Layer ( std::unique_ptr < Neuron > seedNeuron, unsigned int layerId) 
 {
 	this->seedNeuron = std::move( seedNeuron );
 	this->layerId = layerId;
@@ -47,7 +47,7 @@ void Layer::printInfo() const
 
 std::unique_ptr < Layer > Layer::crossOver( const Layer& other) const // has to be exact equals, not possible crossOver with another species
 {
-	auto result = std::make_unique <Layer>( seedNeuron, layerId );
+	auto result = std::make_unique <Layer>( std::move(seedNeuron->clone()), layerId );
 
 	// 50% probabilidad de heredar la neurona de cualquiera de sus padres. neurona a neurona.
 	for (uint i = 0; i < this->neurons.size(); ++i)
@@ -79,7 +79,7 @@ float Layer::getDistance( const Layer& other ) const
 
 std::unique_ptr <Layer> Layer::clone()
 {
-	auto result = std::make_unique <Layer>( seedNeuron, layerId );
+	auto result = std::make_unique <Layer>( std::move(seedNeuron->clone()), layerId );
 
 	// 50% probabilidad de heredar la neurona de cualquiera de sus padres. neurona a neurona.
 	for (uint i = 0; i < this->neurons.size(); ++i)

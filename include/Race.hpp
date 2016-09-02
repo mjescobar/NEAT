@@ -26,13 +26,17 @@ public:
 	float getFitnessMean();
 	bool belongsAtThisRace(const Organism& orgm ); // Distancia entre organismo y raza
 	std::unique_ptr <Race> createNew( std::unique_ptr <Organism> organism );
-	bool isExtincted();
+	bool isExtinct();
 	bool isYoung();
 	std::vector < std::unique_ptr< Organism > > & getNewOrganisms_ref();
 	void printInfo()const;
 	
+	std::vector <std::unique_ptr<Organism>> newOrganisms;
 	std::vector <std::unique_ptr<Organism>> newRaceOrgmCandidate;
 	std::vector <std::unique_ptr<Organism>> newSpicieOrgmCandidate;
+
+	std::vector <float> fitnessPerYear;
+
 private:
 	Organism& getRandomOrganism_ref();
 	void addOrganismCandidateToNewRace( std::unique_ptr <Organism> candidate );
@@ -43,10 +47,11 @@ private:
 	void organismsGrowUp();
 	void createDecendence(const uint amountOfChildrens );
 
-	std::vector <std::unique_ptr<Organism>> newOrganisms;
 	std::vector <std::unique_ptr<Organism>> oldOrganisms;
 
+	bool extincted;
 	uint years;
+	uint maxYears;
 	uint maxYearsYoungRace;
 	float maximumRaceDistance;
 	float raceTotalFitness;

@@ -14,13 +14,14 @@ Race::Race( const RaceUserDefinitions& userDef, std::unique_ptr <Organism>  foun
 	youngRaceMaxPopulation = userDef.youngRaceMaxPopulation;
 	maxStackNewRaceCandidates = userDef.maxStackNewRaceCandidates;
 	maxStackNewSpiciesCandidates = userDef.maxStackNewSpiciesCandidates;
+	maxYears = userDef.maxYears;
 	raceTotalFitness = 0.f;
 	youngRace = true;
 	newOrganisms.push_back(std::move(founderOrganism));
 	generator = std::make_unique < std::default_random_engine > (std::chrono::system_clock::now().time_since_epoch().count() + (uint)rand());
-
 	// Se prodece a llenar la raza con youngRaceMaxPopulation organismos.
 	populateFromCurrentsOrganisms( youngRaceMaxPopulation - newOrganisms.size() );
+	extincted = false;
 }
 
 Race::Race( const Race& other, std::unique_ptr <Organism>  founderOrganism )
@@ -31,6 +32,7 @@ Race::Race( const Race& other, std::unique_ptr <Organism>  founderOrganism )
 	youngRaceMaxPopulation = other.youngRaceMaxPopulation;
 	maxStackNewRaceCandidates = other.maxStackNewRaceCandidates;
 	maxStackNewSpiciesCandidates = other.maxStackNewSpiciesCandidates;
+	maxYears = other.maxYears;
 	raceTotalFitness = 0.f;
 	youngRace = true;
 	newOrganisms.push_back(std::move(founderOrganism));
@@ -38,6 +40,7 @@ Race::Race( const Race& other, std::unique_ptr <Organism>  founderOrganism )
 
 	// Se prodece a llenar la raza con youngRaceMaxPopulation organismos.
 	populateFromCurrentsOrganisms( youngRaceMaxPopulation - newOrganisms.size() );
+	extincted = false;
 }
 
 void Race::epoch(){
@@ -46,10 +49,14 @@ void Race::epoch(){
 
 void Race::epoch( uint amountOfChildrens ) // no se especifica en caso de ser young
 {	
+	fitnesPerYear.push_back(getFitnessMean());
+
+	if(extincted){std::cerr << "ERROR::Race::epoch::This race is extinct " << newOrganisms.size() << "\t" << oldOrganisms.size() << std::endl; exit(EXIT_FAILURE);}
+	if(amountOfChildrens == 0 || years >= maxYears) { extincted = true; return; }// means that this race is a bad race and is eliminated inmediatly
 	// Primero se pasa de epoca a cada organismo de la raza (pudiendo morir algunos de ellos en el camino)
 	organismsGrowUp(); // Todos los nuevos organismos son pasados a viejos organismos
 						// en este momento newOrganism esta vacio y sera vuelto a llenar al final
-	if(oldOrganisms.size() == 0){return;}
+	if(oldOrganisms.size() == 0){ extincted = true; return; }
 	if( ++years >= maxYearsYoungRace ){	youngRace = false; }
 	// los que quedan tienen derecho a aparearse, tomando en cuenta la posibilidad que exista tan solo un organismo en la raza es que se chequea tal.
 	if(oldOrganisms.size()  == 1) // No hay suficientes organismos como para realizar cruzamientos.
@@ -78,9 +85,10 @@ std::unique_ptr <Race> Race::createNew( std::unique_ptr <Organism> organism )
 	return std::make_unique<Race>( *this, std::move(organism) );
 }
 
-bool Race::isExtincted()
+bool Race::isExtinct()
 {
-	return ( ( newOrganisms.size() + oldOrganisms.size() == 0 )? true : false );
+	extincted = extincted || ( ( newOrganisms.size() + oldOrganisms.size() == 0 )? true : false ); // Because can be extincted from the epoch method if have 0 childs mean that is a bad race and is extincted inmediatly
+	return extincted;
 }
 
 bool Race::isYoung()
@@ -97,10 +105,11 @@ void Race::printInfo()const
 {
 	std::cout << "RACE USER DEF: " << std::endl
 	<< "years: " << years << std::endl
+	<< "maxYears: " << maxYears << std::endl
 	<< "maxYearsYoungRace: " << maxYearsYoungRace << std::endl
 	<< "maximumRaceDistance: " << maximumRaceDistance << std::endl
 	<< "raceTotalFitness: " << raceTotalFitness << std::endl
-	<< "youngRace: " << youngRace << std::endl
+	<< "isyoungRace: " << youngRace << std::endl
 	<< "youngRaceMaxPopulation: " << youngRaceMaxPopulation << std::endl
 	<< "maxStackNewRaceCandidates: " << maxStackNewRaceCandidates << std::endl
 	<< "maxStackNewSpiciesCandidates: " << maxStackNewSpiciesCandidates << std::endl

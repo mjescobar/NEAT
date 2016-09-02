@@ -16,18 +16,27 @@ int main()
 	auto ann1  = make_unique < ANN > ( BNseed, BSWseed );
 	auto orgm = make_unique < Organism > ( std::move(ann1) );
 	auto race = make_unique < Race > (std::move(orgm));
-
-	for (int i = 0; i < 2; ++i)
+	race->printInfo();
 	{
-		race->epoch(10);
 		auto& neworganisms = race->getNewOrganisms_ref();
 		std::cout << "neworganisms size: " << neworganisms.size() << std::endl;
 		for ( auto& orgm : neworganisms )
 		{
-			orgm->setFitness( i*1.0f );
+			orgm->setFitness( (1 + 10)*1.0f );
+			std::cout << "(i + 10)*1.0f" << (1 + 10)*1.0f << std::endl;
+		}
+		race->epoch(10);
+	}
+	{
+		auto& neworganisms = race->getNewOrganisms_ref();
+		std::cout << "neworganisms size: " << neworganisms.size() << std::endl;
+		for ( auto& orgm : neworganisms )
+		{
+			orgm->setFitness( (2 + 10)*1.0f );
+			std::cout << "(i + 10)*1.0f" << (2 + 10)*1.0f << std::endl;
 		}
 	}
 	std::cout << "Fitness mean: " << race->getFitnessMean() << std::endl;
-
+	race->printInfo();
 	return 0;
 }

@@ -15,7 +15,7 @@ public:
 	RaceUserDefinitions(  std::string path  );
 
 	void printInfo();
-	
+	uint maxYears;
 	uint maxYearsYoungRace;
 	float maximumRaceDistance;
 	uint youngRaceMaxPopulation;

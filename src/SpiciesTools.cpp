@@ -1,11 +1,13 @@
 #include "Spicies.hpp"
 #include <iostream>
+#include <algorithm>
 namespace NEAT
 {
 
 Race& Spicies::getRandomRace_ref()
 {
-	uint racesAmount = youngRaces.size() + oldRaces.size();
+	const uint racesAmount = youngRaces.size() + oldRaces.size();
+	if( racesAmount == 0 ) {std::cerr << "ERROR::getRandomRace_ref:: no race to select" << std::endl;exit(EXIT_FAILURE);}	
 	std::uniform_int_distribution<uint> randomRace(0, racesAmount-1);
 	uint raceSelected = randomRace( *generator );
 
@@ -53,6 +55,7 @@ void Spicies::createRacesFromOrganismCandidates()
 		for (uint i = 0; i < attempts; ++i)
 		{
 			auto& raceSelct = getRandomRace_ref();
+
 			if(raceSelct.newRaceOrgmCandidate.size() >= 1)
 			{
 				// Select a organism of this stack randomly
@@ -71,7 +74,7 @@ void Spicies::createRacesFromOrganismCandidates()
 						break;
 					}
 				}
-
+				if(flagIsNewRace == false){	break;	}
 				for( auto& raceIt : youngRaces  )
 				{
 					if(raceIt->belongsAtThisRace( ormgSelct ))
@@ -81,7 +84,7 @@ void Spicies::createRacesFromOrganismCandidates()
 						break;
 					}
 				}
-				
+				if(flagIsNewRace == false){	break;	}
 				//Crear nueva raza.
 				if(flagIsNewRace)
 				{
@@ -96,23 +99,27 @@ void Spicies::createRacesFromOrganismCandidates()
 
 void Spicies::createDecendence(const uint childrenAmount )
 {
-	std::vector <float> fitnessVector;
-	fillFitnessVector (fitnessVector);
-	std::vector <uint> childrensPerRace;
-	for (uint i = 0; i < oldRaces.size(); ++i)
+	if(oldRaces.size() >= 1 )
 	{
-		childrensPerRace.push_back(0);
-	}
-	std::discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
-	uint selected = 0;
-	for (uint i = 0; i < childrenAmount; ++i)
-	{
-		selected = obtainOrganism(*generator);
-		childrensPerRace.at(selected) += 1;
-	}	
-	for (uint i = 0; i < oldRaces.size(); ++i)
-	{
-		oldRaces.at(i)->epoch( childrensPerRace.at(i) );
+		std::vector <float> fitnessVector;
+		fillFitnessVector (fitnessVector);
+		std::vector <uint> childrensPerRace;
+		for (uint i = 0; i < oldRaces.size(); ++i)
+		{
+			childrensPerRace.push_back(0);
+		}
+		std::discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
+		uint selected = 0;
+		for (uint i = 0; i < childrenAmount; ++i)
+		{
+			selected = obtainOrganism(*generator);
+			childrensPerRace.at(selected) += 1;
+		}	
+		for (uint i = 0; i < oldRaces.size(); ++i)
+		{
+			oldRaces.at(i)->epoch( childrensPerRace.at(i) );
+		}
+
 	}
 	for (uint i = 0; i < youngRaces.size(); ++i)
 	{
@@ -128,14 +135,12 @@ void Spicies::createDecendence(const uint childrenAmount )
 
 void Spicies::deleteExtinctedRaces()
 {
-	for (uint i = 0; i < oldRaces.size(); ++i)
-	{
-		if( oldRaces.at(i)->isExtincted() )
-		{
-			oldRaces.erase( oldRaces.begin() + i );
-			i--;
-		}
-	}
+	oldRaces.erase(  std::remove_if(oldRaces.begin(), oldRaces.end(),
+    [](std::unique_ptr<Race>& race)->bool { return race->isExtinct(); }),
+	oldRaces.end());
+	youngRaces.erase(  std::remove_if(youngRaces.begin(), youngRaces.end(),
+    [](std::unique_ptr<Race>& race)->bool { return race->isExtinct(); }),
+	youngRaces.end());
 }
 
 

@@ -23,15 +23,19 @@ int main()
 		race->epoch();
 	}
 	race->printInfo();
-	std::cout << "IS extincted?: " << ((race->isExtincted())?"yes":"no") << std::endl;
+	std::cout << "IS extincted?: " << ((race->isExtinct())?"yes":"no") << std::endl;
 	std::cout << " ============OTHER ==============" << std::endl;
 
 	for (int i = 0; i < 100; ++i)
 	{
 		race->epoch(0);
+		if(race->isExtinct()) 
+		{
+			break;		
+		}
 	}
 	race->printInfo();
 
-	std::cout << "IS extincted?: " << ((race->isExtincted())?"yes":"no") << std::endl;
+	std::cout << "IS extincted?: " << ((race->isExtinct())?"yes":"no") << std::endl;
 	return 0;
 }

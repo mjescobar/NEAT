@@ -4,3 +4,5 @@ TODO 003: chequear que las mismas innovaciones no provoquen dos species diferent
 TODO 004: revizar si los limites en las probabilidades estan correctos o hay organismos que no son posibles de escojer en cada uno de los casos de Race (ojala en todas las clases tb pero no creo que sea necesario)
 TODO 005: Agregar un constructor en BasicNeuron y BSW que cargue por si solos el userDef
 TODO 006: cambiar los shared por unique dado que en verdad no son shared.
+TODO 007: Cambiar la idea de distancia absoluta por una porcentual segun la cantidad de parametros.
+TODO 008: Aplicar modelo de programacion extreme para que el codigo sea aun mas mantenible.

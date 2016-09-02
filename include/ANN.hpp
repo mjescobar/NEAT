@@ -19,9 +19,9 @@ namespace NEAT
 class ANN
 {
 public:
-	ANN(std::shared_ptr <Neuron> seedNeuron, std::shared_ptr <SynapticWeight> seedSynapticWeihgt);
+	ANN(std::unique_ptr <Neuron> seedNeuron, std::unique_ptr <SynapticWeight> seedSynapticWeihgt);
 	ANN(const ANN& other); // Usado para crossOver, para crear una copia usar metodo clone()
-	ANN( const ANNUserDefinitions& userdef, std::shared_ptr <Neuron> seedNeuron, std::shared_ptr <SynapticWeight> seedSynapticWeihgt );
+	ANN( const ANNUserDefinitions& userdef, std::unique_ptr <Neuron> seedNeuron, std::unique_ptr <SynapticWeight> seedSynapticWeihgt );
 	~ANN();
 	void setInputs( std::vector <float> inputs ) const;
 	void spread();
@@ -35,6 +35,7 @@ public:
 	bool getIsNewSpicie() const;
 	
 	std::string innovationMsg; // Is used to prevent produce two similar species with the same topologie. (this could ocur but from diferent species and is unlikely and is not dangerous but cpu cost because find two times the same topology and could be two diferent in the same time.)
+	bool isNewSpecies; // Is set to true if have a topologie mutation
 private:
 	
 	// Por mejor vizualisacion los metodos privados estan implementados en ANNTools.cpp 
@@ -50,12 +51,11 @@ private:
 	std::tuple < uint, uint > findRandNeuronInAheadLayer(const uint layerBound)const;
 	std::tuple < uint, uint > findRandNeuronBehindLayer(const uint layerBound)const;
 	
-	std::shared_ptr < Neuron > seedNeuron;
-	std::shared_ptr < SynapticWeight > seedSynapticWeihgt;
+	std::unique_ptr < Neuron > seedNeuron;
+	std::unique_ptr < SynapticWeight > seedSynapticWeihgt;
 	std::map < unsigned int, std::unique_ptr < Layer > > layersMap; // Se hace un mapa para mantener ordenado los layers siempre al momento de agregarlos en el mapa.
 	std::unique_ptr < std::default_random_engine > generator;
 	std::vector < std::shared_ptr < SynapticWeight >  > synapticWeights;
-	bool isNewSpecies; // Is set to true if have a topologie mutation
 	float probabilityNewNeuronInLayer;
 	float probabilityOfNewSynapticWeight;
 	float probabilityOfNewUniqueSynapticWeight;

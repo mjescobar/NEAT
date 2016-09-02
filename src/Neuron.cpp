@@ -2,6 +2,7 @@
 #include "Neuron.hpp"
 
 #include <cstdlib> //rand
+#include <iostream>
 namespace NEAT
 {
 
@@ -12,12 +13,12 @@ Neuron::Neuron(  )
 
 void Neuron::addIncomingSynapticWeight( std::shared_ptr < SynapticWeight > incomingSynapticWeight )
 {
-	incomingSynapticWeights.push_back( std::move( incomingSynapticWeight ) ); // Ojo que se usa std::move dado que desde el parametro ya se esta haciendo una copia de la conexion sinaptica y no se necesita hacer una copia nuevamente.
+	incomingSynapticWeights.push_back(  incomingSynapticWeight ); // Ojo que se usa std::move dado que desde el parametro ya se esta haciendo una copia de la conexion sinaptica y no se necesita hacer una copia nuevamente.
 }
 
 void Neuron::addOutcomingSynapticWeight( std::shared_ptr < SynapticWeight > outcomingSynapticWeight )
 {
-	outcomingSynapticWeights.push_back( std::move( outcomingSynapticWeight ) ); // Ojo que se usa std::move dado que desde el parametro ya se esta haciendo una copia de la conexion sinaptica y no se necesita hacer una copia nuevamente.
+	outcomingSynapticWeights.push_back(  outcomingSynapticWeight  ); // Ojo que se usa std::move dado que desde el parametro ya se esta haciendo una copia de la conexion sinaptica y no se necesita hacer una copia nuevamente.
 }
 
 
@@ -56,7 +57,7 @@ void Neuron::sendVoltageToOutcomingSynapticWeights()
 {
 	for ( auto SW : outcomingSynapticWeights )
 	{
-		SW->setInput( output );	
+		SW->setInput( output );
 	}
 }
 

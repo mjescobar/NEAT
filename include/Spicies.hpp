@@ -20,9 +20,12 @@ public:
 	Spicies( const SpiciesUserDefinitions& userdef, std::unique_ptr <Race> founderRace  );
 	void epoch( const uint childrenAmount );
 	std::unique_ptr <Organism> getOrganismNewSpiciesCandidate();
-	bool isExtincted();
+	bool isExtinct();
 	float getMeanFitnessOfOldRaces();
+	void printInfo() const;
 
+	std::vector< std::unique_ptr<Race> > oldRaces;
+	std::vector< std::unique_ptr<Race> > youngRaces;
 private:
 	void fillFitnessVector (std::vector <float> & fitnessVector);
 	bool detectRepeatedInnovation( const Organism & orgm );
@@ -31,12 +34,12 @@ private:
 	void createDecendence(const uint amountOfChildrens ); 
 	void deleteExtinctedRaces();
 
-	std::vector< std::unique_ptr<Race> > oldRaces;
-	std::vector< std::unique_ptr<Race> > youngRaces;
+	bool extincted;
+	uint maxYears;
+	uint years;
 	uint maxAmountOfRacesPerSpicie;
 	std::unique_ptr < std::default_random_engine > generator;
 	std::map <std::string , bool> innovMsgMap; // Is true if this innov exists   
-
 };
 
 
