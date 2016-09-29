@@ -2,11 +2,13 @@
 #include <iostream>
 #include <algorithm>
 
+using namespace std;
+
 namespace NEAT
 {
-Race::Race(std::unique_ptr <Organism>  founderOrganism ): Race( RaceUserDefinitions(), std::move(founderOrganism) ){}
+Race::Race(unique_ptr <Organism>  founderOrganism ): Race( RaceUserDefinitions(), move(founderOrganism) ){}
 
-Race::Race( const RaceUserDefinitions& userDef, std::unique_ptr <Organism>  founderOrganism )
+Race::Race( const RaceUserDefinitions& userDef, unique_ptr <Organism>  founderOrganism )
 {
 	years = 0;
 	maxYearsYoungRace = userDef.maxYearsYoungRace;
@@ -17,14 +19,14 @@ Race::Race( const RaceUserDefinitions& userDef, std::unique_ptr <Organism>  foun
 	maxYears = userDef.maxYears;
 	raceTotalFitness = 0.f;
 	youngRace = true;
-	newOrganisms.push_back(std::move(founderOrganism));
-	generator = std::make_unique < std::default_random_engine > (std::chrono::system_clock::now().time_since_epoch().count() + (uint)rand());
+	newOrganisms.push_back(move(founderOrganism));
+	generator = make_unique < default_random_engine > (chrono::system_clock::now().time_since_epoch().count() + (uint)rand());
 	// Se prodece a llenar la raza con youngRaceMaxPopulation organismos.
 	populateFromCurrentsOrganisms( youngRaceMaxPopulation - newOrganisms.size() );
 	extincted = false;
 }
 
-Race::Race( const Race& other, std::unique_ptr <Organism>  founderOrganism )
+Race::Race( const Race& other, unique_ptr <Organism>  founderOrganism )
 {
 	years = 0;
 	maxYearsYoungRace = other.maxYearsYoungRace;
@@ -35,8 +37,8 @@ Race::Race( const Race& other, std::unique_ptr <Organism>  founderOrganism )
 	maxYears = other.maxYears;
 	raceTotalFitness = 0.f;
 	youngRace = true;
-	newOrganisms.push_back(std::move(founderOrganism));
-	generator = std::make_unique < std::default_random_engine > (std::chrono::system_clock::now().time_since_epoch().count() + (uint)rand());
+	newOrganisms.push_back(move(founderOrganism));
+	generator = make_unique < default_random_engine > (chrono::system_clock::now().time_since_epoch().count() + (uint)rand());
 
 	// Se prodece a llenar la raza con youngRaceMaxPopulation organismos.
 	populateFromCurrentsOrganisms( youngRaceMaxPopulation - newOrganisms.size() );
@@ -49,23 +51,34 @@ void Race::epoch(){
 
 void Race::epoch( uint amountOfChildrens ) // no se especifica en caso de ser young
 {	
-	fitnesPerYear.push_back(getFitnessMean());
-
-	if(extincted){std::cerr << "ERROR::Race::epoch::This race is extinct " << newOrganisms.size() << "\t" << oldOrganisms.size() << std::endl; exit(EXIT_FAILURE);}
-	if(amountOfChildrens == 0 || years >= maxYears) { extincted = true; return; }// means that this race is a bad race and is eliminated inmediatly
+	std::cerr << "re 1" << std::endl;
+	if(extincted){cerr << "ERROR::Race::epoch::This race is extinct " << newOrganisms.size() << "\t" << oldOrganisms.size() << endl; exit(EXIT_FAILURE);}
+	if(amountOfChildrens == 0 || years >= maxYears) { 
+		extincted = true; 
+		return; 
+	}// means that this race is a bad race and is eliminated inmediatly
 	// Primero se pasa de epoca a cada organismo de la raza (pudiendo morir algunos de ellos en el camino)
+	std::cerr << "re 2" << std::endl;
 	organismsGrowUp(); // Todos los nuevos organismos son pasados a viejos organismos
 						// en este momento newOrganism esta vacio y sera vuelto a llenar al final
-	if(oldOrganisms.size() == 0){ extincted = true; return; }
+	std::cerr << "re 3" << std::endl;
+	if(oldOrganisms.size() == 0 && newOrganisms.size() == 0){ 
+		extincted = true; 
+		return; 
+	}
+	std::cerr << "re 4" << std::endl;
 	if( ++years >= maxYearsYoungRace ){	youngRace = false; }
 	// los que quedan tienen derecho a aparearse, tomando en cuenta la posibilidad que exista tan solo un organismo en la raza es que se chequea tal.
+	std::cerr << "re 5" << std::endl;
 	if(oldOrganisms.size()  == 1) // No hay suficientes organismos como para realizar cruzamientos.
 	{
 		populateFromCurrentsOrganisms (amountOfChildrens); //todos los hijos son similares a su unico padre
 		return ;
 	}		
+	std::cerr << "re 6" << std::endl;
 	// En otro caso proceden los cruzamientos.
 	createDecendence(amountOfChildrens);
+	std::cerr << "re 7" << std::endl;
 }
 
 float Race::getFitnessMean()
@@ -80,9 +93,9 @@ bool Race::belongsAtThisRace(const Organism& orgm )
 	return randOrgm.getDistance(orgm) < maximumRaceDistance;
 }
 
-std::unique_ptr <Race> Race::createNew( std::unique_ptr <Organism> organism )
+unique_ptr <Race> Race::createNew( unique_ptr <Organism> organism )
 {
-	return std::make_unique<Race>( *this, std::move(organism) );
+	return make_unique<Race>( *this, move(organism) );
 }
 
 bool Race::isExtinct()
@@ -96,28 +109,28 @@ bool Race::isYoung()
 	return youngRace;
 }
 
-std::vector < std::unique_ptr< Organism> > & Race::getNewOrganisms_ref()
+vector < unique_ptr< Organism> > & Race::getNewOrganisms_ref()
 {
 	return newOrganisms;
 }
 
 void Race::printInfo()const
 {
-	std::cout << "RACE USER DEF: " << std::endl
-	<< "years: " << years << std::endl
-	<< "maxYears: " << maxYears << std::endl
-	<< "maxYearsYoungRace: " << maxYearsYoungRace << std::endl
-	<< "maximumRaceDistance: " << maximumRaceDistance << std::endl
-	<< "raceTotalFitness: " << raceTotalFitness << std::endl
-	<< "isyoungRace: " << youngRace << std::endl
-	<< "youngRaceMaxPopulation: " << youngRaceMaxPopulation << std::endl
-	<< "maxStackNewRaceCandidates: " << maxStackNewRaceCandidates << std::endl
-	<< "maxStackNewSpiciesCandidates: " << maxStackNewSpiciesCandidates << std::endl
-	<< "Race structure: " << std::endl
-	<< "newOrganisms size:" << newOrganisms.size() << std::endl 
-	<< "oldOrganisms size:" << oldOrganisms.size() << std::endl
-	<< "newRaceOrgmCandidate size:" << newRaceOrgmCandidate.size() << std::endl
-	<< "newSpicieOrgmCandidate size: " << newSpicieOrgmCandidate.size() << std::endl; 
+	cout << "RACE USER DEF: " << endl
+	<< "years: " << years << endl
+	<< "maxYears: " << maxYears << endl
+	<< "maxYearsYoungRace: " << maxYearsYoungRace << endl
+	<< "maximumRaceDistance: " << maximumRaceDistance << endl
+	<< "raceTotalFitness: " << raceTotalFitness << endl
+	<< "isyoungRace: " << youngRace << endl
+	<< "youngRaceMaxPopulation: " << youngRaceMaxPopulation << endl
+	<< "maxStackNewRaceCandidates: " << maxStackNewRaceCandidates << endl
+	<< "maxStackNewSpiciesCandidates: " << maxStackNewSpiciesCandidates << endl
+	<< "Race structure: " << endl
+	<< "newOrganisms size:" << newOrganisms.size() << endl 
+	<< "oldOrganisms size:" << oldOrganisms.size() << endl
+	<< "newRaceOrgmCandidate size:" << newRaceOrgmCandidate.size() << endl
+	<< "newSpicieOrgmCandidate size: " << newSpicieOrgmCandidate.size() << endl; 
 }
 
 }

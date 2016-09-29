@@ -1,4 +1,4 @@
-maxBias 0
+maxBias 0.3
 minBias 0
 maximumBiasPercentVariation 0.1
 probabilityOfBiasRandomMutation 0.02
@@ -8,4 +8,4 @@ minSigmoidConstant 2
 probabilityOfSigmoidConstantRandomMutation 0.02
 maximumSigmoidConstantPercentVariation 0.2
 constantDistanceOfSigmoidConstant 1
-mutateProbability 0.08
+mutateProbability 0.1

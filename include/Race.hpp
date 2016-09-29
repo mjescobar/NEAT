@@ -10,7 +10,6 @@
 
 #define SPICE_NOT_FOUNDED 1
 
-
 namespace NEAT
 {
 
@@ -30,6 +29,7 @@ public:
 	bool isYoung();
 	std::vector < std::unique_ptr< Organism > > & getNewOrganisms_ref();
 	void printInfo()const;
+	void eliminateWorseOrganisms();
 	
 	std::vector <std::unique_ptr<Organism>> newOrganisms;
 	std::vector <std::unique_ptr<Organism>> newRaceOrgmCandidate;

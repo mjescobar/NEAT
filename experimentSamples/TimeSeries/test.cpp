@@ -14,36 +14,46 @@ float fitnessAcumm = 0.f;
 uint contador = 0;
 float maxGeneration = 0.f;
 
+// Serie de tiempo 
+// X[k+1] = r*X[k]*(1-X[k])
+// X[0] = 0.1 ; r = 4
+
+float x = 0.1f;
+float r = 4.f;
+unsigned int dataSetLarge = 1000;
+unsigned int waitToFill = 50; // Time to wait while buffer filling
+
 void experiment( Organism& orgm )
 {
-	//XOR {0,0}->{0}
-	orgm.ann->setInputs({0.f,0.f}); 
-	orgm.ann->spread();
-	vector<float> out1 = orgm.ann->getOutputs();
-	float error = fabs(fabs(out1.at(0))- 0.f);
-	//XOR {0,1} -> {1}
-	orgm.ann->setInputs({0.f,1.f}); 
-	orgm.ann->spread();
-	vector<float> out2 = orgm.ann->getOutputs();
-	error += fabs(fabs(out2.at(0)) - 1.f);
-	//XOR {1,0} -> {1}
-	orgm.ann->setInputs({1.f,0.f}); 
-	orgm.ann->spread();
-	vector<float> out3 = orgm.ann->getOutputs();
-	error += fabs(fabs(out3.at(0)) - 1.f);
-	//XOR {1,1} -> {0}
-	orgm.ann->setInputs({1.f,1.f}); 
-	orgm.ann->spread();
-	vector<float> out4 = orgm.ann->getOutputs();
-	error += fabs(fabs(out4.at(0)) - 0.f);
+	float fitness = 0.f;
+	float realOutput = x;
+	vector <float> annOutput;
 
-	//std::cerr << "error: " << error << "\t{" << out1.at(0) <<", " << out2.at(0) <<", " << out3.at(0) << ", " << out4.at(0) <<"} " << std::endl; 
-	float error_MAX = 4.0;
-	float fitness = (error_MAX - error)*(error_MAX - error);
+	float MSE = 0.f;
+	for (unsigned int i = 0; i < waitToFill; ++i)
+	{
+		orgm.ann->setInputs({realOutput});
+		realOutput = realOutput*(1-realOutput)*r;
+		orgm.ann->spread();
+		annOutput = orgm.ann->getOutputs();
+	}
+		
+	for (unsigned int i = 0; i < dataSetLarge; ++i)
+	{
+		orgm.ann->setInputs({realOutput});
+		realOutput = realOutput*(1-realOutput)*r;
+		orgm.ann->spread();
+		annOutput = orgm.ann->getOutputs();
+		MSE += powf( realOutput - annOutput.at(0) ,2.f);
+		//cout << "MSE: " <<MSE << endl;
+	}	
+
+	MSE = MSE/dataSetLarge;
+
+	fitness = 1.f/MSE;
+
 	if(fitness > maxFitness){
 		maxFitness = fitness; 
-		std::cout << "MF: " << maxFitness << "\t{" << out1.at(0) <<", " << out2.at(0) <<", " << out3.at(0) << ", " << out4.at(0) << std::endl;
-		//orgm.printInfo();
 	} 
 
 	if(fitness > maxGeneration){
@@ -63,9 +73,11 @@ int main()
 	auto BNseed = make_unique < BasicNeuron > ( );  
 	auto BSWseed = make_unique < BasicSynapticWeight > ( ); 
 	auto ann1  = make_unique < ANN > ( move(BNseed), move(BSWseed) );
+	// auto TSWseed = make_unique <TauSynapticWeight>();
+	// auto ann1 = make_unique <ANN> ( move(BNseed), move(TSWseed) );
 	auto life = make_unique <Life>( move(ann1) );
 
-	for (int i = 0; i < 100; ++i)
+	for (int i = 0; i < 1000; ++i)
 	{
 		sendAllOrganismToExperiment(*life);
 		//std::cout << "Gen " << i << "\t" << fitnessAcumm/(float)contador  <<"\t" << contador << "\t" << life->spicies.size()<< std::endl;

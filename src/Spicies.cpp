@@ -1,17 +1,20 @@
 #include "Spicies.hpp"
 #include <algorithm>
 #include <iostream>
+
+using namespace std;
+
 namespace NEAT
 {
 
-Spicies::Spicies( std::unique_ptr <Race> founderRace  ): Spicies(SpiciesUserDefinitions(), std::move(founderRace)){}
+Spicies::Spicies( unique_ptr <Race> founderRace  ): Spicies(SpiciesUserDefinitions(), move(founderRace)){}
 
-Spicies::Spicies( const SpiciesUserDefinitions& userdef, std::unique_ptr <Race> founderRace  )
+Spicies::Spicies( const SpiciesUserDefinitions& userdef, unique_ptr <Race> founderRace  )
 {
 	maxAmountOfRacesPerSpicie = userdef.maxAmountOfRacesPerSpicie;
 	maxYears = userdef.maxYears;
-	youngRaces.push_back(std::move(founderRace));
-	generator = std::make_unique < std::default_random_engine > (std::chrono::system_clock::now().time_since_epoch().count());
+	youngRaces.push_back(move(founderRace));
+	generator = make_unique < default_random_engine > (chrono::system_clock::now().time_since_epoch().count());
 	years = 0;
 	extincted = false;
 }
@@ -19,16 +22,29 @@ Spicies::Spicies( const SpiciesUserDefinitions& userdef, std::unique_ptr <Race> 
 // Only old Races hava to fight for childrens the young races have not.
 void Spicies::epoch( const uint childrenAmount )
 {
-	if(childrenAmount == 0 && oldRaces.size() >= 1){ extincted = true; return; }
+	std::cerr << "se 1" << std::endl;
+	if(childrenAmount == 0 && oldRaces.size() >= 1){ 
+		extincted = true; 
+		return; 
+	}
+	std::cerr << "se 2" << std::endl;
 	if(years >= maxYears){ extincted = true; return; }
+	std::cerr << "se 3" << std::endl;
 	createDecendence(childrenAmount);
+	std::cerr << "se 4" << std::endl;
 	deleteExtinctedRaces();
-	if(youngRaces.size() + oldRaces.size() == 0) {extincted = true; return;}
+	std::cerr << "se 5" << std::endl;
+	if(youngRaces.size() + oldRaces.size() == 0) {
+		extincted = true; 
+		return;
+	}
+	std::cerr << "se 6" << std::endl;
 	createRacesFromOrganismCandidates();
+	std::cerr << "se 7" << std::endl;
 	years ++;
 }
 
-std::unique_ptr <Organism> Spicies::getOrganismNewSpiciesCandidate()
+unique_ptr <Organism> Spicies::getOrganismNewSpiciesCandidate()
 {
 
 	uint attempts = 3;
@@ -37,14 +53,14 @@ std::unique_ptr <Organism> Spicies::getOrganismNewSpiciesCandidate()
 		auto& race = getRandomRace_ref();
 		if(race.newSpicieOrgmCandidate.size() >= 1)
 		{
-			std::uniform_int_distribution<uint> randomOrganism(0, 
+			uniform_int_distribution<uint> randomOrganism(0, 
 							race.newSpicieOrgmCandidate.size() -1);
 			auto selected = randomOrganism(*generator);
-			std::unique_ptr< Organism > result = std::move( race.newSpicieOrgmCandidate.at(selected) );
+			unique_ptr< Organism > result = move( race.newSpicieOrgmCandidate.at(selected) );
 			race.newSpicieOrgmCandidate.erase( race.newSpicieOrgmCandidate.begin() + selected );
 			if(!detectRepeatedInnovation(*result))
 			{
-				return std::move (result);
+				return move (result);
 			}
 		}
 	}
@@ -66,21 +82,68 @@ float Spicies::getMeanFitnessOfOldRaces()
 		mean += race->getFitnessMean();
 	}
 	mean = mean/(float)oldRaces.size();
-	return std::move(mean);
+	return move(mean);
 }
 
 void Spicies::printInfo() const
 {
-	std::cout <<
-	"years: " << years <<  std::endl <<
-	"oldRaces size: " << oldRaces.size() << std::endl <<
-	"young races size: " << youngRaces.size() << std::endl <<
-	"maxAmountOfRacesPerSpicie: " << maxAmountOfRacesPerSpicie << std::endl <<
-	"INNOV MAPs: " << std::endl;
+	cout <<
+	"years: " << years <<  endl <<
+	"oldRaces size: " << oldRaces.size() << endl <<
+	"young races size: " << youngRaces.size() << endl <<
+	"maxAmountOfRacesPerSpicie: " << maxAmountOfRacesPerSpicie << endl <<
+	"INNOV MAPs: " << endl;
 	for( auto& pair : innovMsgMap )
 	{
-		std::cout << "Key: " << pair.first << "  Value: " << pair.second << std::endl;
+		cout << "Key: " << pair.first << "  Value: " << pair.second << endl;
 	}
+}
+
+void Spicies::eliminateWorseOrganisms()
+{
+	for(auto& race : oldRaces)
+	{
+		race->eliminateWorseOrganisms();
+	}
+	for(auto& race : youngRaces)
+	{
+		race->eliminateWorseOrganisms();
+	}
+}
+
+void Spicies::eliminateWorseRaces()
+{
+	float racesMean = 0.f; 
+	float min = -1.f;
+	float max = 0.f;
+	float fitness;
+	for(auto& race : oldRaces)
+	{
+		fitness = race->getFitnessMean();
+		if( fitness > min )
+		{
+			min = fitness;
+		}
+		if(fitness < max)
+		{
+			max = fitness;
+		}
+		racesMean += fitness;
+	}
+	racesMean = racesMean/(float)oldRaces.size();
+
+	if(min == max) {return;} // some rare case;
+
+	// ToDo: Mejorar el modelo tal que, por ejemplo, la probabilidad de supervivencia sea una gaussiana con la misma media y promedio que las especies (solo para las especies de fitness menor que la media)
+	oldRaces.erase(  remove_if(oldRaces.begin(), oldRaces.end(),
+    [&](unique_ptr<Race>& race)->bool 
+    { 
+		if( race->getFitnessMean() < racesMean )
+		{
+			return true;
+		}
+		return false;
+     }),oldRaces.end());
 }
 
 } // end Namespace NEAT

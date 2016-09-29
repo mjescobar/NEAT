@@ -6,10 +6,17 @@
 #define LAYER_INITIAL 0
 #define LAYER_OUTPUT UINT_MAX
 
-
 using namespace std;
 namespace NEAT
 {
+
+ANN::ANN()
+{
+	generator = make_unique < default_random_engine > (chrono::system_clock::now().time_since_epoch().count() + (uint)rand());
+	innovationMsg = "";
+	isNewSpecies = false;
+}
+
 
 // En caso de no definir ANNUserDefinitions, entonces se usa el constructor por defecto de ANNUSERDEF
 ANN::ANN( unique_ptr <Neuron> seedNeuron, unique_ptr <SynapticWeight> seedSynapticWeihgt)
@@ -18,23 +25,28 @@ ANN::ANN( unique_ptr <Neuron> seedNeuron, unique_ptr <SynapticWeight> seedSynapt
 
 }
 
+ANN::ANN(const ANN& other) : ANN()
+{ // no se copian los layers ni las conexiones porque son creados al momento del cruzamiento nuevamente
+	copyUserDefParameters(other);
 
-ANN::ANN(const ANN& other){ // no se copian los layers ni las conexiones porque son creados al momento del cruzamiento nuevamente
-	this->seedNeuron = move(other.seedNeuron->clone());
-	this->seedSynapticWeihgt = move(other.seedSynapticWeihgt->clone());
-	this->probabilityNewNeuronInLayer = other.probabilityNewNeuronInLayer;
-	this->probabilityOfNewSynapticWeight = other.probabilityOfNewSynapticWeight;
-	this->probabilityOfNewUniqueSynapticWeight = other.probabilityOfNewUniqueSynapticWeight;
-	this->inputsAmount = other.inputsAmount;
-	this->outputsAmount = other.outputsAmount;
-	this->useBackwardConnections = other.useBackwardConnections;
-	this->probabilityOfNewLayer = other.probabilityOfNewLayer;
-	generator = make_unique < default_random_engine > (chrono::system_clock::now().time_since_epoch().count() + (uint)rand());
-	innovationMsg = "";
-	isNewSpecies = false;
+	for( const auto& pair : other.layersMap )
+	{
+		this->layersMap.emplace ( pair.first, pair.second->clone()  );
+	}
+
+	for ( uint i = 0; i < other.synapticWeights.size() ; ++i)
+	{
+		this->synapticWeights.push_back( other.synapticWeights.at(i)->clone() );
+		uint layerInput,layerOutput,neuronInput, neuronOutput;
+		tie(neuronInput,layerInput, neuronOutput, layerOutput) = this->synapticWeights.back()->getMark();
+		// Se enlazan las neuronas correspondientes
+		this->layersMap.at( layerOutput )->neurons.at(neuronOutput)->addIncomingSynapticWeight( this->synapticWeights.back() );
+		this->layersMap.at(layerInput)->neurons.at(neuronInput)->addOutcomingSynapticWeight( this->synapticWeights.back() );
+	}
 }
 
-ANN::ANN( const ANNUserDefinitions& userdef, unique_ptr <Neuron> seedNeuron, unique_ptr <SynapticWeight> seedSynapticWeihgt){
+ANN::ANN( const ANNUserDefinitions& userdef, unique_ptr <Neuron> seedNeuron, unique_ptr <SynapticWeight> seedSynapticWeihgt) : ANN()
+{
 	this->seedNeuron = move(seedNeuron);
 	this->seedSynapticWeihgt = move(seedSynapticWeihgt);
 	probabilityNewNeuronInLayer =  userdef.probabilityNewNeuronInLayer;
@@ -62,10 +74,6 @@ ANN::ANN( const ANNUserDefinitions& userdef, unique_ptr <Neuron> seedNeuron, uni
 			addSynapticWeight( LAYER_INITIAL, in, LAYER_OUTPUT, out );
 		}
 	}
-	
-	generator = make_unique < default_random_engine > (chrono::system_clock::now().time_since_epoch().count() + (uint)rand());
-	isNewSpecies = false;
-	innovationMsg = "";
 }
 
 ANN::~ANN()
@@ -73,26 +81,19 @@ ANN::~ANN()
 	layersMap.clear();
 } 
 
-unique_ptr < ANN > ANN::crossOver( const ANN&  other ) const
+unique_ptr < ANN > ANN::crossOver( const ANN&  mother ) const
 {
-	auto result = make_unique <ANN> ( *this ); 
-	// Primero se crean las neuronas y luego las conexiones synapticas
-	for( const auto& pair : layersMap ){
-		result->layersMap.emplace ( pair.first, pair.second->crossOver(*other.layersMap.at(pair.first) )  );
-	}
-
-	for ( uint i = 0; i < this->synapticWeights.size() ; ++i){
-		result->synapticWeights.push_back( move(this->synapticWeights.at(i)->crossOver( *other.synapticWeights.at(i)) ) );
-		uint layerInput,layerOutput,neuronInput, neuronOutput;
-		
-		tie(neuronInput,layerInput, neuronOutput, layerOutput) = result->synapticWeights.back()->getMark();
-		// Se enlazan las neuronas correspondientes
-		result->layersMap.at( layerOutput )->neurons.at(neuronOutput)->addIncomingSynapticWeight( result->synapticWeights.back() );
-		result->layersMap.at(layerInput)->neurons.at(neuronInput)->addOutcomingSynapticWeight( result->synapticWeights.back() );
-	}
-	// ========================MIGHT MUTATE=======================
+	std::cerr << "aco 1" << std::endl;
+	auto result = make_unique <ANN> ();
+	std::cerr << "aco 2" << std::endl;
+	result->copyUserDefParameters(*this); 
+	std::cerr << "aco 3" << std::endl;
+	result->constructLayersFromParents(*this, mother );
+	std::cerr << "aco 4" << std::endl;
+	result->constructSynapsesFromParents(*this, mother );
+	std::cerr << "aco 5" << std::endl;
 	result->mightMutate(); // Este paso es de vital importancia y produce la complexificacion de la red
-	//============================================================
+	std::cerr << "aco 6" << std::endl;
 	return move( result );
 }
 
@@ -109,8 +110,14 @@ void ANN::printInfo() const{
 }
 
 void ANN::setInputs( vector <float> inputs ) const{
-	auto initialLayer = layersMap.begin()->second.get();
-	for (uint i = 0; i < initialLayer->neurons.size(); ++i)	{
+	if( inputs.size() !=  inputsAmount )
+	{
+		cerr << "Error::ANN::setInputs:: input size is not correct." << endl;
+		exit(EXIT_FAILURE);
+	}
+	auto initialLayer = layersMap.begin()->second.get(); // Always the first layer is the input layer
+	for (uint i = 0; i < initialLayer->neurons.size(); ++i)	
+	{
 		initialLayer->neurons.at(i)->sumIncomingVoltage(inputs.at(i));
 	}
 }
@@ -126,38 +133,26 @@ vector <float> ANN::getOutputs() const {
 }
 
 void ANN::spread(){
-	for ( auto & layer: layersMap){
+	for (auto & layer: layersMap)
+	{
 		layer.second->spread();
 	}
 }
 
-void ANN::mightMutate(){
-	//primero las mutaciones de las neuronas y conexiones synapticas que son las mas basicas
-	for ( auto & layer: layersMap){
-		layer.second->mightMutate();
-	}
-	for ( auto & SW : synapticWeights){
-		SW->mightMutate();
-	}
-	//Segundo las mutaciones de topologia
-	if( rand()/(double)RAND_MAX  < probabilityOfNewLayer){
-		newLayer();
-	}
-	if( rand()/(double)RAND_MAX  < probabilityNewNeuronInLayer){
-		newNeuronInlayer();
-	}
-	if( rand()/(double)RAND_MAX  < probabilityOfNewSynapticWeight){
-		newSynapticWeight();
-	}
-	if( rand()/(double)RAND_MAX  < probabilityOfNewUniqueSynapticWeight){
-		newUniqueSynapticWeight();
-	}
+void ANN::mightMutate()
+{
+	std::cerr << "amm 1" << std::endl;
+	topologyMutations();
+	std::cerr << "amm 2" << std::endl;
+	nonTopologyMutations();
+	std::cerr << "amm 3" << std::endl;
 }
 
 float ANN::getDistance( const ANN& other) const
 {
 	auto sum = 0.f;
-	for ( auto & layer: layersMap){
+	for ( auto & layer: layersMap)
+	{
 		sum += layer.second->getDistance( *other.layersMap.at( layer.first ) );
 	}
 	for (uint i = 0; i < synapticWeights.size(); ++i)
@@ -169,31 +164,15 @@ float ANN::getDistance( const ANN& other) const
 
 unique_ptr <ANN> ANN::clone() const
 {
-	auto result = make_unique <ANN>  (*this); //  copy constructor
-
-	for( const auto& pair : layersMap ){
-		result->layersMap.emplace ( pair.first, pair.second->clone()  );
-	}
-
-	for ( uint i = 0; i < this->synapticWeights.size() ; ++i){
-		result->synapticWeights.push_back( this->synapticWeights.at(i)->clone() );
-		uint layerInput,layerOutput,neuronInput, neuronOutput;
-		tie(neuronInput,layerInput, neuronOutput, layerOutput) = result->synapticWeights.back()->getMark();
-		// Se enlazan las neuronas correspondientes
-		result->layersMap.at( layerOutput )->neurons.at(neuronOutput)->addIncomingSynapticWeight( result->synapticWeights.back() );
-		result->layersMap.at(layerInput)->neurons.at(neuronInput)->addOutcomingSynapticWeight( result->synapticWeights.back() );
-	}
-	return move( result );
+	return move( make_unique <ANN>  (*this) );
 } 
 
 unique_ptr <ANN> ANN::createSimilar() const
 {
 	auto result = this->clone();
-	for ( auto & layer: result->layersMap){
-		layer.second->mightMutate();
-	}
-	for ( auto & SW : result->synapticWeights){
-		SW->mightMutate();
+	for (unsigned int i = 0; i < 5; ++i)
+	{
+		result->nonTopologyMutations();
 	}
 	return move(result);
 }

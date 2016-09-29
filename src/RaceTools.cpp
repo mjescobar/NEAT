@@ -2,25 +2,27 @@
 #include <iostream>
 #include <algorithm>
 
+using namespace std;
+
 namespace NEAT
 {
 
-void Race::addOrganismCandidateToNewRace( std::unique_ptr <Organism> candidate )
+void Race::addOrganismCandidateToNewRace( unique_ptr <Organism> candidate )
 {
 	if( newRaceOrgmCandidate.size() >= maxStackNewRaceCandidates  )
 	{
 		return ;
 	}
-	newRaceOrgmCandidate.push_back(std::move(candidate));
+	newRaceOrgmCandidate.push_back(move(candidate));
 }
 
-void Race::addOrganismCandidateToNewSpicies( std::unique_ptr <Organism> candidate  )
+void Race::addOrganismCandidateToNewSpicies( unique_ptr <Organism> candidate  )
 {
 	if( newSpicieOrgmCandidate.size() >= maxStackNewSpiciesCandidates  )
 	{
 		return ;
 	}
-	newSpicieOrgmCandidate.push_back(std::move(candidate));
+	newSpicieOrgmCandidate.push_back(move(candidate));
 }
 
 void Race::updateTotalFitness()
@@ -36,7 +38,7 @@ void Race::updateTotalFitness()
 	}
 }
 
-void Race::fillFitnessVector (std::vector <float> & fitnessVector)
+void Race::fillFitnessVector (vector <float> & fitnessVector)
 {
 	fitnessVector.clear();
 	for( const auto& orgm : oldOrganisms )
@@ -56,11 +58,11 @@ void Race::populateFromCurrentsOrganisms( uint amountOfChildrens )
 			auto sonOrgm = fatherOrgm.createSimilar(); // no puede ser de otra especie el resultado dado que es de la misma topologia.
 			if( fatherOrgm.getDistance( *sonOrgm ) <= maximumRaceDistance )
 			{
-				newOrganisms.push_back( std::move(sonOrgm) );
+				newOrganisms.push_back( move(sonOrgm) );
 				break;
 			}
 			else{
-				addOrganismCandidateToNewRace( std::move(sonOrgm) );
+				addOrganismCandidateToNewRace( move(sonOrgm) );
 			}
 		}
 	}
@@ -69,8 +71,8 @@ void Race::populateFromCurrentsOrganisms( uint amountOfChildrens )
 Organism& Race::getRandomOrganism_ref()
 {
 	const uint amountOfOrganisms = newOrganisms.size() + oldOrganisms.size();
-	if( amountOfOrganisms == 0 ) {std::cerr << "ERROR::getRandomOrganism_ref:: no Organisms to select" << std::endl;}
-	std::uniform_int_distribution<uint> randomOrganism(0, amountOfOrganisms-1);
+	if( amountOfOrganisms == 0 ) {cerr << "ERROR::getRandomOrganism_ref:: no Organisms to select" << endl;}
+	uniform_int_distribution<uint> randomOrganism(0, amountOfOrganisms-1);
 	const uint orgmSelct =randomOrganism(*generator);
 	if(orgmSelct >= newOrganisms.size())
 	{
@@ -85,53 +87,99 @@ void Race::organismsGrowUp()
 
 	for (uint i = 0; i < newOrganisms.size(); ++i)
 	{
-		oldOrganisms.push_back( std::move(newOrganisms.at(i)) );
+		oldOrganisms.push_back( move(newOrganisms.at(i)) );
 	}
 	newOrganisms.clear();
-	oldOrganisms.erase(  std::remove_if(oldOrganisms.begin(), oldOrganisms.end(),
-        [](std::unique_ptr<Organism>& orgm)->bool { return !orgm->surviveNewEpoch(); }),
+	oldOrganisms.erase(  remove_if(oldOrganisms.begin(), oldOrganisms.end(),
+        [](unique_ptr<Organism>& orgm)->bool { return !orgm->surviveNewEpoch(); }),
     	oldOrganisms.end());
 }
 
 
 void Race::createDecendence(const uint amountOfChildrens )
 {
+	std::cerr << "rcd 1" << std::endl;
 	if(amountOfChildrens == 0){return;}
-	std::vector <float> fitnessVector;
+	vector <float> fitnessVector;
 	fillFitnessVector (fitnessVector); // Se llenaron los fitness en orden.
-	std::discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
+	discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
 
 	uint attempts = 4; // Si dos veces no se obtiene un organismo que sea de esta raza simplemente no se intenta de nuevo, para no dejar el cpu muy colapsado en esta operacion.
+	std::cerr << "rcd 2" << std::endl;
 	for (uint i = 0; i < amountOfChildrens; ++i)
 	{
+	std::cerr << "rcd 3" << std::endl;
 		for (uint j = 0; j < attempts; ++j)
 		{
 			uint father = obtainOrganism(*generator);
 			auto& fatherOrgm = *oldOrganisms.at(father).get();
 
 			fitnessVector.at( father ) = 0.f; // Se va a crear una nueva distribucion pero sin el padre para que sea 
-			std::discrete_distribution<uint> obtainDiferentOrganism(fitnessVector.begin(), fitnessVector.end());
+	std::cerr << "rcd 3.0" << std::endl;
+			discrete_distribution<uint> obtainDiferentOrganism(fitnessVector.begin(), fitnessVector.end());
 			uint mother = obtainDiferentOrganism(*generator);
 			auto& motherOrgm =  *oldOrganisms.at(mother).get();
 
-			std::unique_ptr <Organism> sonOrgm = fatherOrgm.crossOver( motherOrgm );
+	std::cerr << "rcd 3.1" << std::endl;
+			unique_ptr <Organism> sonOrgm = fatherOrgm.crossOver( motherOrgm );
+	std::cerr << "rcd 3.2" << std::endl;
 
 
+	std::cerr << "rcd 4" << std::endl;
 			if( sonOrgm->getIsNewSpicie() )
 			{
-				addOrganismCandidateToNewSpicies( std::move(sonOrgm) );
+				addOrganismCandidateToNewSpicies( move(sonOrgm) );
 			}else if( sonOrgm->getDistance( fatherOrgm ) < maximumRaceDistance   )
 			{
-				newOrganisms.push_back( std::move( sonOrgm ) );
+	std::cerr << "rcd 5" << std::endl;
+				newOrganisms.push_back( move( sonOrgm ) );
 				break; // Se obtuvo un nuevo organismo de la raza.
 			}else
 			{
-				addOrganismCandidateToNewRace( std::move(sonOrgm) );
+	std::cerr << "rcd 6" << std::endl;
+				addOrganismCandidateToNewRace( move(sonOrgm) );
+	std::cerr << "rcd 7" << std::endl;
 			}
+	std::cerr << "rcd 8" << std::endl;
 		}
+	std::cerr << "rcd 9" << std::endl;
 	}
+	std::cerr << "rcd 10" << std::endl;
 }
 
+void Race::eliminateWorseOrganisms()
+{
+	float fitnessMean = 0.f; 
+	float min = -1.f;
+	float max = 0.f;
+	float fitness;
+	for(auto& orgm : newOrganisms)
+	{
+		fitness = orgm->getFitness();
+		if( fitness > min )
+		{
+			min = fitness;
+		}
+		if(fitness < max)
+		{
+			max = fitness;
+		}
+		fitnessMean += fitness;
+	}
+	fitnessMean = fitnessMean/(float)newOrganisms.size();
 
+	if(min == max) {return;} // some rare case;
+
+	// ToDo: Mejorar el modelo tal que, por ejemplo, la probabilidad de supervivencia sea una gaussiana con la misma media y promedio que las especies (solo para las especies de fitness menor que la media)
+	newOrganisms.erase(  remove_if(newOrganisms.begin(), newOrganisms.end(),
+    [&](unique_ptr<Organism>& orgm)->bool 
+    { 
+		if( orgm->getFitness() < fitnessMean )
+		{
+			return true;
+		}
+		return false;
+     }),newOrganisms.end());
+}
 
 }

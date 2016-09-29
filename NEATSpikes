@@ -13,3 +13,7 @@
 #include "NEATSPIKES_include/Race.hpp"
 #include "NEATSPIKES_include/Spicies.hpp"
 #include "NEATSPIKES_include/Life.hpp"
+#include "NEATSPIKES_include/TauSynapticWeight.hpp"
+#include "NEATSPIKES_include/TauSynapticWeightUserDefinitions.hpp"
+#include "NEATSPIKES_include/LIFNeuron.hpp"
+#include "NEATSPIKES_include/LIFNeuronUserDefinitions.hpp"

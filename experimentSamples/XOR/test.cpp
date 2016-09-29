@@ -37,12 +37,12 @@ void experiment( Organism& orgm )
 	vector<float> out4 = orgm.ann->getOutputs();
 	error += fabs(fabs(out4.at(0)) - 0.f);
 
-	//std::cerr << "error: " << error << "\t{" << out1.at(0) <<", " << out2.at(0) <<", " << out3.at(0) << ", " << out4.at(0) <<"} " << std::endl; 
+	//cerr << "error: " << error << "\t{" << out1.at(0) <<", " << out2.at(0) <<", " << out3.at(0) << ", " << out4.at(0) <<"} " << endl; 
 	float error_MAX = 4.0;
 	float fitness = (error_MAX - error)*(error_MAX - error);
 	if(fitness > maxFitness){
 		maxFitness = fitness; 
-		std::cout << "MF: " << maxFitness << "\t{" << out1.at(0) <<", " << out2.at(0) <<", " << out3.at(0) << ", " << out4.at(0) << std::endl;
+		cout << "MF: " << maxFitness << "\t{" << out1.at(0) <<", " << out2.at(0) <<", " << out3.at(0) << ", " << out4.at(0) << endl;
 		//orgm.printInfo();
 	} 
 
@@ -67,18 +67,21 @@ int main()
 
 	for (int i = 0; i < 100; ++i)
 	{
+		cerr << "m1" << endl;
 		sendAllOrganismToExperiment(*life);
-		//std::cout << "Gen " << i << "\t" << fitnessAcumm/(float)contador  <<"\t" << contador << "\t" << life->spicies.size()<< std::endl;
+		//cout << "Gen " << i << "\t" << fitnessAcumm/(float)contador  <<"\t" << contador << "\t" << life->spicies.size()<< endl;
 		fitnessAcumm = 0.f;
 		contador = 0;
+		cerr << "m2" << endl;
 		life->epoch();
-		std::cout << "MG: " << maxGeneration << std::endl;
+		cerr << "m3" << endl;
+		cout << "MG: " << maxGeneration << endl;
 		maxGeneration = 0.f;
 
 	}
-	std::cout << "================================================" << std::endl;
+	cout << "================================================" << endl;
 	life->printInfo();
-	std::cout << "maxFitness: " << maxFitness << std::endl;
+	cout << "maxFitness: " << maxFitness << endl;
 	return 0;
 }
 

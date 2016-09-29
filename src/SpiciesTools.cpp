@@ -1,14 +1,16 @@
 #include "Spicies.hpp"
 #include <iostream>
 #include <algorithm>
+
+using namespace std;
 namespace NEAT
 {
 
 Race& Spicies::getRandomRace_ref()
 {
 	const uint racesAmount = youngRaces.size() + oldRaces.size();
-	if( racesAmount == 0 ) {std::cerr << "ERROR::getRandomRace_ref:: no race to select" << std::endl;exit(EXIT_FAILURE);}	
-	std::uniform_int_distribution<uint> randomRace(0, racesAmount-1);
+	if( racesAmount == 0 ) {cerr << "ERROR::getRandomRace_ref:: no race to select" << endl;exit(EXIT_FAILURE);}	
+	uniform_int_distribution<uint> randomRace(0, racesAmount-1);
 	uint raceSelected = randomRace( *generator );
 
 	if(raceSelected >= youngRaces.size())
@@ -27,16 +29,16 @@ bool Spicies::detectRepeatedInnovation( const Organism & orgm )
 			return true;
 		}
 	}
-	catch ( const std::out_of_range& exception )
+	catch ( const out_of_range& exception )
 	{
 		innovMsgMap.emplace( orgm.ann->innovationMsg , true );
 		return false;
 	}
-	std::cerr << "ERROR::detectRepeatedInnovation::This line must not be achieved by construction, some error happened" << std::endl;
+	cerr << "ERROR::detectRepeatedInnovation::This line must not be achieved by construction, some error happened" << endl;
 	exit(1);
 }
 
-void Spicies::fillFitnessVector (std::vector <float> & fitnessVector)
+void Spicies::fillFitnessVector (vector <float> & fitnessVector)
 {
 	fitnessVector.clear();
 	for( const auto& race : oldRaces )
@@ -59,7 +61,7 @@ void Spicies::createRacesFromOrganismCandidates()
 			if(raceSelct.newRaceOrgmCandidate.size() >= 1)
 			{
 				// Select a organism of this stack randomly
-				std::uniform_int_distribution<uint> randomOrganism(0, raceSelct.newRaceOrgmCandidate.size()-1);
+				uniform_int_distribution<uint> randomOrganism(0, raceSelct.newRaceOrgmCandidate.size()-1);
 				uint orgmPos = randomOrganism(*generator);
 				auto& ormgSelct = *raceSelct.newRaceOrgmCandidate.at(orgmPos);
 
@@ -88,7 +90,7 @@ void Spicies::createRacesFromOrganismCandidates()
 				//Crear nueva raza.
 				if(flagIsNewRace)
 				{
-					youngRaces.push_back( raceSelct.createNew(std::move( raceSelct.newRaceOrgmCandidate.at(orgmPos) )) );
+					youngRaces.push_back( raceSelct.createNew(move( raceSelct.newRaceOrgmCandidate.at(orgmPos) )) );
 					raceSelct.newRaceOrgmCandidate.erase( raceSelct.newRaceOrgmCandidate.begin() +  orgmPos);
 					break;
 				}
@@ -99,47 +101,59 @@ void Spicies::createRacesFromOrganismCandidates()
 
 void Spicies::createDecendence(const uint childrenAmount )
 {
+	std::cerr << "scd 1" << std::endl;
 	if(oldRaces.size() >= 1 )
 	{
-		std::vector <float> fitnessVector;
+		vector <float> fitnessVector;
 		fillFitnessVector (fitnessVector);
-		std::vector <uint> childrensPerRace;
+		vector <uint> childrensPerRace;
+	std::cerr << "scd 2" << std::endl;
 		for (uint i = 0; i < oldRaces.size(); ++i)
 		{
 			childrensPerRace.push_back(0);
 		}
-		std::discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
+		discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
 		uint selected = 0;
+	std::cerr << "scd 3" << std::endl;
 		for (uint i = 0; i < childrenAmount; ++i)
 		{
 			selected = obtainOrganism(*generator);
 			childrensPerRace.at(selected) += 1;
 		}	
+	std::cerr << "scd 4" << std::endl;
 		for (uint i = 0; i < oldRaces.size(); ++i)
 		{
 			oldRaces.at(i)->epoch( childrensPerRace.at(i) );
 		}
+	std::cerr << "scd 5" << std::endl;
 
 	}
+	std::cerr << "scd 6" << std::endl;
 	for (uint i = 0; i < youngRaces.size(); ++i)
 	{
+	std::cerr << "scd 6.1 yrs: " <<  youngRaces.size() << "\ti:" << i << std::endl;
 		youngRaces.at(i)->epoch();
+	std::cerr << "scd 6.2" << std::endl;
 		if( youngRaces.at(i)->isYoung() == false  ) // Si la raza ha crecido entonces se tiene que cambiar de vector que lo maneja.
 		{
-			oldRaces.push_back( std::move(youngRaces.at(i)) );
+	std::cerr << "scd 6.3" << std::endl;
+			oldRaces.push_back( move(youngRaces.at(i)) );
+	std::cerr << "scd 6.4" << std::endl;
 			youngRaces.erase(youngRaces.begin()+i);
+	std::cerr << "scd 6.5" << std::endl;
 			i--;
 		}
 	}
+	std::cerr << "scd 7" << std::endl;
 }
 
 void Spicies::deleteExtinctedRaces()
 {
-	oldRaces.erase(  std::remove_if(oldRaces.begin(), oldRaces.end(),
-    [](std::unique_ptr<Race>& race)->bool { return race->isExtinct(); }),
+	oldRaces.erase(  remove_if(oldRaces.begin(), oldRaces.end(),
+    [](unique_ptr<Race>& race)->bool { return race->isExtinct(); }),
 	oldRaces.end());
-	youngRaces.erase(  std::remove_if(youngRaces.begin(), youngRaces.end(),
-    [](std::unique_ptr<Race>& race)->bool { return race->isExtinct(); }),
+	youngRaces.erase(  remove_if(youngRaces.begin(), youngRaces.end(),
+    [](unique_ptr<Race>& race)->bool { return race->isExtinct(); }),
 	youngRaces.end());
 }
 

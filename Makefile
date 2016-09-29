@@ -1,21 +1,22 @@
 
-VPATH=include:src:objects:include/BasicNeuron:src/BasicNeuron:include/BasicSynapticWeight:src/BasicSynapticWeight
-COMPILER=g++ -std=c++14
-CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -O3 -I./include/BasicNeuron -I./src/BasicNeuron -I./include/BasicSynapticWeight -I./src/BasicSynapticWeight
+VPATH=include:src:objects:include/BasicNeuron:src/BasicNeuron:include/TauSynapticWeight:src/TauSynapticWeight:include/BasicSynapticWeight:src/BasicSynapticWeight:include/LIFNeuron:src/LIFNeuron
 
-OBJS = ./objects/Neuron.o ./objects/SynapticWeight.o ./objects/BasicNeuron.o ./objects/Parameter.o ./objects/BasicNeuronUserDefinitions.o ./objects/BasicSynapticWeight.o ./objects/BasicSynapticWeightUserDefinitions.o ./objects/Layer.o  ./objects/ANN.o ./objects/ANNUserDefinitions.o ./objects/Organism.o ./objects/OrganismUserDefinitions.o ./objects/Race.o ./objects/RaceUserDefinitions.o ./objects/ANNTools.o ./objects/RaceTools.o ./objects/SpiciesTools.o ./objects/Spicies.o ./objects/SpiciesUserDefinitions.o ./objects/Life.o ./objects/LifeUserDefinitions.o
+COMPILER=g++ -std=c++14
+
+CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -O3 -I./include/BasicNeuron -I./src/BasicNeuron -I./include/BasicSynapticWeight -I./src/BasicSynapticWeight -I./include/TauSynapticWeight -I./src/TauSynapticWeight -I./include/LIFNeuron -I./src/LIFNeuron
+
+OBJS = ./objects/Neuron.o ./objects/SynapticWeight.o ./objects/BasicNeuron.o ./objects/Parameter.o ./objects/BasicNeuronUserDefinitions.o ./objects/BasicSynapticWeight.o ./objects/BasicSynapticWeightUserDefinitions.o ./objects/Layer.o  ./objects/ANN.o ./objects/ANNUserDefinitions.o ./objects/Organism.o ./objects/OrganismUserDefinitions.o ./objects/Race.o ./objects/RaceUserDefinitions.o ./objects/ANNTools.o ./objects/RaceTools.o ./objects/SpiciesTools.o ./objects/Spicies.o ./objects/SpiciesUserDefinitions.o ./objects/Life.o ./objects/LifeUserDefinitions.o ./objects/LifeTools.o ./objects/TauSynapticWeight.o ./objects/TauSynapticWeightUserDefinitions.o 
+#./objects/LIFNeuron.o ./objects/LIFNeuronUserDefinitions.o 
 
 .PHONY: all clean install git
 
-all: Neuron.o SynapticWeight.o Parameter.o BasicNeuronUserDefinitions.o BasicNeuron.o BasicSynapticWeightUserDefinitions.o BasicSynapticWeight.o Layer.o ANNUserDefinitions.o ANN.o OrganismUserDefinitions.o Organism.o RaceUserDefinitions.o Race.o ANNTools.o RaceTools.o SpiciesTools.o Spicies.o SpiciesUserDefinitions.o Life.o LifeUserDefinitions.o
+all: Neuron.o SynapticWeight.o Parameter.o BasicNeuronUserDefinitions.o BasicNeuron.o BasicSynapticWeightUserDefinitions.o BasicSynapticWeight.o Layer.o ANNUserDefinitions.o ANN.o OrganismUserDefinitions.o Organism.o RaceUserDefinitions.o Race.o ANNTools.o RaceTools.o SpiciesTools.o Spicies.o SpiciesUserDefinitions.o Life.o LifeUserDefinitions.o LifeTools.o TauSynapticWeightUserDefinitions.o TauSynapticWeight.o #LIFNeuronUserDefinitions.o LIFNeuron.o
 	@echo All NEAT Compiled 
-
 
 Neuron.o: Neuron.cpp 
 	@echo Compiling Neuron class
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Neuron.o
-
 
 SynapticWeight.o: SynapticWeight.cpp 
 	@echo Compiling SynapticWeight class
@@ -56,6 +57,16 @@ ANN.o: ANN.cpp
 	@echo Compiling ANN
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/ANN.o
+
+TauSynapticWeightUserDefinitions.o: TauSynapticWeightUserDefinitions.cpp
+	@echo Compiling TauSynapticWeightUserDefinitions
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/TauSynapticWeightUserDefinitions.o
+
+TauSynapticWeight.o: TauSynapticWeight.cpp
+	@echo Compiling TauSynapticWeight
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/TauSynapticWeight.o
 
 ANNTools.o: ANNTools.cpp
 	@echo Compiling ANNTools
@@ -102,6 +113,20 @@ Life.o: Life.cpp
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Life.o
 
+LIFNeuron.o: LIFNeuron.cpp
+	@echo Compiling LIFNeuron
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/LIFNeuron.o
+
+LIFNeuronUserDefinitions.o: LIFNeuronUserDefinitions.cpp
+	@echo Compiling LIFNeuronUserDefinitions
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/LIFNeuronUserDefinitions.o
+
+LifeTools.o: LifeTools.cpp
+	@echo Compiling LifeTools
+	@mkdir -p objects
+	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/LifeTools.o
 
 RaceTools.o: RaceTools.cpp
 	@echo Compiling RaceTools

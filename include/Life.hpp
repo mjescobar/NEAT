@@ -30,7 +30,9 @@ private:
 	void createDecendence();
 	void fillFitnessVector (std::vector <float> & fitnessVector);
 	void createSpiciesFromOrganismCandidates();
-	void getStatisticsOfCurrentGeneration();
+	//void getStatisticsOfCurrentGeneration();
+	void eliminateWorseSpecies();
+	void eliminateWorseRaces();
 	void eliminateWorseOrganisms();
 	uint maxAmountOfSpicies;
 	uint maxAmountOrganismInAllOldRaces;
