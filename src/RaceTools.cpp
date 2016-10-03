@@ -84,7 +84,6 @@ Organism& Race::getRandomOrganism_ref()
 
 void Race::organismsGrowUp()
 {
-
 	for (uint i = 0; i < newOrganisms.size(); ++i)
 	{
 		oldOrganisms.push_back( move(newOrganisms.at(i)) );
@@ -98,53 +97,40 @@ void Race::organismsGrowUp()
 
 void Race::createDecendence(const uint amountOfChildrens )
 {
-	std::cerr << "rcd 1" << std::endl;
 	if(amountOfChildrens == 0){return;}
 	vector <float> fitnessVector;
 	fillFitnessVector (fitnessVector); // Se llenaron los fitness en orden.
 	discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
 
 	uint attempts = 4; // Si dos veces no se obtiene un organismo que sea de esta raza simplemente no se intenta de nuevo, para no dejar el cpu muy colapsado en esta operacion.
-	std::cerr << "rcd 2" << std::endl;
 	for (uint i = 0; i < amountOfChildrens; ++i)
 	{
-	std::cerr << "rcd 3" << std::endl;
 		for (uint j = 0; j < attempts; ++j)
 		{
 			uint father = obtainOrganism(*generator);
 			auto& fatherOrgm = *oldOrganisms.at(father).get();
 
 			fitnessVector.at( father ) = 0.f; // Se va a crear una nueva distribucion pero sin el padre para que sea 
-	std::cerr << "rcd 3.0" << std::endl;
 			discrete_distribution<uint> obtainDiferentOrganism(fitnessVector.begin(), fitnessVector.end());
 			uint mother = obtainDiferentOrganism(*generator);
 			auto& motherOrgm =  *oldOrganisms.at(mother).get();
 
-	std::cerr << "rcd 3.1" << std::endl;
 			unique_ptr <Organism> sonOrgm = fatherOrgm.crossOver( motherOrgm );
-	std::cerr << "rcd 3.2" << std::endl;
 
 
-	std::cerr << "rcd 4" << std::endl;
 			if( sonOrgm->getIsNewSpicie() )
 			{
 				addOrganismCandidateToNewSpicies( move(sonOrgm) );
 			}else if( sonOrgm->getDistance( fatherOrgm ) < maximumRaceDistance   )
 			{
-	std::cerr << "rcd 5" << std::endl;
 				newOrganisms.push_back( move( sonOrgm ) );
 				break; // Se obtuvo un nuevo organismo de la raza.
 			}else
 			{
-	std::cerr << "rcd 6" << std::endl;
 				addOrganismCandidateToNewRace( move(sonOrgm) );
-	std::cerr << "rcd 7" << std::endl;
 			}
-	std::cerr << "rcd 8" << std::endl;
 		}
-	std::cerr << "rcd 9" << std::endl;
 	}
-	std::cerr << "rcd 10" << std::endl;
 }
 
 void Race::eliminateWorseOrganisms()

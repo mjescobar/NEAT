@@ -51,34 +51,27 @@ void Race::epoch(){
 
 void Race::epoch( uint amountOfChildrens ) // no se especifica en caso de ser young
 {	
-	std::cerr << "re 1" << std::endl;
 	if(extincted){cerr << "ERROR::Race::epoch::This race is extinct " << newOrganisms.size() << "\t" << oldOrganisms.size() << endl; exit(EXIT_FAILURE);}
 	if(amountOfChildrens == 0 || years >= maxYears) { 
 		extincted = true; 
 		return; 
 	}// means that this race is a bad race and is eliminated inmediatly
 	// Primero se pasa de epoca a cada organismo de la raza (pudiendo morir algunos de ellos en el camino)
-	std::cerr << "re 2" << std::endl;
 	organismsGrowUp(); // Todos los nuevos organismos son pasados a viejos organismos
 						// en este momento newOrganism esta vacio y sera vuelto a llenar al final
-	std::cerr << "re 3" << std::endl;
 	if(oldOrganisms.size() == 0 && newOrganisms.size() == 0){ 
 		extincted = true; 
 		return; 
 	}
-	std::cerr << "re 4" << std::endl;
 	if( ++years >= maxYearsYoungRace ){	youngRace = false; }
 	// los que quedan tienen derecho a aparearse, tomando en cuenta la posibilidad que exista tan solo un organismo en la raza es que se chequea tal.
-	std::cerr << "re 5" << std::endl;
 	if(oldOrganisms.size()  == 1) // No hay suficientes organismos como para realizar cruzamientos.
 	{
 		populateFromCurrentsOrganisms (amountOfChildrens); //todos los hijos son similares a su unico padre
 		return ;
 	}		
-	std::cerr << "re 6" << std::endl;
 	// En otro caso proceden los cruzamientos.
 	createDecendence(amountOfChildrens);
-	std::cerr << "re 7" << std::endl;
 }
 
 float Race::getFitnessMean()

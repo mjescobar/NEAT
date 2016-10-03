@@ -71,10 +71,10 @@ int main()
 {
 	srand(time(0)); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
 	auto BNseed = make_unique < BasicNeuron > ( );  
-	auto BSWseed = make_unique < BasicSynapticWeight > ( ); 
-	auto ann1  = make_unique < ANN > ( move(BNseed), move(BSWseed) );
-	// auto TSWseed = make_unique <TauSynapticWeight>();
-	// auto ann1 = make_unique <ANN> ( move(BNseed), move(TSWseed) );
+	// auto BSWseed = make_unique < BasicSynapticWeight > ( ); 
+	// auto ann1  = make_unique < ANN > ( move(BNseed), move(BSWseed) );
+	auto TSWseed = make_unique <TauSynapticWeight>();
+	auto ann1 = make_unique <ANN> ( move(BNseed), move(TSWseed) );
 	auto life = make_unique <Life>( move(ann1) );
 
 	for (int i = 0; i < 1000; ++i)

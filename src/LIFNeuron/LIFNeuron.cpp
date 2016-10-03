@@ -6,49 +6,63 @@
 namespace NEAT
 {
 
-LIFNeuron::LIFNeuron() : LIFNeuron(  LIFNeuronUserDefinitions() ){}
+LIFNeuron::LIFNeuron(float samplingDelaTime) : LIFNeuron(  LIFNeuronUserDefinitions(), samplingDelaTime ){}
 
-LIFNeuron::LIFNeuron( const LIFNeuronUserDefinitions& LIFNeuronUserDefinitions )
+LIFNeuron::LIFNeuron( const LIFNeuronUserDefinitions& LIFNeuronUserDefinitions, float samplingDelaTime )
 {
+	outputCurrentAmpliude = 0.f;
 	inputVoltageAccum = 0.f;
 	output = 0.f;
-	constantDistanceOfBias = LIFNeuronUserDefinitions.constantDistanceOfBias;
-	constantDistanceOfSigmoidConstant = LIFNeuronUserDefinitions.constantDistanceOfSigmoidConstant;
-	mutateProbability = LIFNeuronUserDefinitions.mutateProbability;
+	lastInputAccum = 0.f;
+	this->samplingDelaTime = samplingDelaTime;
 
-	bias = std::make_unique < Parameter > ( LIFNeuronUserDefinitions.probabilityOfBiasRandomMutation,
-		LIFNeuronUserDefinitions.maximumBiasPercentVariation,
-		LIFNeuronUserDefinitions.maxBias,
-		LIFNeuronUserDefinitions.minBias
+	resistence = std::make_unique < Parameter > ( LIFNeuronUserDefinitions.probabilityOfResistenceRandomMutation,
+		LIFNeuronUserDefinitions.maximumResistencePercentVariation,
+		LIFNeuronUserDefinitions.maxResistence,
+		LIFNeuronUserDefinitions.minResistence
 		 );
 	
-	sigmoidConstant = std::make_unique < Parameter > ( LIFNeuronUserDefinitions.probabilityOfSigmoidConstantRandomMutation,
-		LIFNeuronUserDefinitions.maximumSigmoidConstantPercentVariation,
-		LIFNeuronUserDefinitions.maxSigmoidConstant,
-		LIFNeuronUserDefinitions.minSigmoidConstant
+	membraneTimeConstant = std::make_unique < Parameter > ( LIFNeuronUserDefinitions.probabilityOfMembraneTimeConstantRandomMutation,
+		LIFNeuronUserDefinitions.maximumMembraneTimeConstantPercentVariation,
+		LIFNeuronUserDefinitions.maxMembraneTimeConstant,
+		LIFNeuronUserDefinitions.minMembraneTimeConstant
 		 );
-	lastInputAccum = 0.f;
+
+	currentTimeConstant = std::make_unique < Parameter > ( LIFNeuronUserDefinitions.probabilityOfCurrentTimeConstantRandomMutation,
+		LIFNeuronUserDefinitions.maximumCurrentTimeConstantPercentVariation,
+		LIFNeuronUserDefinitions.maxCurrentTimeConstant,
+		LIFNeuronUserDefinitions.minCurrentTimeConstant
+		 );
+	constantDistanceResistence = LIFNeuronUserDefinitions.constantDistanceResistence;
+	constantDistanceMembraneTimeConstant = LIFNeuronUserDefinitions.constantDistanceMembraneTimeConstant;
+	constantDistanceCurrentTimeConstant = LIFNeuronUserDefinitions.constantDistanceCurrentTimeConstant;
+	membranVoltage = 0.f;
+	timeEnlacedFromLastSpike = 0.f;
 }
 
 LIFNeuron::LIFNeuron( const LIFNeuron & other) 
 {
+	this->samplingDelaTime = other.samplingDelaTime;
+
 	inputVoltageAccum = 0.f;
 	lastInputAccum = 0.f;
 	output = 0.f;
-	constantDistanceOfBias = other.constantDistanceOfBias;
-	constantDistanceOfSigmoidConstant = other.constantDistanceOfSigmoidConstant;
-	mutateProbability = other.mutateProbability;
-	bias = other.bias->clone();
-	sigmoidConstant = other.sigmoidConstant->clone();
+	currentTimeConstant = other.currentTimeConstant->clone();
+	membraneTimeConstant = other.membraneTimeConstant->clone();
+	resistence = other.resistence->clone();
+	constantDistanceResistence = other.constantDistanceResistence;
+	constantDistanceMembraneTimeConstant = other.constantDistanceMembraneTimeConstant;
+	constantDistanceCurrentTimeConstant = other.constantDistanceCurrentTimeConstant;
+	outputCurrentAmpliude = 0.f;
+	membranVoltage = 0.f;
+	timeEnlacedFromLastSpike = 0.f;
 }
 
 void LIFNeuron::mightMutate()
 {
-	if( random()/(double)RAND_MAX < mutateProbability )
-	{
-		bias->mightMutate();
-		sigmoidConstant->mightMutate();
-	}
+	resistence->mightMutate();
+	membraneTimeConstant->mightMutate();
+	currentTimeConstant->mightMutate();
 }
 
 float LIFNeuron::getDistance( const Neuron * otherNeuron ) const
@@ -60,15 +74,15 @@ float LIFNeuron::getDistance( const Neuron * otherNeuron ) const
 		exit( EXIT_FAILURE );
 	}
 
-	return this->constantDistanceOfBias * ( fabs(this->bias->value - otherLIFNeuron->bias->value)  )  + this->constantDistanceOfSigmoidConstant * ( fabs(this->sigmoidConstant->value - otherLIFNeuron->sigmoidConstant->value)  ) ;
+	return this->constantDistanceResistence * fabs(this->resistence->value - otherLIFNeuron->resistence->value) + this->constantDistanceMembraneTimeConstant *  fabs(this->membraneTimeConstant->value - otherLIFNeuron->membraneTimeConstant->value) + this->constantDistanceCurrentTimeConstant *  fabs(this->currentTimeConstant->value - otherLIFNeuron->currentTimeConstant->value)    ;
 }
 
 void LIFNeuron::spread()
 {
 	receiveInccommingVoltage(); // in father class
 
-	float tmpResult  = samplingDelaTime/membraneTimeConstant;
-	membranVoltage = membranVoltage * (1.f - tmpResult) + tmpResult * resistence * inputVoltageAccum;
+	float tmpResult  = samplingDelaTime / membraneTimeConstant->value;
+	membranVoltage = membranVoltage * (1.f - tmpResult) + tmpResult * resistence->value * inputVoltageAccum;
 	inputVoltageAccum = 0.0; // Se descarga la neurona y su potencial de entrada vuelve a cero.
 
 	if( membranVoltage > spikeThreshold )
@@ -94,8 +108,9 @@ std::unique_ptr < Neuron > LIFNeuron::clone() const
 std::unique_ptr < Neuron > LIFNeuron::createNew() const
 {
 	auto tmp = std::make_unique < LIFNeuron > (*this);
-	tmp->bias->random();
-	tmp->sigmoidConstant->random();
+	tmp->resistence->random();
+	tmp->membraneTimeConstant->random();
+	tmp->currentTimeConstant->random();
 	return std::move( tmp );
 }
 
@@ -106,10 +121,10 @@ void LIFNeuron::spike()
 	timeEnlacedFromLastSpike = 0.f;
 }
 
-void simulateNextCurrent()
+void LIFNeuron::simulateNextCurrent()
 {
 	timeEnlacedFromLastSpike += samplingDelaTime;
-	outputCurrent = outputCurrentAmpliude * exp( -timeEnlacedFromLastSpike/currentTimeConstant );
+	outputCurrent = outputCurrentAmpliude * exp( -timeEnlacedFromLastSpike/currentTimeConstant->value );
 }
 
 } // End namespace NEAT

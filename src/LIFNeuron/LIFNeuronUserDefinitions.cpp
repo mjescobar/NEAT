@@ -38,36 +38,44 @@ LIFNeuronUserDefinitions::LIFNeuronUserDefinitions( std::string path )
 	}
 
 	// Se cargan todas las variables con los datos.
-	maxBias = float( loadData["maxBias"] );
-	minBias = float( loadData["minBias"] );
-	maximumBiasPercentVariation = float( loadData["maximumBiasPercentVariation"] );
-	probabilityOfBiasRandomMutation = float( loadData["probabilityOfBiasRandomMutation"] );
-	constantDistanceOfBias = float( loadData["constantDistanceOfBias"] );
-	maxSigmoidConstant = float( loadData["maxSigmoidConstant"] );
-	minSigmoidConstant = float( loadData["minSigmoidConstant"] );
-	probabilityOfSigmoidConstantRandomMutation = float( loadData["probabilityOfSigmoidConstantRandomMutation"] );
-	maximumSigmoidConstantPercentVariation = float( loadData["maximumSigmoidConstantPercentVariation"] );
-	constantDistanceOfSigmoidConstant = float( loadData["constantDistanceOfSigmoidConstant"] );
-	mutateProbability = float( loadData["mutateProbability"] );
-
+	probabilityOfResistenceRandomMutation = float(loadData["probabilityOfResistenceRandomMutation"]);
+	maximumResistencePercentVariation = float(loadData["maximumResistencePercentVariation"]);
+	maxResistence = float(loadData["maxResistence"]);
+	minResistence = float(loadData["minResistence"]);
+	probabilityOfMembraneTimeConstantRandomMutation = float(loadData["probabilityOfMembraneTimeConstantRandomMutation"]);
+	maximumMembraneTimeConstantPercentVariation = float(loadData["maximumMembraneTimeConstantPercentVariation"]);
+	maxMembraneTimeConstant = float(loadData["maxMembraneTimeConstant"]);
+	minMembraneTimeConstant = float(loadData["minMembraneTimeConstant"]);
+	probabilityOfCurrentTimeConstantRandomMutation = float(loadData["probabilityOfCurrentTimeConstantRandomMutation"]);
+	maximumCurrentTimeConstantPercentVariation = float(loadData["maximumCurrentTimeConstantPercentVariation"]);
+	maxCurrentTimeConstant = float(loadData["maxCurrentTimeConstant"]);
+	minCurrentTimeConstant = float(loadData["minCurrentTimeConstant"]);
+	constantDistanceResistence = float(loadData["constantDistanceResistence"]);
+	constantDistanceMembraneTimeConstant = float(loadData["constantDistanceMembraneTimeConstant"]);
+	constantDistanceCurrentTimeConstant = float(loadData["constantDistanceCurrentTimeConstant"]);
 
 	loadData.clear();
 }
 
 void LIFNeuronUserDefinitions::printInfo()
 {
+
 	std::cout << 
-	"maxBias: " << maxBias << "\n"<<
-	"minBias: " << minBias << "\n"<<
-	"maximumBiasPercentVariation: " << maximumBiasPercentVariation << "\n"<<
-	"probabilityOfBiasRandomMutation: " << probabilityOfBiasRandomMutation << "\n"<<
-	"constantDistanceOfBias: " << constantDistanceOfBias << "\n"<<
-	"maxSigmoidConstant: " << maxSigmoidConstant << "\n"<<
-	"minSigmoidConstant: " << minSigmoidConstant << "\n"<<
-	"probabilityOfSigmoidConstantRandomMutation: " << probabilityOfSigmoidConstantRandomMutation << "\n"<<
-	"maximumSigmoidConstantPercentVariation: " << maximumSigmoidConstantPercentVariation << "\n"<<
-	"constantDistanceOfSigmoidConstant: " << constantDistanceOfSigmoidConstant << "\n"<<
-	"mutateProbability: " << mutateProbability << "\n";
+	"probabilityOfResistenceRandomMutation: " << probabilityOfResistenceRandomMutation << "\n" <<
+	"maximumResistencePercentVariation: " << maximumResistencePercentVariation << "\n" <<
+	"maxResistence: " << maxResistence << "\n" <<
+	"minResistence: " << minResistence << "\n" <<
+	"probabilityOfMembraneTimeConstantRandomMutation: " << probabilityOfMembraneTimeConstantRandomMutation << "\n" <<
+	"maximumMembraneTimeConstantPercentVariation: " << maximumMembraneTimeConstantPercentVariation << "\n" <<
+	"maxMembraneTimeConstant: " << maxMembraneTimeConstant << "\n" <<
+	"minMembraneTimeConstant: " << minMembraneTimeConstant << "\n" <<
+	"probabilityOfCurrentTimeConstantRandomMutation: " << probabilityOfCurrentTimeConstantRandomMutation << "\n" <<
+	"maximumCurrentTimeConstantPercentVariation: " << maximumCurrentTimeConstantPercentVariation << "\n" <<
+	"maxCurrentTimeConstant: " << maxCurrentTimeConstant << "\n" <<
+	"minCurrentTimeConstant: " << minCurrentTimeConstant << "\n" <<
+	"constantDistanceResistence: " << constantDistanceResistence << "\n" <<
+	"constantDistanceMembraneTimeConstant: " << constantDistanceMembraneTimeConstant << "\n" <<
+	"constantDistanceCurrentTimeConstant: " << constantDistanceCurrentTimeConstant << "\n" ;
 
 }
 

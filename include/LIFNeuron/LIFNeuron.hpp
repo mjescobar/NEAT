@@ -13,8 +13,8 @@ namespace NEAT
 class LIFNeuron : public Neuron
 {
 public:
-	LIFNeuron();
-	LIFNeuron( const LIFNeuronUserDefinitions&  LIFNeuronUserDefinitions );
+	LIFNeuron( float samplingDelaTime);
+	LIFNeuron( const LIFNeuronUserDefinitions&  LIFNeuronUserDefinitions, float samplingDelaTime );
 	LIFNeuron( const LIFNeuron & );
 
 	void mightMutate() override;
@@ -27,18 +27,20 @@ public:
 	void simulateNextCurrent();
 
 private:
-	std::unique_ptr < Parameter > bias;
-	std::unique_ptr < Parameter > sigmoidConstant;
-	float mutateProbability;
+	std::unique_ptr < Parameter > resistence;
+	std::unique_ptr < Parameter > membraneTimeConstant; // tau_m 
+	std::unique_ptr < Parameter > currentTimeConstant; // tau_m 
 	float lastInputAccum;
 	float samplingDelaTime;
-	float resistence;
-	float membraneTimeConstant; // tau_m 
 	float outputCurrent;
 	float membranVoltage;
 	float spikeThreshold;
 	float resetVoltage;
-	float currentTimeConstant;
+	float outputCurrentAmpliude;
+	float constantDistanceResistence;
+	float constantDistanceMembraneTimeConstant;
+	float constantDistanceCurrentTimeConstant;
+	float timeEnlacedFromLastSpike;
 };
 
 }

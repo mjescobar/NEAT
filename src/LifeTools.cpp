@@ -22,13 +22,11 @@ void Life::createDecendence()
 	fillFitnessVector (fitnessVector);
 	vector <uint> childrensPerSpicie;
 	// Se obtendran la cantidad de hijos por raza a traves de una distribuion discreta segun los fitness de cada especie
-	std::cerr << "lcd 1" << std::endl;
 
 	for (uint i = 0; i < spicies.size(); ++i)
 	{
 		childrensPerSpicie.push_back(0);
 	}
-	std::cerr << "lcd 2" << std::endl;
 	discrete_distribution<uint> obtainSpicie(fitnessVector.begin(), fitnessVector.end());
 	uint selected = 0;
 	for (uint i = 0; i < maxAmountOrganismInAllOldRaces; ++i)
@@ -37,12 +35,10 @@ void Life::createDecendence()
 		childrensPerSpicie.at(selected) += 1;
 	}	
 	// Ahora dado que ya se sabe la cantidad de hijos se procede a asignarlos a cada especie.
-	std::cerr << "lcd 3" << std::endl;
 	for (uint i = 0; i < spicies.size(); ++i)
 	{
 		spicies.at(i)->epoch( childrensPerSpicie.at(i) );
 	}
-	std::cerr << "lcd 4" << std::endl;
 }
 void Life::fillFitnessVector (vector <float> & fitnessVector)
 {

@@ -15,17 +15,21 @@ public:
 	void printInfo();
 
 	//Se mantienen publicos por simplicidad en su uso.
-	float mutateProbability;
-	float maxBias;
-	float minBias;
-	float maximumBiasPercentVariation;
-	float probabilityOfBiasRandomMutation;
-	float constantDistanceOfBias;
-	float maxSigmoidConstant;
-	float minSigmoidConstant;
-	float probabilityOfSigmoidConstantRandomMutation;
-	float maximumSigmoidConstantPercentVariation;
-	float constantDistanceOfSigmoidConstant;
+	float probabilityOfResistenceRandomMutation;
+	float maximumResistencePercentVariation;
+	float maxResistence;
+	float minResistence;
+	float probabilityOfMembraneTimeConstantRandomMutation;
+	float maximumMembraneTimeConstantPercentVariation;
+	float maxMembraneTimeConstant;
+	float minMembraneTimeConstant;
+	float probabilityOfCurrentTimeConstantRandomMutation;
+	float maximumCurrentTimeConstantPercentVariation;
+	float maxCurrentTimeConstant;
+	float minCurrentTimeConstant;
+	float constantDistanceResistence;
+	float constantDistanceMembraneTimeConstant;
+	float constantDistanceCurrentTimeConstant;
 };
 
 }

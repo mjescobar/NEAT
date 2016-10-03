@@ -67,14 +67,11 @@ int main()
 
 	for (int i = 0; i < 100; ++i)
 	{
-		cerr << "m1" << endl;
 		sendAllOrganismToExperiment(*life);
 		//cout << "Gen " << i << "\t" << fitnessAcumm/(float)contador  <<"\t" << contador << "\t" << life->spicies.size()<< endl;
 		fitnessAcumm = 0.f;
 		contador = 0;
-		cerr << "m2" << endl;
 		life->epoch();
-		cerr << "m3" << endl;
 		cout << "MG: " << maxGeneration << endl;
 		maxGeneration = 0.f;
 

@@ -101,50 +101,38 @@ void Spicies::createRacesFromOrganismCandidates()
 
 void Spicies::createDecendence(const uint childrenAmount )
 {
-	std::cerr << "scd 1" << std::endl;
 	if(oldRaces.size() >= 1 )
 	{
 		vector <float> fitnessVector;
 		fillFitnessVector (fitnessVector);
 		vector <uint> childrensPerRace;
-	std::cerr << "scd 2" << std::endl;
 		for (uint i = 0; i < oldRaces.size(); ++i)
 		{
 			childrensPerRace.push_back(0);
 		}
 		discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
 		uint selected = 0;
-	std::cerr << "scd 3" << std::endl;
 		for (uint i = 0; i < childrenAmount; ++i)
 		{
 			selected = obtainOrganism(*generator);
 			childrensPerRace.at(selected) += 1;
 		}	
-	std::cerr << "scd 4" << std::endl;
 		for (uint i = 0; i < oldRaces.size(); ++i)
 		{
 			oldRaces.at(i)->epoch( childrensPerRace.at(i) );
 		}
-	std::cerr << "scd 5" << std::endl;
 
 	}
-	std::cerr << "scd 6" << std::endl;
 	for (uint i = 0; i < youngRaces.size(); ++i)
 	{
-	std::cerr << "scd 6.1 yrs: " <<  youngRaces.size() << "\ti:" << i << std::endl;
 		youngRaces.at(i)->epoch();
-	std::cerr << "scd 6.2" << std::endl;
 		if( youngRaces.at(i)->isYoung() == false  ) // Si la raza ha crecido entonces se tiene que cambiar de vector que lo maneja.
 		{
-	std::cerr << "scd 6.3" << std::endl;
 			oldRaces.push_back( move(youngRaces.at(i)) );
-	std::cerr << "scd 6.4" << std::endl;
 			youngRaces.erase(youngRaces.begin()+i);
-	std::cerr << "scd 6.5" << std::endl;
 			i--;
 		}
 	}
-	std::cerr << "scd 7" << std::endl;
 }
 
 void Spicies::deleteExtinctedRaces()

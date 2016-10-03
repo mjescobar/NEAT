@@ -31,7 +31,6 @@ private:
 	std::unique_ptr < Parameter > sigmoidConstant;
 	float constantDistanceOfBias;
 	float constantDistanceOfSigmoidConstant;
-	float mutateProbability;
 	float lastInputAccum;
 };
 

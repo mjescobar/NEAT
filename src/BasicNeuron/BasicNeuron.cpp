@@ -14,7 +14,6 @@ BasicNeuron::BasicNeuron( const BasicNeuronUserDefinitions& basicNeuronUserDefin
 	output = 0.f;
 	constantDistanceOfBias = basicNeuronUserDefinitions.constantDistanceOfBias;
 	constantDistanceOfSigmoidConstant = basicNeuronUserDefinitions.constantDistanceOfSigmoidConstant;
-	mutateProbability = basicNeuronUserDefinitions.mutateProbability;
 
 	bias = std::make_unique < Parameter > ( basicNeuronUserDefinitions.probabilityOfBiasRandomMutation,
 		basicNeuronUserDefinitions.maximumBiasPercentVariation,
@@ -37,18 +36,14 @@ BasicNeuron::BasicNeuron( const BasicNeuron & other)
 	output = 0.f;
 	constantDistanceOfBias = other.constantDistanceOfBias;
 	constantDistanceOfSigmoidConstant = other.constantDistanceOfSigmoidConstant;
-	mutateProbability = other.mutateProbability;
 	bias = other.bias->clone();
 	sigmoidConstant = other.sigmoidConstant->clone();
 }
 
 void BasicNeuron::mightMutate()
 {
-	if( random()/(double)RAND_MAX < mutateProbability )
-	{
-		bias->mightMutate();
-		sigmoidConstant->mightMutate();
-	}
+	bias->mightMutate();
+	sigmoidConstant->mightMutate();	
 }
 
 float BasicNeuron::getDistance( const Neuron * otherNeuron ) const

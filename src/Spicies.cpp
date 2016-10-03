@@ -22,25 +22,18 @@ Spicies::Spicies( const SpiciesUserDefinitions& userdef, unique_ptr <Race> found
 // Only old Races hava to fight for childrens the young races have not.
 void Spicies::epoch( const uint childrenAmount )
 {
-	std::cerr << "se 1" << std::endl;
 	if(childrenAmount == 0 && oldRaces.size() >= 1){ 
 		extincted = true; 
 		return; 
 	}
-	std::cerr << "se 2" << std::endl;
 	if(years >= maxYears){ extincted = true; return; }
-	std::cerr << "se 3" << std::endl;
 	createDecendence(childrenAmount);
-	std::cerr << "se 4" << std::endl;
 	deleteExtinctedRaces();
-	std::cerr << "se 5" << std::endl;
 	if(youngRaces.size() + oldRaces.size() == 0) {
 		extincted = true; 
 		return;
 	}
-	std::cerr << "se 6" << std::endl;
 	createRacesFromOrganismCandidates();
-	std::cerr << "se 7" << std::endl;
 	years ++;
 }
 

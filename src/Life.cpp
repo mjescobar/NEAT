@@ -23,21 +23,13 @@ Life::Life(unique_ptr<ANN> annSeed )
 
 void Life::epoch()
 { // private function method of Life class in LifeTooks.cpp.
-	std::cerr << "le 1" << std::endl;
 	eliminateWorseOrganisms();
-	std::cerr << "le 2" << std::endl;
 	eliminateWorseRaces();
-	std::cerr << "le 3" << std::endl;
 	eliminateWorseSpecies();
-	std::cerr << "le 4" << std::endl;
 	deleteExtinctedSpicies();
-	std::cerr << "le 5" << std::endl;
 	createDecendence();
-	std::cerr << "le 6" << std::endl;
 	deleteExtinctedSpicies();
-	std::cerr << "le 7" << std::endl;
 	createSpiciesFromOrganismCandidates();
-	std::cerr << "le 8" << std::endl;
 	currentGeneration++;
 }
 

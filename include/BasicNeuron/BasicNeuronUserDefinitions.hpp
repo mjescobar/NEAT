@@ -15,7 +15,6 @@ public:
 	void printInfo();
 
 	//Se mantienen publicos por simplicidad en su uso.
-	float mutateProbability;
 	float maxBias;
 	float minBias;
 	float maximumBiasPercentVariation;

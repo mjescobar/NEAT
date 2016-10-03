@@ -62,74 +62,45 @@ void ANN::newUniqueSynapticWeight(){
 	uint neuronIn, layerIn, neuronOut, layerOut;
 	uint attempts = 20;
 	bool unique = false;
-	std::cerr << "anusw 1" << std::endl;
 	for (uint i = 0; i < attempts; ++i)
 	{
 		if( useBackwardConnections ){
-	std::cerr << "anusw 2" << std::endl;
 			tie(layerIn,neuronIn) = findRandNeuron( );
 			tie(layerOut,neuronOut) = findRandNeuron( );
-	std::cerr << "anusw 3!!" << std::endl;
 	  	}else{
-	std::cerr << "anusw 4" << std::endl;
 	  		tie(layerOut,neuronOut) = findRandNeuronInAheadLayer( 0 );
 			tie(layerIn,neuronIn) = findRandNeuronBehindLayer( layerOut );
-	std::cerr << "anusw 5" << std::endl;
 	  	}
 
 	  	auto SWList =  layersMap.at(layerIn)->neurons.at(neuronIn)->getOutcomingSynapticWeights();
 	  	unique = true;
-	std::cerr << "anusw 6" << std::endl;
 	  	for( const auto& SW : SWList ) // Se buscara si ya existe alguna conexion que conecte las mismas neuronas en la misma orientacion, en tal caso habra que intentarlo denuevo
 	  	{
 	  		uint swLayerIn, swNeuronIn, swLayerOut, swNeuronOut;
-	std::cerr << "anusw 7" << std::endl;
 	  		tie(swNeuronIn, swLayerIn, swNeuronOut, swLayerOut) = SW->getMark();
-	std::cerr << "anusw 8" << std::endl;
 	  		if( neuronOut == swNeuronOut && layerOut == swLayerOut ) // Como se estan revizando las conexiones de salida de la neurona solo basta con saber si ya existen conexiones que salgan al mismo destino
 	  		{ 
 	  			unique = false;
 	  			break;
 	  		}
-	std::cerr << "anusw 9" << std::endl;
 	  	}
 	  	if(unique == true)
 	  	{
-	std::cerr << "anusw 10 Li: " << layerIn << "\tni: " << neuronIn << "\tlo: " << layerOut << "\tno: " << neuronOut  << std::endl;
 	  		addSynapticWeight( layerIn, neuronIn, layerOut, neuronOut ); 
 	  		break;
-	std::cerr << "anusw 11" << std::endl;
 	  	}
-	std::cerr << "anusw 12" << std::endl;
 	}	
 }
 
 void ANN::addSynapticWeight( const uint layerIn, const uint neuronIn, const uint layerOut, const uint neuronOut ){
 
-	std::cerr << "asw 1" << std::endl;
 	synapticWeights.push_back( seedSynapticWeihgt->createNew() );
-	std::cerr << "asw 2" << std::endl;
 	//Suena como al reves, pero la neurona in es la neurona de la cual sale la conexion y la neurona out es a la que llega la conexion. ha provocado problemas anteriores no entender este detalle. se debe revizar la notacion para otra que provoque menos confusion
-	std::cerr << "asw 3" << std::endl;
-	std::cerr << "layersMap.sz: " << layersMap.size()  << std::endl;
-
-	for(  auto& layer : layersMap )
-	{
-		layer.second->printInfo();
-	}
-
-	std::cerr << "layerOut: " << layerOut  << std::endl;
-	layersMap.at(layerOut)->printInfo();
-	std::cerr << "neurons.sz: " << layersMap.at(layerOut)->neurons.size()  << std::endl;
 
 	layersMap.at(layerOut)->neurons.at(neuronOut)->addIncomingSynapticWeight( synapticWeights.back() );
-	std::cerr << "asw 4" << std::endl;
 	layersMap.at(layerIn)->neurons.at(neuronIn)->addOutcomingSynapticWeight( synapticWeights.back() );
-	std::cerr << "asw 5" << std::endl;
 	synapticWeights.back()->setMark( neuronIn, layerIn, neuronOut, layerOut ); // HistorialMark
-	std::cerr << "asw 6" << std::endl;
 	innovationMsg += "SW(" + to_string(layerIn) + " ," + to_string(neuronIn )+ "," + to_string(layerOut) + "," + to_string(neuronOut) +  ");"; 
-	std::cerr << "asw 7" << std::endl;
 	isNewSpecies = true;
 }
 
@@ -137,6 +108,10 @@ tuple < uint, uint > ANN::findRandNeuron() const
 {
 	uniform_int_distribution<uint> layerDist(0, layersMap.size() - 1 );
 	auto layer = layerDist( *generator );
+	if ( layer == layersMap.size()-1 )
+	{		
+		layer = layersMap.rbegin()->first;
+	} 
 	auto neuron = findRandNeuronInLayer(layer);
 	return make_tuple ( move(layer), move(neuron) );
 }
@@ -148,6 +123,10 @@ tuple < uint, uint > ANN::findRandNeuronInAheadLayer(const uint layerBound) cons
 	}
 	uniform_int_distribution<uint> layerDist(layerBound + 1, layersMap.size() - 1 );
 	auto layer = layerDist( *generator );
+	if ( layer == layersMap.size()-1 )
+	{		
+		layer = layersMap.rbegin()->first;
+	} 
 	auto neuron = findRandNeuronInLayer(layer);
 	return make_tuple ( move(layer), move(neuron) );
 }
@@ -164,6 +143,10 @@ tuple < uint, uint > ANN::findRandNeuronBehindLayer(const uint layerBound) const
 	}
 	uniform_int_distribution<uint> layerDist(0, layerBoundEffective -1 );
 	auto layer = layerDist( *generator );
+	if ( layer == layersMap.size()-1 )
+	{		
+		layer = layersMap.rbegin()->first;
+	} 
 	auto neuron = findRandNeuronInLayer(layer);
 	return make_tuple ( move(layer), move(neuron) );
 }
@@ -195,27 +178,19 @@ void ANN::topologyMutations()
 {
 	if( rand()/(double)RAND_MAX  < probabilityOfNewLayer )
 	{
-		std::cerr << "atm 1" << std::endl;
 		newLayer();
-		std::cerr << "atm 2" << std::endl;
 	}
 	if( rand()/(double)RAND_MAX  < probabilityNewNeuronInLayer )
 	{
-		std::cerr << "atm 3" << std::endl;
 		newNeuronInlayer();
-		std::cerr << "atm 4" << std::endl;
 	}
 	if( rand()/(double)RAND_MAX  < probabilityOfNewSynapticWeight )
 	{
-		std::cerr << "atm 5" << std::endl;
 		newSynapticWeight();
-		std::cerr << "atm 6" << std::endl;
 	}
 	if( rand()/(double)RAND_MAX  < probabilityOfNewUniqueSynapticWeight )
 	{
-		std::cerr << "atm 7" << std::endl;
 		newUniqueSynapticWeight();
-		std::cerr << "atm 8" << std::endl;
 	}
 }
 

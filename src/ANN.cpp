@@ -83,17 +83,11 @@ ANN::~ANN()
 
 unique_ptr < ANN > ANN::crossOver( const ANN&  mother ) const
 {
-	std::cerr << "aco 1" << std::endl;
 	auto result = make_unique <ANN> ();
-	std::cerr << "aco 2" << std::endl;
 	result->copyUserDefParameters(*this); 
-	std::cerr << "aco 3" << std::endl;
 	result->constructLayersFromParents(*this, mother );
-	std::cerr << "aco 4" << std::endl;
 	result->constructSynapsesFromParents(*this, mother );
-	std::cerr << "aco 5" << std::endl;
 	result->mightMutate(); // Este paso es de vital importancia y produce la complexificacion de la red
-	std::cerr << "aco 6" << std::endl;
 	return move( result );
 }
 
@@ -141,11 +135,8 @@ void ANN::spread(){
 
 void ANN::mightMutate()
 {
-	std::cerr << "amm 1" << std::endl;
 	topologyMutations();
-	std::cerr << "amm 2" << std::endl;
 	nonTopologyMutations();
-	std::cerr << "amm 3" << std::endl;
 }
 
 float ANN::getDistance( const ANN& other) const

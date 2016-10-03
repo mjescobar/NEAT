@@ -48,7 +48,6 @@ BasicNeuronUserDefinitions::BasicNeuronUserDefinitions( std::string path )
 	probabilityOfSigmoidConstantRandomMutation = float( loadData["probabilityOfSigmoidConstantRandomMutation"] );
 	maximumSigmoidConstantPercentVariation = float( loadData["maximumSigmoidConstantPercentVariation"] );
 	constantDistanceOfSigmoidConstant = float( loadData["constantDistanceOfSigmoidConstant"] );
-	mutateProbability = float( loadData["mutateProbability"] );
 
 
 	loadData.clear();
@@ -66,9 +65,7 @@ void BasicNeuronUserDefinitions::printInfo()
 	"minSigmoidConstant: " << minSigmoidConstant << "\n"<<
 	"probabilityOfSigmoidConstantRandomMutation: " << probabilityOfSigmoidConstantRandomMutation << "\n"<<
 	"maximumSigmoidConstantPercentVariation: " << maximumSigmoidConstantPercentVariation << "\n"<<
-	"constantDistanceOfSigmoidConstant: " << constantDistanceOfSigmoidConstant << "\n"<<
-	"mutateProbability: " << mutateProbability << "\n";
-
+	"constantDistanceOfSigmoidConstant: " << constantDistanceOfSigmoidConstant << "\n";
 }
 
 }
