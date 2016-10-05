@@ -16,6 +16,7 @@ public:
 	LIFNeuron( float samplingDelaTime);
 	LIFNeuron( const LIFNeuronUserDefinitions&  LIFNeuronUserDefinitions, float samplingDelaTime );
 	LIFNeuron( const LIFNeuron & );
+	virtual ~LIFNeuron();
 
 	void mightMutate() override;
 	float getDistance( const Neuron * neuron ) const override;
@@ -25,6 +26,7 @@ public:
 	std::unique_ptr < Neuron > createNew() const override; // usado en mutacion
 	void spike();
 	void simulateNextCurrent();
+	float getMembraneVoltage();
 
 private:
 	std::unique_ptr < Parameter > resistence;
@@ -41,6 +43,7 @@ private:
 	float constantDistanceMembraneTimeConstant;
 	float constantDistanceCurrentTimeConstant;
 	float timeEnlacedFromLastSpike;
+	float mutationProbability;
 };
 
 }

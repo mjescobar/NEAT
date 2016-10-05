@@ -8,6 +8,12 @@ using namespace std;
 
 namespace NEAT
 {
+	
+Life::~Life()
+{
+
+}
+
 Life::Life(unique_ptr<ANN> annSeed )
 {
 	auto lud = make_unique <LifeUserDefinitions>();

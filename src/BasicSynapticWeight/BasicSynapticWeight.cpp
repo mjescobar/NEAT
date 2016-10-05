@@ -6,6 +6,11 @@
 namespace NEAT
 {
 
+BasicSynapticWeight::~BasicSynapticWeight()
+{
+	
+}
+
 BasicSynapticWeight::BasicSynapticWeight():BasicSynapticWeight(BasicSynapticWeightUserDefinitions()){};
 
 BasicSynapticWeight::BasicSynapticWeight(const BasicSynapticWeightUserDefinitions& userdef )

@@ -6,6 +6,11 @@
 namespace NEAT
 {
 
+BasicNeuron::~BasicNeuron()
+{
+
+}
+
 BasicNeuron::BasicNeuron() : BasicNeuron(  BasicNeuronUserDefinitions() ){}
 
 BasicNeuron::BasicNeuron( const BasicNeuronUserDefinitions& basicNeuronUserDefinitions )
@@ -27,6 +32,8 @@ BasicNeuron::BasicNeuron( const BasicNeuronUserDefinitions& basicNeuronUserDefin
 		basicNeuronUserDefinitions.minSigmoidConstant
 		 );
 	lastInputAccum = 0.f;
+
+	mutationProbability = basicNeuronUserDefinitions.mutationProbability;
 }
 
 BasicNeuron::BasicNeuron( const BasicNeuron & other) 
@@ -36,14 +43,18 @@ BasicNeuron::BasicNeuron( const BasicNeuron & other)
 	output = 0.f;
 	constantDistanceOfBias = other.constantDistanceOfBias;
 	constantDistanceOfSigmoidConstant = other.constantDistanceOfSigmoidConstant;
+	mutationProbability = other.mutationProbability;
 	bias = other.bias->clone();
 	sigmoidConstant = other.sigmoidConstant->clone();
 }
 
 void BasicNeuron::mightMutate()
 {
-	bias->mightMutate();
-	sigmoidConstant->mightMutate();	
+	if( rand()/(double)RAND_MAX < mutationProbability)
+	{
+		bias->mightMutate();
+		sigmoidConstant->mightMutate();
+	}
 }
 
 float BasicNeuron::getDistance( const Neuron * otherNeuron ) const
@@ -71,7 +82,7 @@ void BasicNeuron::spread()
 
 void BasicNeuron::printInfo() const
 {
-	std::cout << "Bias: " << bias->value << "\tSigmoidConstant: " << sigmoidConstant->value << "\tlastInputAccum: "<< lastInputAccum << "\tinputVoltageAccum: " << inputVoltageAccum << "\toutput: " << output << std::endl;
+	std::cout << "Bias: " << bias->value << "\tSigmoidConstant: " << sigmoidConstant->value << "\tlastInputAccum: "<< lastInputAccum << "\tinputVoltageAccum: " << inputVoltageAccum << "\toutput: " << output << "\tmutationProbability: "<< mutationProbability<< std::endl;
 }
 
 std::unique_ptr < Neuron > BasicNeuron::clone() const 

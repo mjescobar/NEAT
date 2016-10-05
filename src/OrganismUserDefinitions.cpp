@@ -11,6 +11,11 @@
 namespace NEAT
 {
 
+OrganismUserDefinitions::~OrganismUserDefinitions(  )
+{
+
+}
+
 OrganismUserDefinitions::OrganismUserDefinitions(  ): OrganismUserDefinitions( "./OUD" )
 {
 

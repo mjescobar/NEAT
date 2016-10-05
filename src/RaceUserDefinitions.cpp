@@ -11,10 +11,16 @@
 namespace NEAT
 {
 
+RaceUserDefinitions::~RaceUserDefinitions()
+{
+
+}
+
 RaceUserDefinitions::RaceUserDefinitions(  ): RaceUserDefinitions( "./RACEUD" )
 {
 
 }
+
 RaceUserDefinitions::RaceUserDefinitions( std::string path )
 {
 	std::map <std::string, double> loadData; // Se guardara la informacion en el mapa primero y luego se pasara a las variables.

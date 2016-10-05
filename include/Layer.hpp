@@ -13,6 +13,7 @@ namespace NEAT
 class Layer
 {
 public:
+	virtual ~Layer();
 	Layer( std::unique_ptr < Neuron > seedNeuron  , unsigned int layerId );
 	void addNewNeuron();
 	void addNeuron( std::unique_ptr < Neuron > neuron); // se llama en cruzamientos

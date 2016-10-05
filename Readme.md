@@ -1,21 +1,44 @@
-NEAT Spikes escrito en modern c++.
+# NEAT en modern C++
+
+El código que se está presentando representa una librería de NEAT [1] (Neuro Evolution of Augmenting Topologies), la cual puede ser instalada para su sencillo uso en experimentos personales.
+
+Este algoritmo está explicado en extensión por su autor [1] y es la base necesaria para quienes deseen entender el trasfondo, aunque para usar NEAT no es necesario su completa comprensión.
+
+## Instalación y uso.
+
+Se encuentra en la carpeta el archivo GuiaUsuario.pdf en el cual se explica con más detalles tanto la instalación como el uso del software con ejemplos.
+
+Con menos detalle y a modo de resumen:
+
+### Instalación [Sólo linux, pronto a través de cmake (y para toda plataforma por lo tanto)]
+
+En esta carpeta:
+
+> make
+> sudo make install
+
+Luego de esto usted tendrá instalada la librería de NEAT, para agregar los headers a su propio programa usted debe agregar '''#include <NEATSpikes>''' en su header y para linkear los objetos en su solución usted debe agregar -lneatspikes en las opciones de compilación. 
+
+En los experimentos de muestra usted puede encontrar archivos Makefile que realizan toda esta operación y los cuales usted puede usar como template.
+
+Recordar: Una vez instalado usted puede crear sus propios códigos que usen esta librería en cualquier sitio de su computadora lo que lo hace más simple de usar.
+
+### Uso
+
+Refierase a GuiaUsuario.pdf.
 
 
+## Ejemplos
 
-Cambios generales al algoritmo:
-
--Se argega el concepto de especie y el de nicho se cambia a raza.
--Marcas historicas son locales (de la especie).
--Ya no existirá cruzamiento entre diferentes especies.
--La distancia entre organismos solo se define para una misma especie.	
+En la carpeta experimentSamples se encuentran 2 ejemplos de experimentos que pueden ser probados y usados como base, de todas formas se recomienda que sean manejados después de leer el documento GuiaUsuario.pdf
 
 
+## Características mejoradas en esta versión de NEAT.
 
+Existen varias diferencias con respecto al algoritmo original, pero siempre manteniendo el principio de lo que el autor explica en [1], para ver las diferencias en cavalidad se presenta el archivo diferencias.pdf.
 
-Consideracion de implementacion:
--------------------------------
+Para entender mejor las características añadidas importantes lea CaracteristicasMejoradas.pdf en el cual se explicarán esencialmente 2 cambios los cuales el primero tiene que ver con la estructura orientada a objetos utilizada la cual agrega posibilidades de extensión del algoritmo y además un modelo abstracto de uso de NEAT que simplifica su uso en cualquier tipo de experimento.
 
-Si deseas ver la implementacion te aconsejo leas algunas consideraciones de implementación que han sido hechas.
+# Referencias:
 
-
-[Relativo a la creacion de una nueva ANN ó clonancion ó cruzamiento]: Al crear una nueva ANN se clonan todas las neuronas primero (capa por capa) y luego se crean las conexiones sinapticas y se le agregan a las neuronas, es por esto que al clonar una neurona no se clonan las conexiones sinapticas que poseia. MOTIVO: suponiendo que las neuronas creasen las conexiones synapticas tanto la neurona que empieza como la que termina en la conexion tienen ciertas necesidades con tal conexion synaptica pero esta no debe ser creada dos veces y ademas la que fuera que la crease no tiene como saber como avisarle a la otra neurona que creo tal conexion... por simplicidad se encarga de eso ANN y es a través del algoritmo explicado al comienzo de este parrafo.
+[1] (2002) Kenneth S. "Evolving Neural Networks through Augmenting Topologies", The MIT Press Journal. 

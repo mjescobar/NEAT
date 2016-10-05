@@ -1,8 +1,14 @@
 #include <cstdlib> //rand
 #include "Parameter.hpp"
+#include <iostream>
 
+using namespace std;
 namespace NEAT
 {
+
+Parameter::~Parameter( )
+{
+}
 
 Parameter::Parameter( float defaultValue )
 {

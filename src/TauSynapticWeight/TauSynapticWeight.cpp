@@ -3,15 +3,21 @@
 #include <iostream>
 #include <cmath> //fabs
 
+using namespace std;
+
 namespace NEAT
 {
 
-TauSynapticWeight::TauSynapticWeight():TauSynapticWeight(TauSynapticWeightUserDefinitions()){};
+TauSynapticWeight::~TauSynapticWeight()
+{
+}
+
+TauSynapticWeight::TauSynapticWeight():TauSynapticWeight(TauSynapticWeightUserDefinitions()){}
 
 TauSynapticWeight::TauSynapticWeight(const TauSynapticWeightUserDefinitions& userdef )
 {
 	// Se crean los parametros, luego se otorgan los valores iniciales del resto de las variables importantes.
-	weight = std::make_unique < Parameter > (userdef.probabilityOfWeightRandomMutation,
+	weight = make_unique < Parameter > (userdef.probabilityOfWeightRandomMutation,
 		userdef.maximumWeightPercentVariation,
 		userdef.maxWeightValue,
 		userdef.minWeightValue);
@@ -51,7 +57,7 @@ TauSynapticWeight::TauSynapticWeight( const TauSynapticWeight& other )
 float TauSynapticWeight::getDistance( const SynapticWeight * sw ) const
 {
 	const TauSynapticWeight *  tsw = dynamic_cast < const TauSynapticWeight * > ( sw );
-	if(tsw == NULL){std::cerr << "TauSynapticWeight::getDistance::sw is not type TauSynapticWeight" << std::endl; exit(EXIT_FAILURE);}
+	if(tsw == NULL){cerr << "TauSynapticWeight::getDistance::sw is not type TauSynapticWeight" << endl; exit(EXIT_FAILURE);}
 	return fabs(tsw->weight->value - this->weight->value) * constantDistanceOfSynapticWeightValue + fabs(tsw->bufferSize - this->bufferSize) * constantDistanceOfBufferSize;
 }
 
@@ -78,20 +84,20 @@ void TauSynapticWeight::spread()
 
 void TauSynapticWeight::printInfo() const
 {
-	std::cout << "weight: " << weight->value << "\tbufferSize: " << bufferSize << "\tHin(L,N): {" << layerInput << "," << neuronPlaceInLayerVector_IN <<"}" << "\tHout(L,N): {" << layerOutput << "," << neuronPlaceInLayerVector_OUT <<"}"  << "\tinput: " << input << "\toutput: " << output << std::endl;
+	cout << "weight: " << weight->value << "\tbufferSize: " << bufferSize << "\tHin(L,N): {" << layerInput << "," << neuronPlaceInLayerVector_IN <<"}" << "\tHout(L,N): {" << layerOutput << "," << neuronPlaceInLayerVector_OUT <<"}"  << "\tinput: " << input << "\toutput: " << output << endl;
 }
 
-std::unique_ptr < SynapticWeight > TauSynapticWeight::clone() const
+unique_ptr < SynapticWeight > TauSynapticWeight::clone() const
 {
-	return std::move( std::make_unique < TauSynapticWeight > ( *this )  );
+	return move( make_unique < TauSynapticWeight > ( *this )  );
 }
 
-std::unique_ptr < SynapticWeight > TauSynapticWeight::createNew() const
+unique_ptr < SynapticWeight > TauSynapticWeight::createNew() const
 {
-	auto tmp = std::make_unique < TauSynapticWeight > ( *this );
+	auto tmp = make_unique < TauSynapticWeight > ( *this );
 	tmp->weight->random();
 	tmp->bufferSize = round(maxBufferSize*( rand()/(double)RAND_MAX ) );
-	return std::move( tmp );
+	return move( tmp );
 }
 
 } // end namespace NEAT

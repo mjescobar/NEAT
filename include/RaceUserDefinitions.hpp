@@ -11,6 +11,7 @@ namespace NEAT
 class RaceUserDefinitions
 {
 public:
+	virtual ~RaceUserDefinitions();
 	RaceUserDefinitions();
 	RaceUserDefinitions(  std::string path  );
 

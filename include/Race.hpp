@@ -19,6 +19,7 @@ public:
 	Race(std::unique_ptr <Organism> organism);
 	Race( const RaceUserDefinitions& userDef, std::unique_ptr <Organism> organism );
 	Race( const Race& other, std::unique_ptr <Organism>  founderOrganism );
+	virtual ~Race();
 	void populate( );
 	void epoch( uint childrensAmount ); 
 	void epoch(); // for new races

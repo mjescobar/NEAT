@@ -1,7 +1,6 @@
 #ifndef NEATSPIKES_NEURON_HPP
 #define NEATSPIKES_NEURON_HPP
 
-#include "PlatformDefinitions.hpp"
 #include "SynapticWeight.hpp"
 #include <vector>
 #include <memory>
@@ -15,6 +14,7 @@ class Neuron // Es una clase abstracta, no se puede crear instancias de esta sin
 public:
 	// Primero las funciones que tienen que ser sobre escritas en cualquier instancia de neurona. (BasicNeuron o SpikeNeuron por ejemplo)
 	Neuron(  );
+	virtual ~Neuron();
 	virtual void mightMutate() = 0;
 	virtual float getDistance( const Neuron * neuron ) const = 0;
 	virtual void spread() = 0;

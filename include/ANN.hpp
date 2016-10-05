@@ -28,7 +28,7 @@ public:
 	ANN(std::unique_ptr <Neuron> seedNeuron, std::unique_ptr <SynapticWeight> seedSynapticWeihgt);
 	ANN(const ANN& other); // Usado para crossOver, para crear una copia usar metodo clone()
 	ANN( const ANNUserDefinitions& userdef, std::unique_ptr <Neuron> seedNeuron, std::unique_ptr <SynapticWeight> seedSynapticWeihgt );
-	~ANN();
+	virtual ~ANN();
 	/**
 		\brief {setInput is the only way to manually introduce input voltage to the inputs neurons, if in the user definitions file is set n number of inputs then this method acepts only a vector float of this size exactly.}
 		\param[in] {inputs: Is a vector with equal size than the inputs neurons that represent a inncoming voltage of each input neuron.}

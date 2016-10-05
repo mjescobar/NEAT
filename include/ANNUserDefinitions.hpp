@@ -11,6 +11,7 @@ namespace NEAT
 class ANNUserDefinitions
 {
 public:
+	virtual ~ANNUserDefinitions();
 	ANNUserDefinitions();
 	ANNUserDefinitions(  std::string path  );
 

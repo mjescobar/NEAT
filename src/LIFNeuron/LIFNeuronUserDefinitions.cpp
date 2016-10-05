@@ -8,6 +8,11 @@
 namespace NEAT
 {
 
+LIFNeuronUserDefinitions::~LIFNeuronUserDefinitions(  )
+{
+
+}
+
 LIFNeuronUserDefinitions::LIFNeuronUserDefinitions(  ): LIFNeuronUserDefinitions( "./LIFNUD" )
 {
 
@@ -53,7 +58,10 @@ LIFNeuronUserDefinitions::LIFNeuronUserDefinitions( std::string path )
 	constantDistanceResistence = float(loadData["constantDistanceResistence"]);
 	constantDistanceMembraneTimeConstant = float(loadData["constantDistanceMembraneTimeConstant"]);
 	constantDistanceCurrentTimeConstant = float(loadData["constantDistanceCurrentTimeConstant"]);
-
+	resetVoltage = float(loadData["resetVoltage"]);
+	spikeThreshold = float(loadData["spikeThreshold"]);
+	mutationProbability = float(loadData["mutationProbability"]);
+	
 	loadData.clear();
 }
 
@@ -61,6 +69,9 @@ void LIFNeuronUserDefinitions::printInfo()
 {
 
 	std::cout << 
+	"mutationProbability: " << mutationProbability << "\n" <<
+	"resetVoltage: " << resetVoltage << "\n" <<
+	"spikeThreshold: " << spikeThreshold << "\n" <<
 	"probabilityOfResistenceRandomMutation: " << probabilityOfResistenceRandomMutation << "\n" <<
 	"maximumResistencePercentVariation: " << maximumResistencePercentVariation << "\n" <<
 	"maxResistence: " << maxResistence << "\n" <<

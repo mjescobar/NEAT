@@ -6,6 +6,12 @@ using namespace std;
 
 namespace NEAT
 {
+
+Race::~Race()
+{
+
+}
+
 Race::Race(unique_ptr <Organism>  founderOrganism ): Race( RaceUserDefinitions(), move(founderOrganism) ){}
 
 Race::Race( const RaceUserDefinitions& userDef, unique_ptr <Organism>  founderOrganism )

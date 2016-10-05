@@ -11,6 +11,7 @@ namespace NEAT
 class SpiciesUserDefinitions
 {
 public:
+	virtual ~SpiciesUserDefinitions();
 	SpiciesUserDefinitions();
 	SpiciesUserDefinitions(  std::string path  );
 

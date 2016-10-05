@@ -7,6 +7,7 @@ namespace NEAT
 class TauSynapticWeightUserDefinitions
 {
 public:
+	virtual ~TauSynapticWeightUserDefinitions();
 	TauSynapticWeightUserDefinitions();
 	TauSynapticWeightUserDefinitions( std::string path );
 

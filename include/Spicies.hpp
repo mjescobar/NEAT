@@ -15,6 +15,7 @@ namespace NEAT
 class Spicies
 {
 public:
+	virtual ~Spicies();
 	Spicies( std::unique_ptr <Race> founderRace );
 	Spicies( const SpiciesUserDefinitions& userdef, std::unique_ptr <Race> founderRace  );
 	void epoch( const uint childrenAmount );
@@ -22,7 +23,6 @@ public:
 	bool isExtinct();
 	float getMeanFitnessOfOldRaces();
 	void printInfo() const;
-
 	void eliminateWorseOrganisms();
 	void eliminateWorseRaces();
 

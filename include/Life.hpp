@@ -18,6 +18,7 @@ namespace NEAT
 class Life
 {
 public:
+	virtual ~Life();
 	Life( std::unique_ptr<ANN> annSeed );
 	void epoch();
 	uint getCurrentGeneration();

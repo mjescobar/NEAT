@@ -14,6 +14,7 @@ public:
 	BasicSynapticWeight();
 	BasicSynapticWeight( const BasicSynapticWeightUserDefinitions& userdef );
 	BasicSynapticWeight( const BasicSynapticWeight& other );
+	virtual ~BasicSynapticWeight();
 	void mightMutate() override;
 	void spread() override;
 	float getDistance( const SynapticWeight * sw ) const override;

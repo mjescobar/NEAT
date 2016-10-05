@@ -15,6 +15,7 @@ public:
 	TauSynapticWeight();
 	TauSynapticWeight( const TauSynapticWeightUserDefinitions& userdef );
 	TauSynapticWeight( const TauSynapticWeight& other );
+	virtual ~TauSynapticWeight();
 	void mightMutate() override;
 	void spread() override;
 	float getDistance( const SynapticWeight * sw ) const override;

@@ -11,7 +11,7 @@ class SynapticWeight // Es una clase abstracta, no se puede crear instancias de 
 public:
 	// Primero las funciones que deben ser sobre escritas.
 	SynapticWeight();
-	~SynapticWeight();
+	virtual ~SynapticWeight();
 	virtual void mightMutate() = 0;
 	virtual void spread() = 0;
 	virtual float getDistance( const SynapticWeight * sw ) const = 0;

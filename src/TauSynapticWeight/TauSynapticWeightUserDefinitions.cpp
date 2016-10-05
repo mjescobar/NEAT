@@ -8,6 +8,11 @@
 namespace NEAT
 {
 
+TauSynapticWeightUserDefinitions::~TauSynapticWeightUserDefinitions() 
+{
+
+}
+
 TauSynapticWeightUserDefinitions::TauSynapticWeightUserDefinitions() : TauSynapticWeightUserDefinitions("./TSWUD")
 {
 

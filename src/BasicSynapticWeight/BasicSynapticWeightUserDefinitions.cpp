@@ -8,6 +8,12 @@
 namespace NEAT
 {
 
+BasicSynapticWeightUserDefinitions::~BasicSynapticWeightUserDefinitions() 
+{
+
+}
+
+
 BasicSynapticWeightUserDefinitions::BasicSynapticWeightUserDefinitions() : BasicSynapticWeightUserDefinitions("./BSWUD")
 {
 

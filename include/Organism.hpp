@@ -14,6 +14,7 @@ public:
 	Organism( const ANN& ann, uint lifeExpectative );
 	Organism( std::unique_ptr <ANN> ann,  uint lifeExpectative  );
 	Organism( const Organism& other );
+	virtual ~Organism();
 	bool surviveNewEpoch(); 
 	bool getIsNewSpicie() const;
 	std::unique_ptr <Organism> crossOver( const Organism& other ) const;

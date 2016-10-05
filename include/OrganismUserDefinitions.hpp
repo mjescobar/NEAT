@@ -12,6 +12,7 @@ class OrganismUserDefinitions
 {
 public:
 	OrganismUserDefinitions();
+	virtual ~OrganismUserDefinitions();
 	OrganismUserDefinitions(  std::string path  );
 
 	void printInfo();

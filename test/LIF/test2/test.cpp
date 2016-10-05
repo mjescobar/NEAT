@@ -14,16 +14,15 @@ int main()
 	srand(time(0));
 	float sampleTime_seg = 0.001;
 	auto lifn = make_unique<LIFNeuron>( sampleTime_seg );
-	float inputVoltage = 1.f;
 
 	lifn->printInfo();
+	cout << "===" << endl;
 
-	float totalTime_seg = 1.f; 
-	for (uint sample_i = 0; sample_i*sampleTime_seg < totalTime_seg ; ++sample_i)
+	for (int i = 0; i < 10; ++i)
 	{
-		lifn->sumIncomingVoltage(inputVoltage);
-		lifn->spread();
-		cout << lifn->getOutput()  << "\t" << lifn->getMembraneVoltage() << "\t" << sample_i << endl;
+		lifn->mightMutate();
+		lifn->printInfo();
+	cout << "===" << endl;
 	}
 	return 0;
 }

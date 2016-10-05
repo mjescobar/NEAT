@@ -1,13 +1,8 @@
-contador: 2
 
-TODO 003: chequear que las mismas innovaciones no provoquen dos species diferentes.
-TODO 004: revizar si los limites en las probabilidades estan correctos o hay organismos que no son posibles de escojer en cada uno de los casos de Race (ojala en todas las clases tb pero no creo que sea necesario)
-TODO 005: Agregar un constructor en BasicNeuron y BSW que cargue por si solos el userDef
-TODO 006: cambiar los shared por unique dado que en verdad no son shared.
 TODO 007: Cambiar la idea de distancia absoluta por una porcentual segun la cantidad de parametros.
-TODO 008: Aplicar modelo de programacion extreme para que el codigo sea aun mas mantenible.
-
-TODO 009: Enviar correo a Pilar Caamaño (de tau-NEAT) pidiendo los datos de su experimento.
-TODO 010: Revizar bibloteca Mvaspike.
-TODO 011: Implementar neat spikes, la salida entra a una ventana.
-TODO 012: Implementar metodos friends para que no exista la posibilidad que el usuario haga uso incorrecto del código.
+TODO 008: (parcialmente completa): Aplicar modelo de programacion extreme para que el codigo sea aun mas mantenible.
+TODO 009: Crear algun metodo para graficar los resultados de los experimentos.
+TODO 010: Hacer Manual de usuario (GuiaUsuario.pdf,  diferencias.pdf, CaracteristicasMejoradas.pdf)
+TODO 011: Pensar en una buena forma de desarrollar las series de tiempo con NEAT usando LIFNeuron.
+TODO 012: Analizar como desarrollar una clase LIFNeuronAssembly que simule una red de varias Neuronas LIFNeuron, para poder trabajar fácilmente con neuronas de ordenes de magnitud altas.
+TODO 013: Usar CMake

@@ -7,6 +7,11 @@ using namespace std;
 namespace NEAT
 {
 
+Spicies::~Spicies()
+{
+	
+}
+
 Spicies::Spicies( unique_ptr <Race> founderRace  ): Spicies(SpiciesUserDefinitions(), move(founderRace)){}
 
 Spicies::Spicies( const SpiciesUserDefinitions& userdef, unique_ptr <Race> founderRace  )

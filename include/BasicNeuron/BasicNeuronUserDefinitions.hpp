@@ -10,6 +10,7 @@ namespace NEAT
 class BasicNeuronUserDefinitions
 {
 public:
+	virtual ~BasicNeuronUserDefinitions();
 	BasicNeuronUserDefinitions();
 	BasicNeuronUserDefinitions( std::string path );
 	void printInfo();
@@ -25,6 +26,7 @@ public:
 	float probabilityOfSigmoidConstantRandomMutation;
 	float maximumSigmoidConstantPercentVariation;
 	float constantDistanceOfSigmoidConstant;
+	float mutationProbability;
 };
 
 }

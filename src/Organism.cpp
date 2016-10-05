@@ -1,8 +1,14 @@
 #include "Organism.hpp"
 #include <iostream>
 
+using namespace std;
+
 namespace NEAT
 {
+
+Organism::~Organism()
+{
+}
 
 Organism::Organism(std::unique_ptr <ANN> annSeed ) : Organism( OrganismUserDefinitions(), std::move(annSeed) ){}
 

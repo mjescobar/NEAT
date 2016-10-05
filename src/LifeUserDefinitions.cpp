@@ -10,6 +10,7 @@
 
 namespace NEAT
 {
+LifeUserDefinitions::~LifeUserDefinitions(  ){}
 
 LifeUserDefinitions::LifeUserDefinitions(  ): LifeUserDefinitions( "./LifeUD" ){}
 

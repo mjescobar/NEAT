@@ -8,6 +8,11 @@
 namespace NEAT
 {
 
+BasicNeuronUserDefinitions::~BasicNeuronUserDefinitions(  )
+{
+
+}
+
 BasicNeuronUserDefinitions::BasicNeuronUserDefinitions(  ): BasicNeuronUserDefinitions( "./BNUD" )
 {
 
@@ -48,6 +53,7 @@ BasicNeuronUserDefinitions::BasicNeuronUserDefinitions( std::string path )
 	probabilityOfSigmoidConstantRandomMutation = float( loadData["probabilityOfSigmoidConstantRandomMutation"] );
 	maximumSigmoidConstantPercentVariation = float( loadData["maximumSigmoidConstantPercentVariation"] );
 	constantDistanceOfSigmoidConstant = float( loadData["constantDistanceOfSigmoidConstant"] );
+	mutationProbability = float( loadData["mutationProbability"] );
 
 
 	loadData.clear();
@@ -65,7 +71,8 @@ void BasicNeuronUserDefinitions::printInfo()
 	"minSigmoidConstant: " << minSigmoidConstant << "\n"<<
 	"probabilityOfSigmoidConstantRandomMutation: " << probabilityOfSigmoidConstantRandomMutation << "\n"<<
 	"maximumSigmoidConstantPercentVariation: " << maximumSigmoidConstantPercentVariation << "\n"<<
-	"constantDistanceOfSigmoidConstant: " << constantDistanceOfSigmoidConstant << "\n";
+	"constantDistanceOfSigmoidConstant: " << constantDistanceOfSigmoidConstant << "\n" <<
+	"mutationProbability: " << mutationProbability << "\n";
 }
 
 }

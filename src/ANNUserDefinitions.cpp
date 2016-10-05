@@ -11,6 +11,8 @@
 namespace NEAT
 {
 
+ANNUserDefinitions::~ANNUserDefinitions(  ){}
+
 ANNUserDefinitions::ANNUserDefinitions(  ): ANNUserDefinitions( "./ANNUD" )
 {
 

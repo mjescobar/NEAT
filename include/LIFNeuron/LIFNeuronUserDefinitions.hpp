@@ -11,6 +11,7 @@ class LIFNeuronUserDefinitions
 {
 public:
 	LIFNeuronUserDefinitions();
+	virtual ~LIFNeuronUserDefinitions();
 	LIFNeuronUserDefinitions( std::string path );
 	void printInfo();
 
@@ -30,6 +31,9 @@ public:
 	float constantDistanceResistence;
 	float constantDistanceMembraneTimeConstant;
 	float constantDistanceCurrentTimeConstant;
+	float resetVoltage;
+	float spikeThreshold;
+	float mutationProbability;
 };
 
 }

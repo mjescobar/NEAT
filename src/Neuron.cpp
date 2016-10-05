@@ -3,6 +3,8 @@
 
 #include <cstdlib> //rand
 #include <iostream>
+
+using namespace std;
 namespace NEAT
 {
 
@@ -11,24 +13,28 @@ Neuron::Neuron(  )
 	
 }
 
-void Neuron::addIncomingSynapticWeight( std::shared_ptr < SynapticWeight > incomingSynapticWeight )
+Neuron::~Neuron(  )
 {
-	incomingSynapticWeights.push_back(  incomingSynapticWeight ); // Ojo que se usa std::move dado que desde el parametro ya se esta haciendo una copia de la conexion sinaptica y no se necesita hacer una copia nuevamente.
 }
 
-void Neuron::addOutcomingSynapticWeight( std::shared_ptr < SynapticWeight > outcomingSynapticWeight )
+void Neuron::addIncomingSynapticWeight( shared_ptr < SynapticWeight > incomingSynapticWeight )
 {
-	outcomingSynapticWeights.push_back(  outcomingSynapticWeight  ); // Ojo que se usa std::move dado que desde el parametro ya se esta haciendo una copia de la conexion sinaptica y no se necesita hacer una copia nuevamente.
+	incomingSynapticWeights.push_back(  incomingSynapticWeight ); // Ojo que se usa move dado que desde el parametro ya se esta haciendo una copia de la conexion sinaptica y no se necesita hacer una copia nuevamente.
+}
+
+void Neuron::addOutcomingSynapticWeight( shared_ptr < SynapticWeight > outcomingSynapticWeight )
+{
+	outcomingSynapticWeights.push_back(  outcomingSynapticWeight  ); // Ojo que se usa move dado que desde el parametro ya se esta haciendo una copia de la conexion sinaptica y no se necesita hacer una copia nuevamente.
 }
 
 
-const std::vector < std::shared_ptr < SynapticWeight > >& Neuron::getIncomingSynapticWeights()
+const vector < shared_ptr < SynapticWeight > >& Neuron::getIncomingSynapticWeights()
 {
 	return incomingSynapticWeights;
 }
 
 
-const std::vector < std::shared_ptr < SynapticWeight > >& Neuron::getOutcomingSynapticWeights()
+const vector < shared_ptr < SynapticWeight > >& Neuron::getOutcomingSynapticWeights()
 {
 	return outcomingSynapticWeights;
 }
@@ -61,9 +67,9 @@ void Neuron::sendVoltageToOutcomingSynapticWeights()
 	}
 }
 
-std::unique_ptr < Neuron > Neuron::crossOver( const Neuron & other ) const
+unique_ptr < Neuron > Neuron::crossOver( const Neuron & other ) const
 {
-	return std::move( ( rand()/(double)RAND_MAX > 0.5 ) ? this->clone(): other.clone()); // 50% de probabilidades
+	return move( ( rand()/(double)RAND_MAX > 0.5 ) ? this->clone(): other.clone()); // 50% de probabilidades
 }
 
 

@@ -7,6 +7,11 @@
 namespace NEAT
 {
 
+Layer::~Layer()
+{
+
+}
+
 Layer::Layer ( std::unique_ptr < Neuron > seedNeuron, unsigned int layerId) 
 {
 	this->seedNeuron = std::move( seedNeuron );

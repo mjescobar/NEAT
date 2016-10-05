@@ -11,6 +11,11 @@
 namespace NEAT
 {
 
+SpiciesUserDefinitions::~SpiciesUserDefinitions()
+{
+
+}
+
 SpiciesUserDefinitions::SpiciesUserDefinitions(  ): SpiciesUserDefinitions( "./SPICIESUD" )
 {
 

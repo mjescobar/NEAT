@@ -8,6 +8,7 @@ class BasicSynapticWeightUserDefinitions
 {
 public:
 	BasicSynapticWeightUserDefinitions();
+	virtual ~BasicSynapticWeightUserDefinitions();
 	BasicSynapticWeightUserDefinitions( std::string path );
 
 	void printInfo();

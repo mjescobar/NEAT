@@ -11,6 +11,7 @@ namespace NEAT
 class LifeUserDefinitions
 {
 public:
+	virtual ~LifeUserDefinitions();
 	LifeUserDefinitions();
 	LifeUserDefinitions(  std::string path  );
 

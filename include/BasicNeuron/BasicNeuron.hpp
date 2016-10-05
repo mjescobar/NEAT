@@ -15,6 +15,7 @@ namespace NEAT
 class BasicNeuron : public Neuron
 {
 public:
+	virtual ~BasicNeuron();
 	BasicNeuron();
 	BasicNeuron( const BasicNeuronUserDefinitions&  basicNeuronUserDefinitions );
 	BasicNeuron( const BasicNeuron & );
@@ -32,6 +33,7 @@ private:
 	float constantDistanceOfBias;
 	float constantDistanceOfSigmoidConstant;
 	float lastInputAccum;
+	float mutationProbability;
 };
 
 }
