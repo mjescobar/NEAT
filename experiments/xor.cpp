@@ -65,9 +65,9 @@ int main(int argc, char** argv){
 	Population poblacion(argv[1],argv[2], (char *) "NEAT_XOR" ,argv[3]);
 	cerr << poblacion.GENERATIONS << "\t" << poblacion.POPULATION_MAX << "\t" << poblacion.organisms.size() << endl;
 	for (int i = 0; i < poblacion.GENERATIONS; ++i){
-		for (int i = 0; i < (int)poblacion.organisms.size(); ++i)
+		for (int j = 0; j < (int)poblacion.organisms.size(); ++j)
 		{
-			poblacion.organisms.at(i).fitness = fitness(poblacion.organisms.at(i));
+			poblacion.organisms.at(j).fitness = fitness(poblacion.organisms.at(j));
 		}
 		poblacion.epoch();
 		poblacion.print_to_file_currrent_generation();
