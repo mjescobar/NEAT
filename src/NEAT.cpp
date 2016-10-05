@@ -1,6 +1,3 @@
-#ifndef NEAT_CPP
-#define NEAT_CPP
-
 #include "NEAT.hpp"
 
 
@@ -1923,4 +1920,3 @@ void	Population::print_to_file_currrent_generation(){
 	}
 }
 
-#endif

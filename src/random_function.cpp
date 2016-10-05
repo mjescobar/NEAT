@@ -1,5 +1,3 @@
-#ifndef RND_FNC_CPP
-#define RND_FNC_CPP
 #include "random_function.hpp"
 
 
@@ -81,4 +79,3 @@ Return_random_function obtain_function_fromm_name(string name){
 
 
 
-#endif

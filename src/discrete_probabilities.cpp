@@ -1,6 +1,3 @@
-#ifndef DISCRETE_PROBABILITIES_CPP
-#define DISCRETE_PROBABILITIES_CPP
-
 #include "discrete_probabilities.hpp"
 
     Discrete_Probabilities::Discrete_Probabilities(){
@@ -46,5 +43,3 @@
             exit(1);
     }
 
-
-#endif

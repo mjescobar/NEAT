@@ -1,6 +1,3 @@
-#ifndef GENETIC_ENCODING_CPP
-#define GENETIC_ENCODING_CPP
-
 #include "genetic_encoding.hpp"
 
 using namespace ANN_USM;
@@ -1241,4 +1238,3 @@ void Genetic_Encoding::reset_past_values(){
 }
 
 
-#endif
