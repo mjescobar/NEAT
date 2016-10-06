@@ -10,9 +10,9 @@ Organism::~Organism()
 {
 }
 
-Organism::Organism(std::unique_ptr <ANN> annSeed ) : Organism( OrganismUserDefinitions(), std::move(annSeed) ){}
+Organism::Organism(std::shared_ptr <ANN> annSeed ) : Organism( OrganismUserDefinitions(), std::move(annSeed) ){}
 
-Organism::Organism( const OrganismUserDefinitions& userDef, std::unique_ptr <ANN> annSeed )
+Organism::Organism( const OrganismUserDefinitions& userDef, std::shared_ptr <ANN> annSeed )
 {
 	years = 0;
 	lifeExpectative = userDef.lifeExpectative;
@@ -28,7 +28,7 @@ Organism::Organism( const Organism& other ) // copy constructor
 	ann = other.ann->clone();
 }
 
-Organism::Organism( std::unique_ptr <ANN> ann,  uint lifeExpectative  ) // used in crossOver
+Organism::Organism( std::shared_ptr <ANN> ann,  uint lifeExpectative  ) // used in crossOver
 {
 	years = 0;
 	this->lifeExpectative = lifeExpectative;
@@ -69,7 +69,7 @@ bool Organism::getIsNewSpicie() const
 	return ann->getIsNewSpicie();
 }
 
-std::unique_ptr <Organism> Organism::createSimilar() const
+std::shared_ptr <Organism> Organism::createSimilar() const
 {
 	return std::move( std::make_unique <Organism>(*ann, lifeExpectative) );
 }
@@ -88,7 +88,7 @@ float Organism::getDistance(const Organism& other ) const
 	return this->ann->getDistance(*other.ann);
 }
 
-std::unique_ptr <Organism> Organism::crossOver( const Organism& other ) const
+std::shared_ptr <Organism> Organism::crossOver( const Organism& other ) const
 {
 	return std::move( std::make_unique<Organism>( std::move(this->ann->crossOver(*other.ann)), lifeExpectative  ) );
 }

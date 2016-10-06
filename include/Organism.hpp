@@ -9,22 +9,22 @@ namespace NEAT
 class Organism
 {
 public:
-	Organism( std::unique_ptr <ANN> annSeed );
-	Organism( const OrganismUserDefinitions& userDef, std::unique_ptr <ANN> annSeed );
+	Organism( std::shared_ptr <ANN> annSeed );
+	Organism( const OrganismUserDefinitions& userDef, std::shared_ptr <ANN> annSeed );
 	Organism( const ANN& ann, uint lifeExpectative );
-	Organism( std::unique_ptr <ANN> ann,  uint lifeExpectative  );
+	Organism( std::shared_ptr <ANN> ann,  uint lifeExpectative  );
 	Organism( const Organism& other );
 	virtual ~Organism();
 	bool surviveNewEpoch(); 
 	bool getIsNewSpicie() const;
-	std::unique_ptr <Organism> crossOver( const Organism& other ) const;
-	std::unique_ptr <Organism> createSimilar() const;
+	std::shared_ptr <Organism> crossOver( const Organism& other ) const;
+	std::shared_ptr <Organism> createSimilar() const;
 	void setFitness( const float fitness );
 	float getFitness () const;
 	float getDistance(const Organism& other ) const;
 	void printInfo();
 
-	std::unique_ptr <ANN> ann; // Para un uso mas entendible se deja esta variable en publico.
+	std::shared_ptr <ANN> ann; // Para un uso mas entendible se deja esta variable en publico.
 private:
 
 	uint years;

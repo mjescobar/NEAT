@@ -61,12 +61,12 @@ void BasicSynapticWeight::printInfo() const
 	std::cout << "weight: " << weight->value<< "\tHin(L,N): {" << layerInput << "," << neuronPlaceInLayerVector_IN <<"}" << "\tHout(L,N): {" << layerOutput << "," << neuronPlaceInLayerVector_OUT <<"}"  << "\tinput: " << input << "\toutput: " << output << std::endl;
 }
 
-std::unique_ptr < SynapticWeight > BasicSynapticWeight::clone() const
+std::shared_ptr < SynapticWeight > BasicSynapticWeight::clone() const
 {
 	return std::move( std::make_unique < BasicSynapticWeight > ( *this )  );
 }
 
-std::unique_ptr < SynapticWeight > BasicSynapticWeight::createNew() const
+std::shared_ptr < SynapticWeight > BasicSynapticWeight::createNew() const
 {
 	auto tmp = std::make_unique < BasicSynapticWeight > ( *this );
 	tmp->weight->random();

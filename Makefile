@@ -1,9 +1,9 @@
 
-VPATH=include:src:objects:include/BasicNeuron:src/BasicNeuron:include/TauSynapticWeight:src/TauSynapticWeight:include/BasicSynapticWeight:src/BasicSynapticWeight:include/LIFNeuron:src/LIFNeuron
+VPATH=include:src:objects
 
 COMPILER=g++ -std=c++14
 
-CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -O3 -I./include/BasicNeuron -I./src/BasicNeuron -I./include/BasicSynapticWeight -I./src/BasicSynapticWeight -I./include/TauSynapticWeight -I./src/TauSynapticWeight -I./include/LIFNeuron -I./src/LIFNeuron
+CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -O3
 
 OBJS = ./objects/Neuron.o ./objects/SynapticWeight.o ./objects/BasicNeuron.o ./objects/Parameter.o ./objects/BasicNeuronUserDefinitions.o ./objects/BasicSynapticWeight.o ./objects/BasicSynapticWeightUserDefinitions.o ./objects/Layer.o  ./objects/ANN.o ./objects/ANNUserDefinitions.o ./objects/Organism.o ./objects/OrganismUserDefinitions.o ./objects/Race.o ./objects/RaceUserDefinitions.o ./objects/ANNTools.o ./objects/RaceTools.o ./objects/SpiciesTools.o ./objects/Spicies.o ./objects/SpiciesUserDefinitions.o ./objects/Life.o ./objects/LifeUserDefinitions.o ./objects/LifeTools.o ./objects/TauSynapticWeight.o ./objects/TauSynapticWeightUserDefinitions.o ./objects/LIFNeuron.o ./objects/LIFNeuronUserDefinitions.o 
 
@@ -142,13 +142,18 @@ Layer.o: Layer.cpp
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Layer.o
 
+static-library: all
+	@echo Joining all objects into one: objects/libneatspikes.a
+	@ar rcs objects/libneatspikes.a $(OBJS)
+
 install:
 	@g++ -shared -Wl,-soname,libneatspikes.so.1 -o libneatspikes.so.1.0 $(OBJS)
 	@ln -sf libneatspikes.so.1.0 libneatspikes.so
 	@ln -sf libneatspikes.so.1.0 libneatspikes.so.1
 	@mv libneatspikes.so.1.0 libneatspikes.so libneatspikes.so.1 /usr/lib
-	@mkdir -p /usr/include/NEATSPIKES_include/
-	@find ./include -type f -exec cp {} /usr/include/NEATSPIKES_include/ \;
+	#@mkdir -p /usr/include/NEATSPIKES_include/
+	#@find ./include -type f -exec cp {} /usr/include/NEATSPIKES_include/ \;
+	@cp -r ./include /usr/include/NEATSPIKES_include;
 	@cp NEATSpikes /usr/include
 	@chmod go+r --recursive /usr/include/NEATSPIKES_include/*
 	@chmod go+r --recursive /usr/include/NEATSpikes

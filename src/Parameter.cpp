@@ -85,7 +85,7 @@ void Parameter::mightMutate()
 	}
 }
 
-std::unique_ptr < Parameter > Parameter::clone()
+std::shared_ptr < Parameter > Parameter::clone()
 {
 	return std::move( std::make_unique < Parameter >( *this ) );
 }

@@ -126,12 +126,12 @@ void LIFNeuron::printInfo() const
 	<< "timeEnlacedFromLastSpike: " << timeEnlacedFromLastSpike << endl;
 }
 
-unique_ptr < Neuron > LIFNeuron::clone() const 
+shared_ptr < Neuron > LIFNeuron::clone() const 
 {
 	return move( make_unique < LIFNeuron > (*this) );
 }
 
-unique_ptr < Neuron > LIFNeuron::createNew() const
+shared_ptr < Neuron > LIFNeuron::createNew() const
 {
 	auto tmp = make_unique < LIFNeuron > (*this);
 	tmp->resistence->random();

@@ -7,7 +7,7 @@ using namespace std;
 namespace NEAT
 {
 
-void Race::addOrganismCandidateToNewRace( unique_ptr <Organism> candidate )
+void Race::addOrganismCandidateToNewRace( shared_ptr <Organism> candidate )
 {
 	if( newRaceOrgmCandidate.size() >= maxStackNewRaceCandidates  )
 	{
@@ -16,7 +16,7 @@ void Race::addOrganismCandidateToNewRace( unique_ptr <Organism> candidate )
 	newRaceOrgmCandidate.push_back(move(candidate));
 }
 
-void Race::addOrganismCandidateToNewSpicies( unique_ptr <Organism> candidate  )
+void Race::addOrganismCandidateToNewSpicies( shared_ptr <Organism> candidate  )
 {
 	if( newSpicieOrgmCandidate.size() >= maxStackNewSpiciesCandidates  )
 	{
@@ -90,7 +90,7 @@ void Race::organismsGrowUp()
 	}
 	newOrganisms.clear();
 	oldOrganisms.erase(  remove_if(oldOrganisms.begin(), oldOrganisms.end(),
-        [](unique_ptr<Organism>& orgm)->bool { return !orgm->surviveNewEpoch(); }),
+        [](shared_ptr<Organism>& orgm)->bool { return !orgm->surviveNewEpoch(); }),
     	oldOrganisms.end());
 }
 
@@ -115,7 +115,7 @@ void Race::createDecendence(const uint amountOfChildrens )
 			uint mother = obtainDiferentOrganism(*generator);
 			auto& motherOrgm =  *oldOrganisms.at(mother).get();
 
-			unique_ptr <Organism> sonOrgm = fatherOrgm.crossOver( motherOrgm );
+			shared_ptr <Organism> sonOrgm = fatherOrgm.crossOver( motherOrgm );
 
 
 			if( sonOrgm->getIsNewSpicie() )
@@ -158,7 +158,7 @@ void Race::eliminateWorseOrganisms()
 
 	// ToDo: Mejorar el modelo tal que, por ejemplo, la probabilidad de supervivencia sea una gaussiana con la misma media y promedio que las especies (solo para las especies de fitness menor que la media)
 	newOrganisms.erase(  remove_if(newOrganisms.begin(), newOrganisms.end(),
-    [&](unique_ptr<Organism>& orgm)->bool 
+    [&](shared_ptr<Organism>& orgm)->bool 
     { 
 		if( orgm->getFitness() < fitnessMean )
 		{

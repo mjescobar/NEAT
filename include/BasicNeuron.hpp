@@ -23,13 +23,13 @@ public:
 	void mightMutate() override;
 	float getDistance( const Neuron * neuron ) const override;
 	void spread() override;
-	std::unique_ptr < Neuron > clone()  const override; //usado en cruzamiento
+	std::shared_ptr < Neuron > clone()  const override; //usado en cruzamiento
 	void printInfo() const override;
-	std::unique_ptr < Neuron > createNew() const override; // usado en mutacion
+	std::shared_ptr < Neuron > createNew() const override; // usado en mutacion
 
 private:
-	std::unique_ptr < Parameter > bias;
-	std::unique_ptr < Parameter > sigmoidConstant;
+	std::shared_ptr < Parameter > bias;
+	std::shared_ptr < Parameter > sigmoidConstant;
 	float constantDistanceOfBias;
 	float constantDistanceOfSigmoidConstant;
 	float lastInputAccum;

@@ -16,14 +16,14 @@ public:
 	virtual void spread() = 0;
 	virtual float getDistance( const SynapticWeight * sw ) const = 0;
 	virtual void printInfo() const = 0;
-	virtual std::unique_ptr < SynapticWeight > clone() const = 0;
-	virtual std::unique_ptr < SynapticWeight > createNew() const = 0;
+	virtual std::shared_ptr < SynapticWeight > clone() const = 0;
+	virtual std::shared_ptr < SynapticWeight > createNew() const = 0;
 
 
 	//Las que pueden ser sobre escritas
 	virtual float getOutput() const ;
 	virtual void setInput( float inputVoltage );
-	virtual std::unique_ptr < SynapticWeight > crossOver( const SynapticWeight& other ) const;
+	virtual std::shared_ptr < SynapticWeight > crossOver( const SynapticWeight& other ) const;
 
 
 	void cloneBaseData( const SynapticWeight& other );

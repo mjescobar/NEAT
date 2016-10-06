@@ -1,7 +1,7 @@
 #ifndef NEAT_PARAMETER
 #define NEAT_PARAMETER
 
-#include <memory> // unique_ptr
+#include <memory> // shared_ptr
 
 namespace NEAT
 {
@@ -16,7 +16,7 @@ public:
 	Parameter ( const Parameter & other);
 	virtual ~Parameter ();
 	void mightMutate();
-	std::unique_ptr < Parameter > clone();
+	std::shared_ptr < Parameter > clone();
 	void random();
 	float value;
 private:

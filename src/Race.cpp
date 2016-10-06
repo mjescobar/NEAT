@@ -12,9 +12,9 @@ Race::~Race()
 
 }
 
-Race::Race(unique_ptr <Organism>  founderOrganism ): Race( RaceUserDefinitions(), move(founderOrganism) ){}
+Race::Race(shared_ptr <Organism>  founderOrganism ): Race( RaceUserDefinitions(), move(founderOrganism) ){}
 
-Race::Race( const RaceUserDefinitions& userDef, unique_ptr <Organism>  founderOrganism )
+Race::Race( const RaceUserDefinitions& userDef, shared_ptr <Organism>  founderOrganism )
 {
 	years = 0;
 	maxYearsYoungRace = userDef.maxYearsYoungRace;
@@ -32,7 +32,7 @@ Race::Race( const RaceUserDefinitions& userDef, unique_ptr <Organism>  founderOr
 	extincted = false;
 }
 
-Race::Race( const Race& other, unique_ptr <Organism>  founderOrganism )
+Race::Race( const Race& other, shared_ptr <Organism>  founderOrganism )
 {
 	years = 0;
 	maxYearsYoungRace = other.maxYearsYoungRace;
@@ -92,7 +92,7 @@ bool Race::belongsAtThisRace(const Organism& orgm )
 	return randOrgm.getDistance(orgm) < maximumRaceDistance;
 }
 
-unique_ptr <Race> Race::createNew( unique_ptr <Organism> organism )
+shared_ptr <Race> Race::createNew( shared_ptr <Organism> organism )
 {
 	return make_unique<Race>( *this, move(organism) );
 }
@@ -108,7 +108,7 @@ bool Race::isYoung()
 	return youngRace;
 }
 
-vector < unique_ptr< Organism> > & Race::getNewOrganisms_ref()
+vector < shared_ptr< Organism> > & Race::getNewOrganisms_ref()
 {
 	return newOrganisms;
 }

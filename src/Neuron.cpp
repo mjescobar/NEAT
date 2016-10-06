@@ -67,7 +67,7 @@ void Neuron::sendVoltageToOutcomingSynapticWeights()
 	}
 }
 
-unique_ptr < Neuron > Neuron::crossOver( const Neuron & other ) const
+shared_ptr < Neuron > Neuron::crossOver( const Neuron & other ) const
 {
 	return move( ( rand()/(double)RAND_MAX > 0.5 ) ? this->clone(): other.clone()); // 50% de probabilidades
 }

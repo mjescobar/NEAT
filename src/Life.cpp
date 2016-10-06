@@ -14,7 +14,7 @@ Life::~Life()
 
 }
 
-Life::Life(unique_ptr<ANN> annSeed )
+Life::Life(shared_ptr<ANN> annSeed )
 {
 	auto lud = make_unique <LifeUserDefinitions>();
 	// Se crea la primera especie.

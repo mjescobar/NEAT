@@ -12,7 +12,7 @@ Layer::~Layer()
 
 }
 
-Layer::Layer ( std::unique_ptr < Neuron > seedNeuron, unsigned int layerId) 
+Layer::Layer ( std::shared_ptr < Neuron > seedNeuron, unsigned int layerId) 
 {
 	this->seedNeuron = std::move( seedNeuron );
 	this->layerId = layerId;
@@ -33,7 +33,7 @@ void Layer::addNewNeuron()
 }
 
 
-void Layer::addNeuron( std::unique_ptr < Neuron > neuron)
+void Layer::addNeuron( std::shared_ptr < Neuron > neuron)
 {
 	neurons.push_back( std::move( neuron ) );
 }
@@ -50,7 +50,7 @@ void Layer::printInfo() const
 }
 
 
-std::unique_ptr < Layer > Layer::crossOver( const Layer& other) const // has to be exact equals, not possible crossOver with another species
+std::shared_ptr < Layer > Layer::crossOver( const Layer& other) const // has to be exact equals, not possible crossOver with another species
 {
 	auto result = std::make_unique <Layer>( std::move(seedNeuron->clone()), layerId );
 
@@ -82,7 +82,7 @@ float Layer::getDistance( const Layer& other ) const
 	return std::move(result);
 }
 
-std::unique_ptr <Layer> Layer::clone()
+std::shared_ptr <Layer> Layer::clone()
 {
 	auto result = std::make_unique <Layer>( std::move(seedNeuron->clone()), layerId );
 

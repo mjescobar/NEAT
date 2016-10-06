@@ -12,7 +12,7 @@ namespace NEAT
 void Life::deleteExtinctedSpicies()
 {
 	spicies.erase(  remove_if(spicies.begin(), spicies.end(),
-    [](unique_ptr<Spicies>& specie)->bool { return specie->isExtinct(); }),
+    [](shared_ptr<Spicies>& specie)->bool { return specie->isExtinct(); }),
 	spicies.end());
 }
 
@@ -59,7 +59,7 @@ void Life::createSpiciesFromOrganismCandidates()
 		for (uint i = 0; i < attemps; ++i)
 		{
 			uint spiciePos =  randomSpicie(*generator);
-			unique_ptr <Organism> organism = spicies.at(spiciePos)->getOrganismNewSpiciesCandidate();
+			shared_ptr <Organism> organism = spicies.at(spiciePos)->getOrganismNewSpiciesCandidate();
 			if( organism != nullptr ) // If is diferent than nullptr then one orgm was founded
 			{
 				organism->ann->isNewSpecies = false;
@@ -97,7 +97,7 @@ void Life::eliminateWorseSpecies()
 
 	// ToDo: Mejorar el modelo tal que, por ejemplo, la probabilidad de supervivencia sea una gaussiana con la misma media y promedio que las especies (solo para las especies de fitness menor que la media)
 	spicies.erase(  remove_if(spicies.begin(), spicies.end(),
-    [&](unique_ptr<Spicies>& specie)->bool 
+    [&](shared_ptr<Spicies>& specie)->bool 
     { 
     	if( specie->oldRaces.size() > 0 )
 		{

@@ -18,8 +18,8 @@ public:
 	virtual void mightMutate() = 0;
 	virtual float getDistance( const Neuron * neuron ) const = 0;
 	virtual void spread() = 0;
-	virtual std::unique_ptr < Neuron > clone() const = 0;
-	virtual std::unique_ptr < Neuron > createNew() const = 0; 
+	virtual std::shared_ptr < Neuron > clone() const = 0;
+	virtual std::shared_ptr < Neuron > createNew() const = 0; 
 
 	// Las siguientes son opcionales si se desea o no sobre escribirlas
 	virtual void printInfo() const {};
@@ -27,7 +27,7 @@ public:
 	virtual float getOutput() const;
 	virtual void receiveInccommingVoltage(); 
 	virtual void sendVoltageToOutcomingSynapticWeights();
-	virtual std::unique_ptr < Neuron > crossOver( const Neuron & other ) const;
+	virtual std::shared_ptr < Neuron > crossOver( const Neuron & other ) const;
 
 
 	// Manejo de las conexiones entrantes y salientes.

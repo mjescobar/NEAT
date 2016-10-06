@@ -87,12 +87,12 @@ void TauSynapticWeight::printInfo() const
 	cout << "weight: " << weight->value << "\tbufferSize: " << bufferSize << "\tHin(L,N): {" << layerInput << "," << neuronPlaceInLayerVector_IN <<"}" << "\tHout(L,N): {" << layerOutput << "," << neuronPlaceInLayerVector_OUT <<"}"  << "\tinput: " << input << "\toutput: " << output << endl;
 }
 
-unique_ptr < SynapticWeight > TauSynapticWeight::clone() const
+shared_ptr < SynapticWeight > TauSynapticWeight::clone() const
 {
 	return move( make_unique < TauSynapticWeight > ( *this )  );
 }
 
-unique_ptr < SynapticWeight > TauSynapticWeight::createNew() const
+shared_ptr < SynapticWeight > TauSynapticWeight::createNew() const
 {
 	auto tmp = make_unique < TauSynapticWeight > ( *this );
 	tmp->weight->random();

@@ -21,17 +21,17 @@ public:
 	void mightMutate() override;
 	float getDistance( const Neuron * neuron ) const override;
 	void spread() override;
-	std::unique_ptr < Neuron > clone()  const override; //usado en cruzamiento
+	std::shared_ptr < Neuron > clone()  const override; //usado en cruzamiento
 	void printInfo() const override;
-	std::unique_ptr < Neuron > createNew() const override; // usado en mutacion
+	std::shared_ptr < Neuron > createNew() const override; // usado en mutacion
 	void spike();
 	void simulateNextCurrent();
 	float getMembraneVoltage();
 
 private:
-	std::unique_ptr < Parameter > resistence;
-	std::unique_ptr < Parameter > membraneTimeConstant; // tau_m 
-	std::unique_ptr < Parameter > currentTimeConstant; // tau_m 
+	std::shared_ptr < Parameter > resistence;
+	std::shared_ptr < Parameter > membraneTimeConstant; // tau_m 
+	std::shared_ptr < Parameter > currentTimeConstant; // tau_m 
 	float lastInputAccum;
 	float samplingDelaTime;
 	float outputCurrent;

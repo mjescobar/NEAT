@@ -25,9 +25,9 @@ class ANN
 
 public:
 	ANN();
-	ANN(std::unique_ptr <Neuron> seedNeuron, std::unique_ptr <SynapticWeight> seedSynapticWeihgt);
+	ANN(std::shared_ptr <Neuron> seedNeuron, std::shared_ptr <SynapticWeight> seedSynapticWeihgt);
 	ANN(const ANN& other); // Usado para crossOver, para crear una copia usar metodo clone()
-	ANN( const ANNUserDefinitions& userdef, std::unique_ptr <Neuron> seedNeuron, std::unique_ptr <SynapticWeight> seedSynapticWeihgt );
+	ANN( const ANNUserDefinitions& userdef, std::shared_ptr <Neuron> seedNeuron, std::shared_ptr <SynapticWeight> seedSynapticWeihgt );
 	virtual ~ANN();
 	/**
 		\brief {setInput is the only way to manually introduce input voltage to the inputs neurons, if in the user definitions file is set n number of inputs then this method acepts only a vector float of this size exactly.}
@@ -52,7 +52,7 @@ public:
 		\param[in] { mother is a reference of a another ANN that represent the mother. }
 		\return { the return is a new ANN pointer that represent the children. }
 	*/
-	std::unique_ptr < ANN > crossOver( const ANN& mother ) const;
+	std::shared_ptr < ANN > crossOver( const ANN& mother ) const;
 	/**
 		\brief {Obtain the distance in between two organism of the same topology. Is calculated neuron by neuron and conection by conection and depends on how is implemented in the neuron and in the conection}
 		\param[in] {other is another ANN}
@@ -69,12 +69,12 @@ public:
 		\brief { Create a ANN with same topology and internal parameters. }
 		\return { Return the ANN with same topology and internal parameters. }
 	*/
-	std::unique_ptr <ANN> clone() const; 
+	std::shared_ptr <ANN> clone() const; 
 	/**
 		\brief { Create a ANN with same topology but with diferent Neural and Synaptic parameters }
 		\return { A ANN with same topology but diferent Neural and Synaptic parameters  }
 	*/
-	std::unique_ptr <ANN> createSimilar() const; // Para poblar una nueva especie con otros con misma topología.
+	std::shared_ptr <ANN> createSimilar() const; // Para poblar una nueva especie con otros con misma topología.
 	/**
 		\brief { ask if is a new spicie (because have diferent topology)  }
 		\return { return true if is not from father specie, false in other case. } 
@@ -168,10 +168,10 @@ private:
 	*/
 	uint findRandNeuronInLayer( uint layer )const; 
 
-	std::unique_ptr < Neuron > seedNeuron;
-	std::unique_ptr < SynapticWeight > seedSynapticWeihgt;
-	std::map < unsigned int, std::unique_ptr < Layer > > layersMap; // Se hace un mapa para mantener ordenado los layers siempre al momento de agregarlos en el mapa.
-	std::unique_ptr < std::default_random_engine > generator;
+	std::shared_ptr < Neuron > seedNeuron;
+	std::shared_ptr < SynapticWeight > seedSynapticWeihgt;
+	std::map < unsigned int, std::shared_ptr < Layer > > layersMap; // Se hace un mapa para mantener ordenado los layers siempre al momento de agregarlos en el mapa.
+	std::shared_ptr < std::default_random_engine > generator;
 	std::vector < std::shared_ptr < SynapticWeight >  > synapticWeights;
 	float probabilityNewNeuronInLayer;
 	float probabilityOfNewSynapticWeight;

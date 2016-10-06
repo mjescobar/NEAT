@@ -138,10 +138,10 @@ void Spicies::createDecendence(const uint childrenAmount )
 void Spicies::deleteExtinctedRaces()
 {
 	oldRaces.erase(  remove_if(oldRaces.begin(), oldRaces.end(),
-    [](unique_ptr<Race>& race)->bool { return race->isExtinct(); }),
+    [](shared_ptr<Race>& race)->bool { return race->isExtinct(); }),
 	oldRaces.end());
 	youngRaces.erase(  remove_if(youngRaces.begin(), youngRaces.end(),
-    [](unique_ptr<Race>& race)->bool { return race->isExtinct(); }),
+    [](shared_ptr<Race>& race)->bool { return race->isExtinct(); }),
 	youngRaces.end());
 }
 

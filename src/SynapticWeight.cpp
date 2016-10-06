@@ -39,7 +39,7 @@ std::tuple < uint, uint, uint, uint > SynapticWeight::getMark() const
 	return std::make_tuple(neuronPlaceInLayerVector_IN, layerInput, neuronPlaceInLayerVector_OUT, layerOutput);
 }
 
-std::unique_ptr < SynapticWeight > SynapticWeight::crossOver( const SynapticWeight& other ) const
+std::shared_ptr < SynapticWeight > SynapticWeight::crossOver( const SynapticWeight& other ) const
 {
 	return std::move( ( rand()/(double)RAND_MAX > 0.5 ) ? this->clone(): other.clone()); // 50% de probabilidades
 }

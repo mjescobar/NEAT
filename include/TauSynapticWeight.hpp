@@ -19,13 +19,13 @@ public:
 	void mightMutate() override;
 	void spread() override;
 	float getDistance( const SynapticWeight * sw ) const override;
-	std::unique_ptr < SynapticWeight > clone() const override;
-	std::unique_ptr < SynapticWeight > createNew() const override;
+	std::shared_ptr < SynapticWeight > clone() const override;
+	std::shared_ptr < SynapticWeight > createNew() const override;
 	void printInfo() const;
 
 private:
 	std::deque <float> voltageQueue;
-	std::unique_ptr < Parameter > weight;
+	std::shared_ptr < Parameter > weight;
 	uint maxBufferSize;
 	float constantDistanceOfSynapticWeightValue;
 	float mutationProbability;

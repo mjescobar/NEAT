@@ -19,7 +19,7 @@ ANN::ANN()
 
 
 // En caso de no definir ANNUserDefinitions, entonces se usa el constructor por defecto de ANNUSERDEF
-ANN::ANN( unique_ptr <Neuron> seedNeuron, unique_ptr <SynapticWeight> seedSynapticWeihgt)
+ANN::ANN( shared_ptr <Neuron> seedNeuron, shared_ptr <SynapticWeight> seedSynapticWeihgt)
 :ANN(ANNUserDefinitions(), move(seedNeuron), move(seedSynapticWeihgt))
 {
 
@@ -45,7 +45,7 @@ ANN::ANN(const ANN& other) : ANN()
 	}
 }
 
-ANN::ANN( const ANNUserDefinitions& userdef, unique_ptr <Neuron> seedNeuron, unique_ptr <SynapticWeight> seedSynapticWeihgt) : ANN()
+ANN::ANN( const ANNUserDefinitions& userdef, shared_ptr <Neuron> seedNeuron, shared_ptr <SynapticWeight> seedSynapticWeihgt) : ANN()
 {
 	this->seedNeuron = move(seedNeuron);
 	this->seedSynapticWeihgt = move(seedSynapticWeihgt);
@@ -81,7 +81,7 @@ ANN::~ANN()
 	layersMap.clear();
 } 
 
-unique_ptr < ANN > ANN::crossOver( const ANN&  mother ) const
+shared_ptr < ANN > ANN::crossOver( const ANN&  mother ) const
 {
 	auto result = make_unique <ANN> ();
 	result->copyUserDefParameters(*this); 
@@ -153,12 +153,12 @@ float ANN::getDistance( const ANN& other) const
 	return move(sum);
 }
 
-unique_ptr <ANN> ANN::clone() const
+shared_ptr <ANN> ANN::clone() const
 {
 	return move( make_unique <ANN>  (*this) );
 } 
 
-unique_ptr <ANN> ANN::createSimilar() const
+shared_ptr <ANN> ANN::createSimilar() const
 {
 	auto result = this->clone();
 	for (unsigned int i = 0; i < 5; ++i)

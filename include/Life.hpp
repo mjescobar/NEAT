@@ -19,12 +19,12 @@ class Life
 {
 public:
 	virtual ~Life();
-	Life( std::unique_ptr<ANN> annSeed );
+	Life( std::shared_ptr<ANN> annSeed );
 	void epoch();
 	uint getCurrentGeneration();
 	void printInfo();
 	
-	std::vector < std::unique_ptr<Spicies> > spicies;
+	std::vector < std::shared_ptr<Spicies> > spicies;
 private:
 	void deleteExtinctedSpicies();
 	void createSpiciesFromOrgmCandidates();
@@ -38,7 +38,7 @@ private:
 	uint maxAmountOfSpicies;
 	uint maxAmountOrganismInAllOldRaces;
 	uint currentGeneration;
-	std::unique_ptr < std::default_random_engine > generator;
+	std::shared_ptr < std::default_random_engine > generator;
 	float mean;
 	float variance;
 	float min;

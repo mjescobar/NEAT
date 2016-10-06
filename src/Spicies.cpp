@@ -12,9 +12,9 @@ Spicies::~Spicies()
 	
 }
 
-Spicies::Spicies( unique_ptr <Race> founderRace  ): Spicies(SpiciesUserDefinitions(), move(founderRace)){}
+Spicies::Spicies( shared_ptr <Race> founderRace  ): Spicies(SpiciesUserDefinitions(), move(founderRace)){}
 
-Spicies::Spicies( const SpiciesUserDefinitions& userdef, unique_ptr <Race> founderRace  )
+Spicies::Spicies( const SpiciesUserDefinitions& userdef, shared_ptr <Race> founderRace  )
 {
 	maxAmountOfRacesPerSpicie = userdef.maxAmountOfRacesPerSpicie;
 	maxYears = userdef.maxYears;
@@ -42,7 +42,7 @@ void Spicies::epoch( const uint childrenAmount )
 	years ++;
 }
 
-unique_ptr <Organism> Spicies::getOrganismNewSpiciesCandidate()
+shared_ptr <Organism> Spicies::getOrganismNewSpiciesCandidate()
 {
 
 	uint attempts = 3;
@@ -54,7 +54,7 @@ unique_ptr <Organism> Spicies::getOrganismNewSpiciesCandidate()
 			uniform_int_distribution<uint> randomOrganism(0, 
 							race.newSpicieOrgmCandidate.size() -1);
 			auto selected = randomOrganism(*generator);
-			unique_ptr< Organism > result = move( race.newSpicieOrgmCandidate.at(selected) );
+			shared_ptr< Organism > result = move( race.newSpicieOrgmCandidate.at(selected) );
 			race.newSpicieOrgmCandidate.erase( race.newSpicieOrgmCandidate.begin() + selected );
 			if(!detectRepeatedInnovation(*result))
 			{
@@ -134,7 +134,7 @@ void Spicies::eliminateWorseRaces()
 
 	// ToDo: Mejorar el modelo tal que, por ejemplo, la probabilidad de supervivencia sea una gaussiana con la misma media y promedio que las especies (solo para las especies de fitness menor que la media)
 	oldRaces.erase(  remove_if(oldRaces.begin(), oldRaces.end(),
-    [&](unique_ptr<Race>& race)->bool 
+    [&](shared_ptr<Race>& race)->bool 
     { 
 		if( race->getFitnessMean() < racesMean )
 		{

@@ -85,12 +85,12 @@ void BasicNeuron::printInfo() const
 	std::cout << "Bias: " << bias->value << "\tSigmoidConstant: " << sigmoidConstant->value << "\tlastInputAccum: "<< lastInputAccum << "\tinputVoltageAccum: " << inputVoltageAccum << "\toutput: " << output << "\tmutationProbability: "<< mutationProbability<< std::endl;
 }
 
-std::unique_ptr < Neuron > BasicNeuron::clone() const 
+std::shared_ptr < Neuron > BasicNeuron::clone() const 
 {
 	return std::move( std::make_unique < BasicNeuron > (*this) );
 }
 
-std::unique_ptr < Neuron > BasicNeuron::createNew() const
+std::shared_ptr < Neuron > BasicNeuron::createNew() const
 {
 	auto tmp = std::make_unique < BasicNeuron > (*this);
 	tmp->bias->random();

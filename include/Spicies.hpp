@@ -16,18 +16,18 @@ class Spicies
 {
 public:
 	virtual ~Spicies();
-	Spicies( std::unique_ptr <Race> founderRace );
-	Spicies( const SpiciesUserDefinitions& userdef, std::unique_ptr <Race> founderRace  );
+	Spicies( std::shared_ptr <Race> founderRace );
+	Spicies( const SpiciesUserDefinitions& userdef, std::shared_ptr <Race> founderRace  );
 	void epoch( const uint childrenAmount );
-	std::unique_ptr <Organism> getOrganismNewSpiciesCandidate();
+	std::shared_ptr <Organism> getOrganismNewSpiciesCandidate();
 	bool isExtinct();
 	float getMeanFitnessOfOldRaces();
 	void printInfo() const;
 	void eliminateWorseOrganisms();
 	void eliminateWorseRaces();
 
-	std::vector< std::unique_ptr<Race> > oldRaces;
-	std::vector< std::unique_ptr<Race> > youngRaces;
+	std::vector< std::shared_ptr<Race> > oldRaces;
+	std::vector< std::shared_ptr<Race> > youngRaces;
 private:
 	void fillFitnessVector (std::vector <float> & fitnessVector);
 	bool detectRepeatedInnovation( const Organism & orgm );
@@ -40,7 +40,7 @@ private:
 	uint maxYears;
 	uint years;
 	uint maxAmountOfRacesPerSpicie;
-	std::unique_ptr < std::default_random_engine > generator;
+	std::shared_ptr < std::default_random_engine > generator;
 	std::map <std::string , bool> innovMsgMap; // Is true if this innov exists   
 };
 
