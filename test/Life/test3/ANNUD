@@ -1,0 +1,7 @@
+probabilityNewNeuronInLayer 0.05
+probabilityOfNewSynapticWeight 0
+probabilityOfNewUniqueSynapticWeight 0.05
+probabilityOfNewLayer 0.01
+inputsAmount 2
+outputsAmount 1
+useBackwardConnections 0

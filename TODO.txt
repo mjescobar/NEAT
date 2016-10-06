@@ -1,0 +1,8 @@
+
+TODO 007: Cambiar la idea de distancia absoluta por una porcentual segun la cantidad de parametros.
+TODO 008: (parcialmente completa): Aplicar modelo de programacion extreme para que el codigo sea aun mas mantenible.
+TODO 009: Crear algun metodo para graficar los resultados de los experimentos.
+TODO 010: Hacer Manual de usuario (GuiaUsuario.pdf,  diferencias.pdf, CaracteristicasMejoradas.pdf)
+TODO 011: Pensar en una buena forma de desarrollar las series de tiempo con NEAT usando LIFNeuron.
+TODO 012: Analizar como desarrollar una clase LIFNeuronAssembly que simule una red de varias Neuronas LIFNeuron, para poder trabajar fácilmente con neuronas de ordenes de magnitud altas.
+TODO 013: Usar CMake

@@ -1,0 +1,10 @@
+maxWeightValue 1
+minWeightValue -1
+maximumWeightPercentVariation  0.2
+probabilityOfWeightRandomMutation 0.3 
+probabilityOfEnableADisabledConnection 0 
+constantDistanceOfSynapticWeightValue 1
+mutationProbability 0.3
+maxBufferSize 7
+constantDistanceOfBufferSize 0.9
+bufferSizeMutationRate 0.1

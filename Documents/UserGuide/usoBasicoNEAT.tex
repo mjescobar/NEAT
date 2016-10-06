@@ -1,0 +1,64 @@
+\newpage
+\section{Uso básico de NEAT}
+
+En esta sección se explicará como usar NEAT para el propósito que usted busque.\newline
+
+Si usted esta leyendo esto es porque desea realizar su propio proyecto, esto puede ser muy variado desde tareas matematicas y estadisticas como aproximación por curvas de datos a cosas que escapan de un análisis sencillo como la generación de caminatas de robots, procesamiento de imagenes, entre otro tipo de aplicaciones son posibles. \newline
+
+Vamos paso a paso desmenusando las cosas que usted debe saber para poder programar su propio experimento.
+
+\begin{enumerate}
+\item Primero que todo visualicemos nuestro objetivo, veamos las redes neuronales como cajas negras las cuales reciben entradas y dan las salidas que usted desea, por ejemplo imagine que usted busca que una red neuronal que recibe todas las mediciones ambientales de una región y debe determinar la probabilidad que exista o no lluvia el próximo día. Notar que existe una clara determinación de entradas a la red neronal y sus salidas (en este particular caso sólo una salida)
+
+\item Segundo entendamos que estas redes neuronales van a ir mejorando en el tiempo y debemos calificarlas de tal manera que aprendan a mejorar sus calificaciones, por ejemplo imaginemos un problema diferente como la clasificación de manzanas o peras en una linea de transmisión y la entrada de la red neuronal es la imagen completa de una fotografía y la red neuronal debe determinar si lo que aparece en la fotografía es manzana o pera. Se podría calificar la red neuronal según cuantos aciertos realizó cada 100 muestras. En muchos casos es más factible calcular el error cometido por la red neuronal, en tales casos se debe ingenear cómo obtener una calificación a través del error, por ejemplo calificación = error maximo posible - error cometido. 
+
+\end{enumerate}
+
+Los dos pasos anteriores son lo único necesario, aunque aún estamos hablando en forma básica sin poner manos en código, todo el código que usted debe desarrollar tiene relación con los dos pasos anteriores. 
+
+
+\subsection{Comencemos con el código}
+
+Ahora sí empezaremos a hablar en términos técnicos y con códigos c++, y para simplificar todo será siempre pensando en uno de los ejemplos de muestra que hay, el XOR.\newline
+
+Nuestro objetivo es crear una red neuronal que realice las operaciones del operador lógico XOR.
+
+\begin{lstlisting}
+0 XOR 0 -> 0
+1 XOR 0 -> 1
+0 XOR 1 -> 1
+1 XOR 1 -> 0
+\end{lstlisting}
+
+Dado que de momento no hemos llegado a entender en detalle, usted debe empezar a través del proyecto template que se encuentra en la carpeta template, realice una copia de la carpeta en cualquier parte su computadora.
+
+Examinando el proyecto Template usted encontrará varios archivos sin extensión, todos ellos usted debe dejar sin modificar en cualquier experimento que usted desee menos el archivo ANNUD, el resto sólo deben ser manipulados si lee completamente este documento y no parcialmente:
+
+\begin{enumerate}
+\item ANNUD: especificaciones de usuario para la clase ANN (artificial neural network).
+\item BNUD: especificaciones de usuario para la clase Basic Neuron.
+\item BNSWUD: especificaciones de usuario para la clase Basic Synaptic Weight.
+\item LifeUD: especificaciones de usuario para la clase Life .
+\item OUD: especificaciones de usuario para la clase Organism .
+\item SPECIESUD: especificaciones de usuario para la clase Species .
+\item RACEUD: especificaciones de usuario para la clase Race.
+\end{enumerate}
+
+En el archivo ANNUD usted debe especificar la cantidad de entradas de la red neuronal y la cantidad de salidas de tal manera que coincida con el experimento a realizar. En este caso XOR recibe dos entradas lógicas y calcula una salida, por lo tanto dentro de ANNUD buscar las lineas inputsAmount y outputsAmount y darle valores 2 y 1 respectivamente (de hecho ya debería estar correcto en el Template).
+
+Además de los archivos sin extensión usted encontrará test.cpp y Makefile.
+
+\subsubsection{test.cpp}
+
+El código template se compone de tres funciones: main, sendAllOrganismToExperiment y experiment, las cuales se explicarán 
+
+\begin{enumerate}
+\item main: metodo principal el cual va administrando las redes neuronales.
+\item sendAllOrganismToExperiment: este metodo se encarga de ir entregando las redes neuronales (en NEAT son tratadas como organismos) al experimento.
+\item experiment: Esta es el único método que debes modificar y su objetivo es evaluar el organismo (la ANN).
+\end{enumerate}
+
+
+Las ANN (desde ahora organismos) son evaluadas respecto a su desempeño en el experimento, en este caso el experimento es qué tan bien XOR son, para ello calcularemos su calificación (en adelante llamaremos \textbf{fitness} a la calificación) según el error cometido, son 4 entradas totales y su maximo error posible es 4. 
+
+

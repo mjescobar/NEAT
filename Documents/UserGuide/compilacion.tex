@@ -1,0 +1,37 @@
+\section{Compilación}
+
+En linux existen diferentes tipos de librerías, por un lado están las librerías estandar como iostream, cstdlib, entre otras las cuales usted puede agregar en su proyecto y compilar sin agregar nada en su compilación, en cambio para usar NEAT usted debera agregar el flag -lneatspikes al momento de su compilación.\newline
+
+Por ejemplo, si usted crease un codigo trivial en archivo.cpp el cual no realiza nada pero llama a la librería, como el siguiente. 
+
+\begin{lstlisting}
+
+#include <NEATSpikes>
+int main()
+{
+	return 0;
+}
+
+\end{lstlisting}
+
+Este código debe ser compilado:
+
+\begin{lstlisting}
+$ g++ archivo.cpp -o ejecutable
+\end{lstlisting}
+
+Esta compilación no se realizará correctamente dado que no se encontrarán las implementaciones de ninguna clase de la librería NEATSpikes, ¿cómo es eso posible?. Para ser claros el flag -lneatspikes es la forma en que el compilador puede encontrar los objetos de la librería dado que esta no es una librería estandar de linux.\newline
+
+
+Además a lo anterior el estandar usado en el proyecto es c++14 (mucho más avanzado que c++ 98) y que es retrocompatible. Tomando en cuenta esto la correcta forma de compilar sería entonces como la siguiente.
+
+\begin{lstlisting}
+$ g++ -std=c++14 archivo.cpp -o ejecutable -lneatspikes
+\end{lstlisting}
+
+\textbf{Consideraciones:} No es razonable compilar a mano sus proyectos, y en general se recomienda el uso de Makefiles o CMake, por lo mismo se le propone que examine los makefiles de las experimentos de muestra que se encuentran en experimentSamples.\newline
+
+
+\textbf{Notar:} Este programa puede estar en cualquier parte de su computadora y funcionará sin problemas. \newline
+
+Ahora que sabemos como instalar la librería y compilar nuestros propios proyectos, necesitamos saber como crear nuestros propios proyectos, lo cual se explicará en la siguiente sección.
