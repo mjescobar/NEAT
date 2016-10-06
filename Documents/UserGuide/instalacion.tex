@@ -1,0 +1,30 @@
+\newpage
+\section{Instalación}
+
+\textbf{Importante:} Por el momento la instalación sólo es posible en arquitecturas linux (posiblemente también en MAC), pronto será para toda plataforma a través de CMake. \newline
+
+
+El modelo adoptado para la compilación e instalación de esta librería es a través del compilador gcc usando Makefiles, lo cual corresponde a el método nativo en que se programa c++ en linux. Para instalar la librería en su computadora debe seguir los siguientes pasos: \newline
+
+\begin{enumerate}
+\item Entrar a su terminal y posicionarla en la carpeta raiz de este proyecto, en donde usted puede encontrar el Readme.md.
+\item dentro de la terminar ejecutar el comando 
+\begin{lstlisting}
+$ make
+\end{lstlisting}
+A través de este comando usted compilará el proyecto y obtendrá todos los objetos (archivos con extensión .o) que contienen todas las implementaciones de todas las clases usadas para implementar la librería.
+
+\item finalmente ejecuta el comando
+\begin{lstlisting}
+$ sudo make install
+\end{lstlisting}
+Este último comando requiere de los permisos de super usuario. En este paso lo que se realizó es que se crea la librería no dinámica .so y es movida a una ruta en la cual puede ser encontrada por cualquier proyecto personal, además se hizo lo mismo con los headers para que sean encontrables en el PATH del usuario. Con esto ahora usted puede utilizar esta librería en su propio proyecto a través de incluir en su header lo siguiente.
+\begin{lstlisting}
+#include <NEATSpikes>
+\end{lstlisting}
+
+
+\end{enumerate}
+
+
+Con los pasos anteriores ya se tiene instalada la librería, en la siguiente sección se explicará como compilar su propio proyecto.
