@@ -20,7 +20,7 @@ public:
 	Race( const RaceUserDefinitions& userDef, std::shared_ptr <Organism> organism );
 	Race( const Race& other, std::shared_ptr <Organism>  founderOrganism );
 	virtual ~Race();
-	void populate( );
+	//void populate( );
 	void epoch( uint childrensAmount ); 
 	void epoch(); // for new races
 	float getFitnessMean();

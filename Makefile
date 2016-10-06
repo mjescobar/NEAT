@@ -142,10 +142,6 @@ Layer.o: Layer.cpp
 	@mkdir -p objects
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Layer.o
 
-static-library: all
-	@echo Joining all objects into one: objects/libneatspikes.a
-	@ar rcs objects/libneatspikes.a $(OBJS)
-
 install:
 	@g++ -shared -Wl,-soname,libneatspikes.so.1 -o libneatspikes.so.1.0 $(OBJS)
 	@ln -sf libneatspikes.so.1.0 libneatspikes.so
