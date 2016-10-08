@@ -25,6 +25,8 @@ public:
 	void printInfo();
 	
 	std::vector < std::shared_ptr<Spicies> > spicies;
+	std::shared_ptr<Organism> getOrganism(int i);
+	int getSizeOrganism();
 private:
 	void deleteExtinctedSpicies();
 	void createSpiciesFromOrgmCandidates();

@@ -1,9 +1,12 @@
+CPUS ?= $(shell cat /proc/cpuinfo |grep processor|wc -l || echo 1)
+MAKEFLAGS += --jobs=$(CPUS)
 
 VPATH=include:src:objects
 
 COMPILER=g++ -std=c++14
 
-CFLAGS=-Wall -fPIC -I./include -I./objects -I./src -O3
+DEBUG=-g
+CFLAGS=$(DEBUG) -Wall -fPIC -I./include -I./objects -I./src -O3
 
 OBJS = ./objects/Neuron.o ./objects/SynapticWeight.o ./objects/BasicNeuron.o ./objects/Parameter.o ./objects/BasicNeuronUserDefinitions.o ./objects/BasicSynapticWeight.o ./objects/BasicSynapticWeightUserDefinitions.o ./objects/Layer.o  ./objects/ANN.o ./objects/ANNUserDefinitions.o ./objects/Organism.o ./objects/OrganismUserDefinitions.o ./objects/Race.o ./objects/RaceUserDefinitions.o ./objects/ANNTools.o ./objects/RaceTools.o ./objects/SpiciesTools.o ./objects/Spicies.o ./objects/SpiciesUserDefinitions.o ./objects/Life.o ./objects/LifeUserDefinitions.o ./objects/LifeTools.o ./objects/TauSynapticWeight.o ./objects/TauSynapticWeightUserDefinitions.o ./objects/LIFNeuron.o ./objects/LIFNeuronUserDefinitions.o 
 
@@ -143,7 +146,7 @@ Layer.o: Layer.cpp
 	@$(COMPILER) $(CFLAGS) -c $< -o ./objects/Layer.o
 
 install:
-	@g++ -shared -Wl,-soname,libneatspikes.so.1 -o libneatspikes.so.1.0 $(OBJS)
+	@g++ $(DEBUG) -shared -Wl,-soname,libneatspikes.so.1 -o libneatspikes.so.1.0 $(OBJS)
 	@ln -sf libneatspikes.so.1.0 libneatspikes.so
 	@ln -sf libneatspikes.so.1.0 libneatspikes.so.1
 	@mv libneatspikes.so.1.0 libneatspikes.so libneatspikes.so.1 /usr/lib

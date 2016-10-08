@@ -1,5 +1,18 @@
-// pair.i - SWIG interface
 %module neat
+
+%include <std_shared_ptr.i>
+%shared_ptr(NEAT::BasicNeuron)
+%shared_ptr(NEAT::Neuron)
+%shared_ptr(NEAT::BasicSynapticWeight)
+%shared_ptr(NEAT::TauSynapticWeight)
+%shared_ptr(NEAT::SynapticWeight)
+%shared_ptr(NEAT::LIFNeuron)
+//%shared_ptr(NEAT::Life)
+%shared_ptr(NEAT::ANN)
+%shared_ptr(NEAT::Spicies)
+%shared_ptr(NEAT::Organism)
+
+
 %{
 #include "../include/SynapticWeight.hpp"
 #include "../include/Neuron.hpp"
@@ -24,10 +37,15 @@
 #include "../include/LIFNeuron.hpp"
 %}
 
-// Ignore the default constructor
-//%ignore std::pair::pair();      
 
-// Parse the original header file
+%include <std_vector.i>
+
+namespace std
+{
+    %template(FloatVector) vector<float>;
+}
+
+
 %include "../include/SynapticWeight.hpp"
 %include "../include/Neuron.hpp"
 %include "../include/BasicNeuronUserDefinitions.hpp"
@@ -50,6 +68,39 @@
 %include "../include/LIFNeuronUserDefinitions.hpp"
 %include "../include/LIFNeuron.hpp"
 
-// Instantiate some templates
-//%template(pairii) std::pair<int,int>;
-//%template(pairdi) std::pair<double,int>;
+
+/*
+%{
+/* This function matches the prototype of the normal C callback
+   function for our widget. However, we use the clientdata pointer
+   for holding a reference to a Python callable object. * /
+
+static double PythonCallBack(double a, void *clientdata)
+{
+   PyObject *func, *arglist;
+   PyObject *result;
+   double    dres = 0;
+   
+   func = (PyObject *) clientdata;               // Get Python function
+   arglist = Py_BuildValue("(d)",a);             // Build argument list
+   result = PyEval_CallObject(func,arglist);     // Call Python
+   Py_DECREF(arglist);                           // Trash arglist
+   if (result) {                                 // If no errors, return double
+     dres = PyFloat_AsDouble(result);
+   }
+   Py_XDECREF(result);
+   return dres;
+}
+%}
+
+// Attach a new method to our plot widget for adding Python functions
+%addmethods PlotWidget {
+   // Set a Python function object as a callback function
+   // Note : PyObject *pyfunc is remapped with a typempap
+   void set_pymethod(PyObject *pyfunc) {
+     self->set_method(PythonCallBack, (void *) pyfunc);
+     Py_INCREF(pyfunc);
+   }
+}
+*/
+
