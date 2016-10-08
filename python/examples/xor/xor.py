@@ -44,31 +44,21 @@ def experiment( orgm ):
     global maxFitness, maxGeneration, fitnessAcumm, contador
     #XOR {0,0}->{0}
     #import ipdb; ipdb.set_trace()
-    orgm.ann.setInputs([0.0, 0.0])
-    orgm.ann.spread()
-    out1 = orgm.ann.getOutputs()
-    error = abs(abs(out1[0]) - 0.0)
-    #XOR {0,1} -> {1}
-    orgm.ann.setInputs([0.0,1.0])
-    orgm.ann.spread()
-    out2 = orgm.ann.getOutputs()
-    error += abs(abs(out2[0]) - 1.0)
-    #XOR {1,0} -> {1}
-    orgm.ann.setInputs([1.0,0.0])
-    orgm.ann.spread()
-    out3 = orgm.ann.getOutputs()
-    error += abs(abs(out3[0]) - 1.0)
-    #XOR {1,1} -> {0}
-    orgm.ann.setInputs([1.0,1.0])
-    orgm.ann.spread()
-    out4 = orgm.ann.getOutputs()
-    error += abs(abs(out4[0]) - 0.0)
-    #cerr << "error: " << error << "\t{" << out1.at(0) <<", " << out2.at(0) <<", " << out3.at(0) << ", " << out4.at(0) <<"} " << endl;
-    error_MAX = 4.0
-    fitness = (error_MAX - error)*(error_MAX - error)
+    data = [[[0,0], 0], [[0,1],1],[[1,0],1],[[1,1],0]]
+    out = []
+    error = 0
+    for d in data:
+        d_in, d_out = d
+        orgm.ann.setInputs(d_in)
+        orgm.ann.spread()
+        out_ = orgm.ann.getOutputs()
+        error += abs(abs(out_[0]) - d_out)
+        out.append(out_)
+    error_MAX = len(data)
+    fitness = (error_MAX - error)**2
     if fitness > maxFitness:
         maxFitness = fitness
-        print "MF:", maxFitness, "\t{", out1[0], ",", out2[0], ",", out3[0], ",", out4[0]
+        print "MF:", maxFitness, "\t{", out[0][0], ",", out[1][0], ",", out[2][0], ",", out[3][0]
         #orgm.printInfo()
 
     if fitness > maxGeneration:
