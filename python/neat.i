@@ -8,6 +8,9 @@
 %shared_ptr(NEAT::LIFNeuron)
 //%shared_ptr(NEAT::Life)
 %shared_ptr(NEAT::ANN)
+%shared_ptr(NEAT::Spicies)
+%shared_ptr(NEAT::Organism)
+
 
 %module neat
 %{

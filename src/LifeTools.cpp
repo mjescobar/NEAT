@@ -127,5 +127,56 @@ void Life::eliminateWorseOrganisms()
 	}
 }
 
+int Life::getSizeOrganism() {
+	int count = 0;
+	for ( auto& spicie_ : this->spicies)
+	{
+		for( auto& race: spicie_->youngRaces)
+		{
+			for( auto& orgm : race->newOrganisms )
+			{
+				count++;
+			}
+		}
+		for( auto& race: spicie_->oldRaces)
+		{
+			for( auto& orgm : race->newOrganisms )
+			{
+				count++;
+			}
+		}
+	}
+	return count;
+
+}
+
+std::shared_ptr<Organism> Life::getOrganism(int i) {
+	int count = 0;
+	i++;
+	for ( auto& spicie_ : this->spicies)
+	{
+		for( auto& race: spicie_->youngRaces)
+		{
+			for( auto& orgm : race->newOrganisms )
+			{
+				count++;
+				if(count == i)
+					return orgm;
+			}
+		}
+		for( auto& race: spicie_->oldRaces)
+		{
+			for( auto& orgm : race->newOrganisms )
+			{
+				count++;
+				if(count == i)
+					return orgm;
+			}
+		}
+	}
+	return NULL;
+
+}
+
 
 } // end namespace NEAT
