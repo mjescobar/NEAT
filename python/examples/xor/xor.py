@@ -1,9 +1,39 @@
 import neat
-BNseed = neat.BasicNeuron()
-BSWseed = neat.BasicSynapticWeight()
-ann1 = neat.ANN(BNseed, BSWseed)
-life = neat.Life(ann1)
 
+BNUD = neat.BasicNeuronUserDefinitions()
+BNUD.maxBias = 0
+BNUD.minBias = 0
+BNUD.maximumBiasPercentVariation = 0.1
+BNUD.probabilityOfBiasRandomMutation = 0.02
+BNUD.constantDistanceOfBias = 0.5
+BNUD.maxSigmoidConstant = 4
+BNUD.minSigmoidConstant = 2
+BNUD.probabilityOfSigmoidConstantRandomMutation = 0.02
+BNUD.maximumSigmoidConstantPercentVariation = 0.2
+BNUD.constantDistanceOfSigmoidConstant = 1
+
+BSWUD = neat.BasicSynapticWeightUserDefinitions()
+BSWUD.maxWeightValue = 1
+BSWUD.minWeightValue = -1
+BSWUD.maximumWeightPercentVariation = 0.2
+BSWUD.probabilityOfWeightRandomMutation = 0.03
+BSWUD.probabilityOfEnableADisabledConnection = 0
+BSWUD.constantDistanceOfSynapticWeightValue = 0.5
+
+ANNUD = neat.ANNUserDefinitions()
+ANNUD.probabilityNewNeuronInLayer = 0.05
+ANNUD.probabilityOfNewSynapticWeight = 0
+ANNUD.probabilityOfNewUniqueSynapticWeight = 0.05
+ANNUD.probabilityOfNewLayer = 0.01
+ANNUD.inputsAmount = 2
+ANNUD.outputsAmount = 1
+
+
+
+BNseed = neat.BasicNeuron(BNUD)
+BSWseed = neat.BasicSynapticWeight(BSWUD)
+ann1 = neat.ANN(ANNUD, BNseed, BSWseed)
+life = neat.Life(ann1)
 
 maxFitness = 0.0;
 fitnessAcumm = 0.0;
