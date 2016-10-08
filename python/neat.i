@@ -37,10 +37,7 @@
 #include "../include/LIFNeuron.hpp"
 %}
 
-// Ignore the default constructor
-//%ignore std::pair::pair();      
 
-// Parse the original header file
 %include <std_vector.i>
 
 namespace std
@@ -71,6 +68,39 @@ namespace std
 %include "../include/LIFNeuronUserDefinitions.hpp"
 %include "../include/LIFNeuron.hpp"
 
-// Instantiate some templates
-//%template(pairii) std::pair<int,int>;
-//%template(pairdi) std::pair<double,int>;
+
+/*
+%{
+/* This function matches the prototype of the normal C callback
+   function for our widget. However, we use the clientdata pointer
+   for holding a reference to a Python callable object. * /
+
+static double PythonCallBack(double a, void *clientdata)
+{
+   PyObject *func, *arglist;
+   PyObject *result;
+   double    dres = 0;
+   
+   func = (PyObject *) clientdata;               // Get Python function
+   arglist = Py_BuildValue("(d)",a);             // Build argument list
+   result = PyEval_CallObject(func,arglist);     // Call Python
+   Py_DECREF(arglist);                           // Trash arglist
+   if (result) {                                 // If no errors, return double
+     dres = PyFloat_AsDouble(result);
+   }
+   Py_XDECREF(result);
+   return dres;
+}
+%}
+
+// Attach a new method to our plot widget for adding Python functions
+%addmethods PlotWidget {
+   // Set a Python function object as a callback function
+   // Note : PyObject *pyfunc is remapped with a typempap
+   void set_pymethod(PyObject *pyfunc) {
+     self->set_method(PythonCallBack, (void *) pyfunc);
+     Py_INCREF(pyfunc);
+   }
+}
+*/
+
