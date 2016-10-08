@@ -1,4 +1,5 @@
-// pair.i - SWIG interface
+%module neat
+
 %include <std_shared_ptr.i>
 %shared_ptr(NEAT::BasicNeuron)
 %shared_ptr(NEAT::Neuron)
@@ -12,7 +13,6 @@
 %shared_ptr(NEAT::Organism)
 
 
-%module neat
 %{
 #include "../include/SynapticWeight.hpp"
 #include "../include/Neuron.hpp"
