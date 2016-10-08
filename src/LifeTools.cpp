@@ -135,6 +135,7 @@ int Life::getSizeOrganism() {
 		{
 			for( auto& orgm : race->newOrganisms )
 			{
+				(void) orgm;
 				count++;
 			}
 		}
@@ -142,6 +143,7 @@ int Life::getSizeOrganism() {
 		{
 			for( auto& orgm : race->newOrganisms )
 			{
+				(void) orgm;
 				count++;
 			}
 		}
