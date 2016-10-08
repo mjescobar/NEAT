@@ -103,7 +103,7 @@ void ANN::printInfo() const{
 	}
 }
 
-void ANN::setInputs( vector <float> inputs ) const{
+void ANN::setInputs( const std::vector<float>& inputs ) const{
 	if( inputs.size() !=  inputsAmount )
 	{
 		cerr << "Error::ANN::setInputs:: input size is not correct." << endl;

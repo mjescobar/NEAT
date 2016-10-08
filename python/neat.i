@@ -38,6 +38,14 @@
 //%ignore std::pair::pair();      
 
 // Parse the original header file
+%include <std_vector.i>
+
+namespace std
+{
+    %template(FloatVector) vector<float>;
+}
+
+
 %include "../include/SynapticWeight.hpp"
 %include "../include/Neuron.hpp"
 %include "../include/BasicNeuronUserDefinitions.hpp"

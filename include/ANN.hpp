@@ -33,7 +33,7 @@ public:
 		\brief {setInput is the only way to manually introduce input voltage to the inputs neurons, if in the user definitions file is set n number of inputs then this method acepts only a vector float of this size exactly.}
 		\param[in] {inputs: Is a vector with equal size than the inputs neurons that represent a inncoming voltage of each input neuron.}
 	*/
-	void setInputs( std::vector <float> inputs ) const;
+	void setInputs( const std::vector<float>& inputs ) const;
 	/**
 		\brief {This is the process to spread voltage from the first layer until the last layer (the output layer)}
 	*/
