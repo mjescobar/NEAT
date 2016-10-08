@@ -1,3 +1,5 @@
+CPUS ?= $(shell cat /proc/cpuinfo |grep processor|wc -l || echo 1)
+MAKEFLAGS += --jobs=$(CPUS)
 
 VPATH=include:src:objects
 
