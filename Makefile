@@ -5,7 +5,7 @@ VPATH=include:src:objects
 
 COMPILER=g++ -std=c++14
 
-DEBUG=-g
+DEBUG=
 CFLAGS=$(DEBUG) -Wall -fPIC -I./include -I./objects -I./src -O3
 
 OBJS = ./objects/Neuron.o ./objects/SynapticWeight.o ./objects/BasicNeuron.o ./objects/Parameter.o ./objects/BasicNeuronUserDefinitions.o ./objects/BasicSynapticWeight.o ./objects/BasicSynapticWeightUserDefinitions.o ./objects/Layer.o  ./objects/ANN.o ./objects/ANNUserDefinitions.o ./objects/Organism.o ./objects/OrganismUserDefinitions.o ./objects/Race.o ./objects/RaceUserDefinitions.o ./objects/ANNTools.o ./objects/RaceTools.o ./objects/SpiciesTools.o ./objects/Spicies.o ./objects/SpiciesUserDefinitions.o ./objects/Life.o ./objects/LifeUserDefinitions.o ./objects/LifeTools.o ./objects/TauSynapticWeight.o ./objects/TauSynapticWeightUserDefinitions.o ./objects/CPPNNeuron.o ./objects/CPPNNeuronUserDefinitions.o ./objects/LIFNeuron.o ./objects/LIFNeuronUserDefinitions.o ./objects/CPPNFunction.o ./objects/NEATStatistics.o 
