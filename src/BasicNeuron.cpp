@@ -2,6 +2,7 @@
 
 #include <cmath> // exp fabs
 #include <iostream>
+#include <iomanip>
 
 namespace NEAT
 {
@@ -82,7 +83,7 @@ void BasicNeuron::spread()
 
 void BasicNeuron::printInfo() const
 {
-	std::cout << "Bias: " << bias->value << "\tSigmoidConstant: " << sigmoidConstant->value << "\tlastInputAccum: "<< lastInputAccum << "\tinputVoltageAccum: " << inputVoltageAccum << "\toutput: " << output << "\tmutationProbability: "<< mutationProbability<< std::endl;
+	std::cout << "Bias: " << bias->value << "\tSigmoidConstant: " << sigmoidConstant->value << std::setprecision(3) << "\tlastInputAccum: "<< lastInputAccum << "\tinputVoltageAccum: " << inputVoltageAccum << "\toutput: " << output << "\tmutationProbability: "<< mutationProbability<< std::endl;
 }
 
 std::shared_ptr < Neuron > BasicNeuron::clone() const 
