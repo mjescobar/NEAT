@@ -51,13 +51,21 @@ ANNUserDefinitions::ANNUserDefinitions( std::string path )
 	outputsAmount = uint( loadData["outputsAmount"] );
 	useBackwardConnections = bool( loadData["useBackwardConnections"]);
 	probabilityOfNewLayer = float (loadData["probabilityOfNewLayer"]);
-
+	try
+	{
+		initialConectionProbability = float (loadData.at("initialConectionProbability"));
+	}
+	catch(std::out_of_range e)
+	{
+		initialConectionProbability = 1.0;
+	}
 	loadData.clear();
 }
 
 void ANNUserDefinitions::printInfo()
 {
 	std::cout << 
+	 "initialConectionProbability: " << initialConectionProbability << std::endl << 
 	 "probabilityNewNeuronInLayer: " << probabilityNewNeuronInLayer << std::endl << 
 	 "probabilityOfNewSynapticWeight: " << probabilityOfNewSynapticWeight << std::endl << 
 	 "probabilityOfNewUniqueSynapticWeight: " << probabilityOfNewUniqueSynapticWeight << std::endl << 

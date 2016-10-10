@@ -60,9 +60,10 @@ void sendAllOrganismToExperiment( Life& life ); // function prototype
 int main()
 {
 	srand(time(0)); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
-	auto BNseed = make_unique < BasicNeuron > ( );  
+	//auto BNseed = make_unique < BasicNeuron > ( );  
+	auto cppnNeuron = make_unique < CPPNNeuron > ( ); 
 	auto BSWseed = make_unique < BasicSynapticWeight > ( ); 
-	auto ann1  = make_unique < ANN > ( move(BNseed), move(BSWseed) );
+	auto ann1  = make_unique < ANN > ( move(cppnNeuron), move(BSWseed) );
 	auto life = make_unique <Life>( move(ann1) );
 
 	for (int i = 0; i < 100; ++i)

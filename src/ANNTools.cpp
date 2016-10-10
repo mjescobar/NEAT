@@ -216,6 +216,7 @@ void ANN::copyUserDefParameters( const ANN& other )
 	this->outputsAmount = other.outputsAmount;
 	this->useBackwardConnections = other.useBackwardConnections;
 	this->probabilityOfNewLayer = other.probabilityOfNewLayer;
+	this->initialConectionProbability = other.initialConectionProbability;
 }
 
 uint ANN::findRandNeuronInLayer( uint layer ) const

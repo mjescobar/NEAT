@@ -3,11 +3,11 @@ maxBias 0.1
 minBias -0.1
 maximumBiasPercentVariation 0.1
 probabilityOfBiasRandomMutation 0.1 
-constantDistanceOfBias 0.3
-maxAmplifier 1.0
-minAmplifier 1.0
+constantDistanceOfBias 0.1
+maxAmplifier 0.0
+minAmplifier 6.0
 probabilityOfAmplifierRandomMutation 0.1
 maximumAmplifierPercentVariation 0.1
-constantDistanceOfAmplifier 0.3
-mutationProbability 1
-constantDistanceOfFunction 10
+constantDistanceOfAmplifier 0.1
+mutationProbability 0.08
+constantDistanceOfFunction 0.3

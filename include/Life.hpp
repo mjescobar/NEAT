@@ -14,11 +14,11 @@
 namespace NEAT
 {
 
-
 class Life
 {
 public:
 	virtual ~Life();
+	Life( std::shared_ptr<Spicies> speci, std::shared_ptr<LifeUserDefinitions> lud); 
 	Life( std::shared_ptr<ANN> annSeed );
 	void epoch();
 	uint getCurrentGeneration();

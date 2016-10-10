@@ -52,6 +52,7 @@ ANN::ANN( const ANNUserDefinitions& userdef, shared_ptr <Neuron> seedNeuron, sha
 	probabilityNewNeuronInLayer =  userdef.probabilityNewNeuronInLayer;
 	probabilityOfNewSynapticWeight =  userdef.probabilityOfNewSynapticWeight;
 	probabilityOfNewUniqueSynapticWeight =  userdef.probabilityOfNewUniqueSynapticWeight;
+	initialConectionProbability = userdef.initialConectionProbability;
 	inputsAmount =  userdef.inputsAmount;
 	outputsAmount =  userdef.outputsAmount;
 	useBackwardConnections =  userdef.useBackwardConnections;
@@ -71,7 +72,10 @@ ANN::ANN( const ANNUserDefinitions& userdef, shared_ptr <Neuron> seedNeuron, sha
 	// Segundo las conexiones sinapticas.
 	for (unsigned int in = 0; in < inputsAmount; ++in){
 		for (unsigned int out = 0; out < outputsAmount; ++out){
-			addSynapticWeight( LAYER_INITIAL, in, LAYER_OUTPUT, out );
+			if(rand()/(double)RAND_MAX < initialConectionProbability)
+			{
+				addSynapticWeight( LAYER_INITIAL, in, LAYER_OUTPUT, out );
+			}
 		}
 	}
 }

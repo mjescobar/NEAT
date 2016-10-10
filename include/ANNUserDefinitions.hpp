@@ -24,6 +24,7 @@ public:
 	unsigned int outputsAmount;
 	bool useBackwardConnections;
 	float probabilityOfNewLayer;
+	float initialConectionProbability;
 	
 
 };

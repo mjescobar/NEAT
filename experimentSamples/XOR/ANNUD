@@ -5,3 +5,4 @@ probabilityOfNewLayer 0.01
 inputsAmount 2
 outputsAmount 1
 useBackwardConnections 0
+initialConectionProbability 0.5
