@@ -1,0 +1,12 @@
+changeFunctionRate 1
+minBias 0
+maximumBiasPercentVariation 0
+probabilityOfBiasRandomMutation 0.1 
+constantDistanceOfBias 0.3
+maxAmplifier 1.0
+minAmplifier 1.0
+probabilityOfAmplifierRandomMutation 0.1
+maximumAmplifierPercentVariation 0.1
+constantDistanceOfAmplifier 0.3
+mutationProbability 1
+constantDistanceOfFunction 10
