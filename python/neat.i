@@ -1,6 +1,7 @@
 %module neat
 
 %include <std_shared_ptr.i>
+%shared_ptr(NEAT::CPPNNeuron)
 %shared_ptr(NEAT::BasicNeuron)
 %shared_ptr(NEAT::Neuron)
 %shared_ptr(NEAT::BasicSynapticWeight)
@@ -22,6 +23,8 @@
 #include "../include/Neuron.hpp"
 #include "../include/BasicNeuronUserDefinitions.hpp"
 #include "../include/BasicNeuron.hpp"
+#include "../include/CPPNNeuronUserDefinitions.hpp"
+#include "../include/CPPNNeuron.hpp"
 #include "../include/Parameter.hpp"
 #include "../include/BasicSynapticWeightUserDefinitions.hpp"
 #include "../include/BasicSynapticWeight.hpp"
@@ -56,6 +59,8 @@ namespace std
 %include "../include/Neuron.hpp"
 %include "../include/BasicNeuronUserDefinitions.hpp"
 %include "../include/BasicNeuron.hpp"
+%include "../include/CPPNNeuronUserDefinitions.hpp"
+%include "../include/CPPNNeuron.hpp"
 %include "../include/Parameter.hpp"
 %include "../include/BasicSynapticWeightUserDefinitions.hpp"
 %include "../include/BasicSynapticWeight.hpp"
