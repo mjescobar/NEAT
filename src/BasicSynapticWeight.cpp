@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cmath> //fabs
+#include <iomanip>
 
 namespace NEAT
 {
@@ -58,7 +59,7 @@ void BasicSynapticWeight::spread()
 
 void BasicSynapticWeight::printInfo() const
 {
-	std::cout << "weight: " << weight->value<< "\tHin(L,N): {" << layerInput << "," << neuronPlaceInLayerVector_IN <<"}" << "\tHout(L,N): {" << layerOutput << "," << neuronPlaceInLayerVector_OUT <<"}"  << "\tinput: " << input << "\toutput: " << output << std::endl;
+	std::cout << "weight: " << weight->value << std::setprecision(6) << "\tHin(L,N): {" << layerInput << "," << neuronPlaceInLayerVector_IN <<"}" << "\tHout(L,N): {" << layerOutput << "," << neuronPlaceInLayerVector_OUT <<"}"  << "\tinput: " << input << "\toutput: " << output << std::endl;
 }
 
 std::shared_ptr < SynapticWeight > BasicSynapticWeight::clone() const

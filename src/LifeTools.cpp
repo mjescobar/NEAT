@@ -133,19 +133,11 @@ int Life::getSizeOrganism() {
 	{
 		for( auto& race: spicie_->youngRaces)
 		{
-			for( auto& orgm : race->newOrganisms )
-			{
-				(void) orgm;
-				count++;
-			}
+			count += race->newOrganisms.size();
 		}
 		for( auto& race: spicie_->oldRaces)
 		{
-			for( auto& orgm : race->newOrganisms )
-			{
-				(void) orgm;
-				count++;
-			}
+			count += race->newOrganisms.size();
 		}
 	}
 	return count;
@@ -154,29 +146,28 @@ int Life::getSizeOrganism() {
 
 std::shared_ptr<Organism> Life::getOrganism(int i) {
 	int count = 0;
-	i++;
 	for ( auto& spicie_ : this->spicies)
 	{
 		for( auto& race: spicie_->youngRaces)
 		{
 			for( auto& orgm : race->newOrganisms )
 			{
-				count++;
 				if(count == i)
 					return orgm;
+				count++;
 			}
 		}
 		for( auto& race: spicie_->oldRaces)
 		{
 			for( auto& orgm : race->newOrganisms )
 			{
-				count++;
 				if(count == i)
 					return orgm;
+				count++;
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 
 }
 

@@ -27,7 +27,7 @@ public:
 	std::shared_ptr < Neuron > createNew() const override; // usado en mutacion
 
 private:
-	std::unique_ptr < CPPNFunction > cppnFunction;
+	std::shared_ptr < CPPNFunction > cppnFunction;
 	std::shared_ptr < Parameter > bias;
 	std::shared_ptr < Parameter > Amplifier;
 	float constantDistanceOfBias;
