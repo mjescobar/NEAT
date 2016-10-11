@@ -48,6 +48,7 @@ void experiment( Organism& orgm )
 
 	if(fitness > maxGeneration){
 		maxGeneration = fitness; 
+		orgm.printInfo();
 	}
 
 	orgm.setFitness(fitness);
@@ -87,7 +88,7 @@ int main()
 	cout << "maxFitness: " << maxFitness << endl;
 
 	cout << "================================================" << endl;
-	neatStats->printInfo();
+	//neatStats->printInfo();
 	return 0;
 }
 

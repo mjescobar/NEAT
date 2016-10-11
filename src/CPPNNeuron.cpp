@@ -53,6 +53,8 @@ CPPNNeuron::CPPNNeuron( const CPPNNeuron & other)
 	bias = other.bias->clone();
 	Amplifier = other.Amplifier->clone();
 	cppnFunction = other.cppnFunction->clone();
+	cppnFunction->bias = bias->value;
+	cppnFunction->amplifier = Amplifier->value;
 }
 
 void CPPNNeuron::mightMutate()
@@ -110,6 +112,9 @@ shared_ptr < Neuron > CPPNNeuron::createNew() const
 	auto tmp = make_unique < CPPNNeuron > (*this);
 	tmp->bias->random();
 	tmp->Amplifier->random();
+	tmp->cppnFunction->changeFunction();
+	tmp->cppnFunction->bias = tmp->bias->value;
+	tmp->cppnFunction->amplifier = tmp->Amplifier->value;
 	return move( tmp );
 }
 
