@@ -6,11 +6,15 @@
 %shared_ptr(NEAT::BasicSynapticWeight)
 %shared_ptr(NEAT::TauSynapticWeight)
 %shared_ptr(NEAT::SynapticWeight)
+%shared_ptr(NEAT::LifeUserDefinitions)
 %shared_ptr(NEAT::LIFNeuron)
 //%shared_ptr(NEAT::Life)
 %shared_ptr(NEAT::ANN)
 %shared_ptr(NEAT::Spicies)
+%shared_ptr(NEAT::SpiciesUserDefinitions)
 %shared_ptr(NEAT::Organism)
+%shared_ptr(NEAT::Race)
+%shared_ptr(NEAT::RaceUserDefinitions)
 
 
 %{
@@ -30,11 +34,13 @@
 #include "../include/Race.hpp"
 #include "../include/SpiciesUserDefinitions.hpp"
 #include "../include/Spicies.hpp"
+#include "../include/LifeUserDefinitions.hpp"
 #include "../include/Life.hpp"
 #include "../include/TauSynapticWeightUserDefinitions.hpp"
 #include "../include/TauSynapticWeight.hpp"
 #include "../include/LIFNeuronUserDefinitions.hpp"
 #include "../include/LIFNeuron.hpp"
+#include "../include/NEATStatistics.hpp"
 %}
 
 
@@ -62,11 +68,13 @@ namespace std
 %include "../include/Race.hpp"
 %include "../include/SpiciesUserDefinitions.hpp"
 %include "../include/Spicies.hpp"
+%include "../include/LifeUserDefinitions.hpp"
 %include "../include/Life.hpp"
 %include "../include/TauSynapticWeightUserDefinitions.hpp"
 %include "../include/TauSynapticWeight.hpp"
 %include "../include/LIFNeuronUserDefinitions.hpp"
 %include "../include/LIFNeuron.hpp"
+%include "../include/NEATStatistics.hpp"
 
 
 /*
