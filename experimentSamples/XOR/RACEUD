@@ -1,6 +1,6 @@
 maxYears 1000
-maxYearsYoungRace 5
+maxYearsYoungRace 15
 maximumRaceDistance 0.05
-youngRaceMaxPopulation 10
+youngRaceMaxPopulation 20
 maxStackNewRaceCandidates 5
 maxStackNewSpiciesCandidates 5

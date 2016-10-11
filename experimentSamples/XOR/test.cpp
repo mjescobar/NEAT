@@ -42,13 +42,12 @@ void experiment( Organism& orgm )
 	float fitness = (error_MAX - error)*(error_MAX - error);
 	if(fitness > maxFitness){
 		maxFitness = fitness; 
-		cout << "MF: " << maxFitness << "\t{" << out1.at(0) <<", " << out2.at(0) <<", " << out3.at(0) << ", " << out4.at(0) << endl;
+		cout << "MF: " << maxFitness << "\t{" << out1.at(0) <<", " << out2.at(0) <<", " << out3.at(0) << ", " << out4.at(0) <<  "}" << endl;
 		//orgm.printInfo();
 	} 
 
 	if(fitness > maxGeneration){
 		maxGeneration = fitness; 
-		orgm.printInfo();
 	}
 
 	orgm.setFitness(fitness);
