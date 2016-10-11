@@ -17,7 +17,7 @@ CPPNFunction(const CPPNFunction & other);
 float eval(const float input) const;
 void changeFunction();
 void printInfo() const;
-std::unique_ptr <CPPNFunction> clone() const;
+std::shared_ptr <CPPNFunction> clone() const;
 
 float bias;
 float amplifier;

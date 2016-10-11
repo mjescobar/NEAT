@@ -27,25 +27,25 @@ public:
 class SpicieStatistics
 {
 public:
-	void addYoungRace(std::unique_ptr <RaceStatistics> youngRace_s)
+	void addYoungRace(std::shared_ptr <RaceStatistics> youngRace_s)
 	{
 		youngRacesStatistics.push_back(move(youngRace_s));
 
 	}
-	void addOldRace(std::unique_ptr <RaceStatistics> oldRace_s)
+	void addOldRace(std::shared_ptr <RaceStatistics> oldRace_s)
 	{
 		oldRacesStatistics.push_back(move(oldRace_s));
 	}
-	std::vector< std::unique_ptr<RaceStatistics> > oldRacesStatistics;
-	std::vector< std::unique_ptr<RaceStatistics> > youngRacesStatistics;
+	std::vector< std::shared_ptr<RaceStatistics> > oldRacesStatistics;
+	std::vector< std::shared_ptr<RaceStatistics> > youngRacesStatistics;
 };
 
 
 class GenerationsStatistics
 {
 public:
-	std::vector< std::unique_ptr<SpicieStatistics> > spiciesStatistics;
-	void addSpecie( std::unique_ptr <SpicieStatistics> specie_s)
+	std::vector< std::shared_ptr<SpicieStatistics> > spiciesStatistics;
+	void addSpecie( std::shared_ptr <SpicieStatistics> specie_s)
 	{
 		spiciesStatistics.push_back( move(specie_s) );
 	}
@@ -60,7 +60,7 @@ public:
 	void printStatisticsToFile(std::string path) const;
 	void printInfo() const;
 private:
-	std::vector< std::unique_ptr<GenerationsStatistics> > generationStatistics;
+	std::vector< std::shared_ptr<GenerationsStatistics> > generationStatistics;
 };
 
 } // END NAMESPACE NEAT

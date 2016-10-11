@@ -92,7 +92,7 @@ void CPPNFunction::printInfo() const
 	"functionId: " << functionId << endl ;
 }
 
-unique_ptr <CPPNFunction> CPPNFunction::clone() const
+shared_ptr <CPPNFunction> CPPNFunction::clone() const
 {
 	return move( std::make_unique<CPPNFunction>(*this) );
 }
