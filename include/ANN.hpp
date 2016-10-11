@@ -54,7 +54,7 @@ public:
 	*/
 	std::shared_ptr < ANN > crossOver( const ANN& mother ) const;
 	/**
-		\brief {Obtain the distance in between two organism of the same topology. Is calculated neuron by neuron and conection by conection and depends on how is implemented in the neuron and in the conection}
+		\brief {Obtain the distance in between two organism of the same topology. Is calculated neuron by neuron and conection by conection, the calculation is the sum of the distance of all neurons and all synaptics weight in the same position and then is divided by de amount of neuronas plus the amount of synaptic weights.}
 		\param[in] {other is another ANN}
 		\return {the return value is the distance between this and tue input ANN (other)}
 	*/

@@ -57,6 +57,7 @@ void experiment( Organism& orgm )
 
 void sendAllOrganismToExperiment( Life& life ); // function prototype
 
+
 int main()
 {
 	srand(time(0)); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
@@ -65,13 +66,17 @@ int main()
 	auto BSWseed = make_unique < BasicSynapticWeight > ( ); 
 	auto ann1  = make_unique < ANN > ( move(cppnNeuron), move(BSWseed) );
 	auto life = make_unique <Life>( move(ann1) );
+	auto neatStats = make_unique <NEATStatistics>();
 
 	for (int i = 0; i < 100; ++i)
 	{
+
 		sendAllOrganismToExperiment(*life);
 		//cout << "Gen " << i << "\t" << fitnessAcumm/(float)contador  <<"\t" << contador << "\t" << life->spicies.size()<< endl;
 		fitnessAcumm = 0.f;
 		contador = 0;
+
+		neatStats->takeInformationOfTheCurrentGeneration(*life);
 		life->epoch();
 		cout << "MG: " << maxGeneration << endl;
 		maxGeneration = 0.f;
@@ -80,6 +85,9 @@ int main()
 	cout << "================================================" << endl;
 	life->printInfo();
 	cout << "maxFitness: " << maxFitness << endl;
+
+	cout << "================================================" << endl;
+	neatStats->printInfo();
 	return 0;
 }
 

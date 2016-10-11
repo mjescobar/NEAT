@@ -19,3 +19,5 @@
 #include "NEATSPIKES_include/LIFNeuron.hpp"
 #include "NEATSPIKES_include/LIFNeuronUserDefinitions.hpp"
 #include "NEATSPIKES_include/CPPNFunction.hpp"
+#include "NEATSPIKES_include/NEATStatistics.hpp"
+

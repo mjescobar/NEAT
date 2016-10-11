@@ -146,15 +146,19 @@ void ANN::mightMutate()
 float ANN::getDistance( const ANN& other) const
 {
 	auto sum = 0.f;
+	uint counter = 0;
 	for ( auto & layer: layersMap)
 	{
 		sum += layer.second->getDistance( *other.layersMap.at( layer.first ) );
+		counter += layer.second->neurons.size();
 	}
 	for (uint i = 0; i < synapticWeights.size(); ++i)
 	{
 		sum += synapticWeights.at(i)->getDistance( other.synapticWeights.at(i).get() );
+		counter ++;
 	}
-	return move(sum);
+
+	return move(sum / (float)counter); // Distance relative to the amount of neurons and synaptics weights
 }
 
 shared_ptr <ANN> ANN::clone() const
