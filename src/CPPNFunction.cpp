@@ -80,9 +80,22 @@ float CPPNFunction::gauss_(const float input) const
 }
 float CPPNFunction::identity_(const float input) const
 {
-	return ((input >= 1.0)?  1.0:  input);
+	if(input >= 1.0)
+	{
+		if(input <= -1.0)
+		{
+			return -1.0;
+		}
+		else
+		{
+			return input;
+		}
+	}
+	else 
+	{
+		return -1.0;
+	}
 }
-
 
 void CPPNFunction::printInfo() const 
 {
