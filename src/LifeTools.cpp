@@ -74,41 +74,37 @@ void Life::createSpiciesFromOrganismCandidates()
 
 void Life::eliminateWorseSpecies()
 {  // Only old species could be eliminated
-	float speciesMean = 0.f; 
-	float min = -1.f;
-	float max = 0.f;
-	float fitness;
-	for(auto& specie : spicies)
+	uint protectedSpeciesAmount = round(0.5*maxAmountOfSpicies);
+	if(protectedSpeciesAmount == 0) 
 	{
-		fitness = specie->getMeanFitnessOfOldRaces();
-		if( fitness > min )
-		{
-			min = fitness;
-		}
-		if(fitness < max)
-		{
-			max = fitness;
-		}
-		speciesMean += fitness;
+		protectedSpeciesAmount = 1;
 	}
-	speciesMean = speciesMean/(float)spicies.size();
+	if(  protectedSpeciesAmount < spicies.size() )
+	{
+		float min = spicies.at(0)->getMeanFitnessOfOldRaces();;
+		int min_position = -1;
+		float fitness;
+		float eraseWorseSpicieRate = 0.5;
 
-	if(min == max) {return;} // some rare case;
-
-	// ToDo: Mejorar el modelo tal que, por ejemplo, la probabilidad de supervivencia sea una gaussiana con la misma media y promedio que las especies (solo para las especies de fitness menor que la media)
-	spicies.erase(  remove_if(spicies.begin(), spicies.end(),
-    [&](shared_ptr<Spicies>& specie)->bool 
-    { 
-    	if( specie->oldRaces.size() > 0 )
+		if(rand()/(double)RAND_MAX < eraseWorseSpicieRate)
 		{
-			if( specie->getMeanFitnessOfOldRaces() < speciesMean )
+			for (uint i = 0; i < spicies.size(); ++i)
 			{
-				return true;
+				fitness = spicies.at(i)->getMeanFitnessOfOldRaces();
+				if( fitness <= min )
+				{
+					min = fitness;
+					min_position = i;
+				}
+			}	
+			if(min_position < 0)
+			{
+				cerr << "ERROR::Life::eliminateWorseSpecies:: position of worse specie is impossible."  << min_position<< endl;
+				exit(EXIT_FAILURE);
 			}
-			return false;
+			spicies.erase (spicies.begin() + min_position);
 		}
-		return false;
-     }),spicies.end());
+	}
 }
 
 void Life::eliminateWorseRaces()

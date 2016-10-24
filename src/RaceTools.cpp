@@ -135,37 +135,38 @@ void Race::createDecendence(const uint amountOfChildrens )
 
 void Race::eliminateWorseOrganisms()
 {
-	float fitnessMean = 0.f; 
-	float min = -1.f;
-	float max = 0.f;
-	float fitness;
-	for(auto& orgm : newOrganisms)
+	float worseOrganismEliminationRate = 0.5;
+	float minSafeOrganismsInRace = 5;
+
+	if(newOrganisms.size() > minSafeOrganismsInRace)
 	{
-		fitness = orgm->getFitness();
-		if( fitness > min )
+		auto amountOrganismsToEliminate = round(worseOrganismEliminationRate*newOrganisms.size());
+		if(newOrganisms.size() -amountOrganismsToEliminate < minSafeOrganismsInRace)
 		{
-			min = fitness;
+			amountOrganismsToEliminate = newOrganisms.size() - minSafeOrganismsInRace; // To assure that at least minSafeOrganismsInRace will survive.
 		}
-		if(fitness < max)
+
+		while(amountOrganismsToEliminate > 0)
 		{
-			max = fitness;
+			eliminateWorseOrganism();
+			amountOrganismsToEliminate--;
 		}
-		fitnessMean += fitness;
 	}
-	fitnessMean = fitnessMean/(float)newOrganisms.size();
+}
 
-	if(min == max) {return;} // some rare case;
-
-	// ToDo: Mejorar el modelo tal que, por ejemplo, la probabilidad de supervivencia sea una gaussiana con la misma media y promedio que las especies (solo para las especies de fitness menor que la media)
-	newOrganisms.erase(  remove_if(newOrganisms.begin(), newOrganisms.end(),
-    [&](shared_ptr<Organism>& orgm)->bool 
-    { 
-		if( orgm->getFitness() < fitnessMean )
+void Race::eliminateWorseOrganism()
+{
+	float minFitness = newOrganisms.at(0)->getFitness();
+	uint minPlace = 0;
+	for (uint i = 0; i < newOrganisms.size(); ++i)
+	{
+		if(newOrganisms.at(i)->getFitness() <= minFitness)
 		{
-			return true;
+			minFitness = newOrganisms.at(i)->getFitness() ;
+			minPlace = i;
 		}
-		return false;
-     }),newOrganisms.end());
+	}
+	newOrganisms.erase(newOrganisms.begin() + minPlace);
 }
 
-}
+} // END NAMESPACE NEAT

@@ -1,8 +1,11 @@
-
 TODO 008: (parcialmente completa): Aplicar modelo de programacion extreme para que el codigo sea aun mas mantenible.
 TODO 009: Crear algun metodo para graficar los resultados de los experimentos.
 TODO 010: (parcialmente completa): Hacer Manual de usuario (GuiaUsuario.pdf,  diferencias.pdf, CaracteristicasMejoradas.pdf)
 TODO 011: Pensar en una buena forma de desarrollar las series de tiempo con NEAT usando LIFNeuron.
 TODO 012: Analizar como desarrollar una clase LIFNeuronAssembly que simule una red de varias Neuronas LIFNeuron, para poder trabajar fácilmente con neuronas de ordenes de magnitud altas.
 TODO 013: Usar CMake
-TODO 014: pensar en como nombrar las variables constantes de getDistance porque ahora es relativo y agregarlo al manual.
+TODO 014: Pensar en como nombrar las variables constantes de getDistance porque ahora es relativo y agregarlo ala manual.
+TODO 015: Mejorar la metodología de eliminación de peoreas organismos, razas y especies.
+TODO 016: Hacer experimento de imagenes en C++
+TODO 017: Analizar por qué tanta varianza.
+TODO 018: Revizar por qué tan pocos Layers en el resultado.

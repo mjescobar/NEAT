@@ -111,37 +111,38 @@ void Spicies::eliminateWorseOrganisms()
 
 void Spicies::eliminateWorseRaces()
 {
-	float racesMean = 0.f; 
-	float min = -1.f;
-	float max = 0.f;
-	float fitness;
-	for(auto& race : oldRaces)
+
+	uint protectedRacesAmount = round(0.5 * maxAmountOfRacesPerSpicie);
+	if (protectedRacesAmount == 0) 
 	{
-		fitness = race->getFitnessMean();
-		if( fitness > min )
+		protectedRacesAmount++;
+	} 
+	if(  protectedRacesAmount < oldRaces.size() )
+	{
+		float min = oldRaces.at(0)->getFitnessMean();
+		int min_position = -1;
+		float fitness;
+		float eraseWorseRaceRate = 0.5;
+
+		if(rand()/(double)RAND_MAX < eraseWorseRaceRate)
 		{
-			min = fitness;
+			for (uint i = 0; i < oldRaces.size(); ++i)
+			{
+				fitness = oldRaces.at(i)->getFitnessMean();
+				if( fitness <= min )
+				{
+					min = fitness;
+					min_position = i;
+				}
+			}	
+			if(min_position < 0)
+			{
+				cerr << "ERROR::Spicies::eliminateWorseRaces:: position of worse specie is impossible. "  << min_position << endl;
+				exit(EXIT_FAILURE);
+			}
+			oldRaces.erase (oldRaces.begin() + min_position);
 		}
-		if(fitness < max)
-		{
-			max = fitness;
-		}
-		racesMean += fitness;
 	}
-	racesMean = racesMean/(float)oldRaces.size();
-
-	if(min == max) {return;} // some rare case;
-
-	// ToDo: Mejorar el modelo tal que, por ejemplo, la probabilidad de supervivencia sea una gaussiana con la misma media y promedio que las especies (solo para las especies de fitness menor que la media)
-	oldRaces.erase(  remove_if(oldRaces.begin(), oldRaces.end(),
-    [&](shared_ptr<Race>& race)->bool 
-    { 
-		if( race->getFitnessMean() < racesMean )
-		{
-			return true;
-		}
-		return false;
-     }),oldRaces.end());
 }
 
 } // end Namespace NEAT
