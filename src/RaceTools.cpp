@@ -43,7 +43,7 @@ void Race::fillFitnessVector (vector <float> & fitnessVector)
 	fitnessVector.clear();
 	for( const auto& orgm : oldOrganisms )
 	{
-		fitnessVector.push_back( orgm->getFitness() );
+		fitnessVector.push_back( orgm->getAdjustedFitness() );
 	}
 }
 
@@ -81,7 +81,6 @@ Organism& Race::getRandomOrganism_ref()
 	return *newOrganisms.at(orgmSelct).get();
 }
 
-
 void Race::organismsGrowUp()
 {
 	for (uint i = 0; i < newOrganisms.size(); ++i)
@@ -94,16 +93,40 @@ void Race::organismsGrowUp()
     	oldOrganisms.end());
 }
 
-
-void Race::createDecendence(const uint amountOfChildrens )
+void Race::getChildFromParentAt(const uint & placeOfFather)
 {
-	if(amountOfChildrens == 0){return;}
+	auto& fatherOrgm = *oldOrganisms.at(placeOfFather).get();
+	vector <float> fitnessVector;
+	fillFitnessVector (fitnessVector); // Se llenaron los fitness en orden.
+	fitnessVector.at( placeOfFather ) = 0.f;
+	discrete_distribution<uint> obtainDiferentOrganism(fitnessVector.begin(), fitnessVector.end());
+	uint attempts = 4; // Si cuatro veces no se obtiene un organismo que sea de esta raza simplemente no se intenta de nuevo, para no dejar el cpu muy colapsado en esta operacion.
+	for (uint j = 0; j < attempts; ++j)
+	{
+		uint mother = obtainDiferentOrganism(*generator);
+		auto& motherOrgm =  *oldOrganisms.at(mother).get();
+		shared_ptr <Organism> sonOrgm = fatherOrgm.crossOver( motherOrgm );
+		if( sonOrgm->getIsNewSpicie() )
+		{
+			addOrganismCandidateToNewSpicies( move(sonOrgm) );
+		}else if( sonOrgm->getDistance( fatherOrgm ) < maximumRaceDistance   )
+		{
+			newOrganisms.push_back( move( sonOrgm ) );
+			break; // Se obtuvo un nuevo organismo de la raza.
+		}else
+		{
+			addOrganismCandidateToNewRace( move(sonOrgm) );
+		}
+	}
+}
+void Race::createNewRaceDecendence()
+{
 	vector <float> fitnessVector;
 	fillFitnessVector (fitnessVector); // Se llenaron los fitness en orden.
 	discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
 
 	uint attempts = 4; // Si dos veces no se obtiene un organismo que sea de esta raza simplemente no se intenta de nuevo, para no dejar el cpu muy colapsado en esta operacion.
-	for (uint i = 0; i < amountOfChildrens; ++i)
+	for (uint i = 0; i < youngRaceMaxPopulation; ++i)
 	{
 		for (uint j = 0; j < attempts; ++j)
 		{

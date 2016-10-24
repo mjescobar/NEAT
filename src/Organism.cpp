@@ -83,6 +83,12 @@ float Organism::getFitness () const
 	return fitness;
 }
 
+float Organism::getAdjustedFitness () const
+{
+	return fitness;
+	//return adjustedFitness;
+}
+
 float Organism::getDistance(const Organism& other ) const
 {
 	return this->ann->getDistance(*other.ann);
@@ -95,9 +101,7 @@ std::shared_ptr <Organism> Organism::crossOver( const Organism& other ) const
 
 void Organism::printInfo()
 {
-
 	std::cout << "years: " << years <<  "\tlifeExpectative: " << lifeExpectative << "\tfitness: " <<  fitness << std::endl;
-	
 	std::cout << "Internal ANN" << std::endl;
 	ann->printInfo(); 
 }

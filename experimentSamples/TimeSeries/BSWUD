@@ -1,5 +1,5 @@
-maxWeightValue 1
-minWeightValue -1
+maxWeightValue 1.05
+minWeightValue -1.05
 maximumWeightPercentVariation  0.2
 probabilityOfWeightRandomMutation 0.03 
 probabilityOfEnableADisabledConnection 0 

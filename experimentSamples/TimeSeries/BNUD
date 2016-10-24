@@ -1,5 +1,5 @@
-maxBias 0.3
-minBias 0
+maxBias 0.1
+minBias -0.1
 maximumBiasPercentVariation 0.1
 probabilityOfBiasRandomMutation 0.02
 constantDistanceOfBias 0.5

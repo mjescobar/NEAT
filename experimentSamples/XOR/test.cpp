@@ -5,6 +5,7 @@
 #include <cstdlib>     // srand, rand 
 #include <ctime>       // time 
 #include <cmath>
+#include <string>
 
 using namespace NEAT;
 using namespace std;
@@ -13,6 +14,8 @@ float maxFitness = 0.f;
 float fitnessAcumm = 0.f;
 uint contador = 0;
 float maxGeneration = 0.f;
+unique_ptr <NEATStatistics> neatStats ;
+void exiting();
 
 void experiment( Organism& orgm )
 {
@@ -58,15 +61,29 @@ void experiment( Organism& orgm )
 void sendAllOrganismToExperiment( Life& life ); // function prototype
 
 
-int main()
+int main( int argc, char ** argv )
 {
-	srand(time(0)); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
+	atexit(exiting);
+	uint seedNumber;
+	if (argc == 2)
+	{
+		string seedNumb_str ((const char *)argv[1]);
+		seedNumber = stoul(seedNumb_str);
+	}
+	else
+	{
+		seedNumber = time(0);
+	}
+	cout << "seedNumber: " << seedNumber << endl;
+
+
+	srand(seedNumber); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
 	//auto BNseed = make_unique < BasicNeuron > ( );  
 	auto cppnNeuron = make_unique < CPPNNeuron > ( ); 
 	auto BSWseed = make_unique < BasicSynapticWeight > ( ); 
 	auto ann1  = make_unique < ANN > ( move(cppnNeuron), move(BSWseed) );
 	auto life = make_unique <Life>( move(ann1) );
-	auto neatStats = make_unique <NEATStatistics>();
+	neatStats = make_unique <NEATStatistics>();
 
 	for (int i = 0; i < 100; ++i)
 	{
@@ -78,14 +95,13 @@ int main()
 
 		neatStats->takeInformationOfTheCurrentGeneration(*life);
 		life->epoch();
-		cout << "MG: " << maxGeneration << endl;
+		//cout << "MG: " << maxGeneration << endl;
 		maxGeneration = 0.f;
 
 	}
 	cout << "================================================" << endl;
 	life->printInfo();
 	cout << "maxFitness: " << maxFitness << endl;
-
 	cout << "================================================" << endl;
 	//neatStats->printInfo();
 	return 0;
@@ -110,4 +126,9 @@ void sendAllOrganismToExperiment( Life& life )
 			}
 		}
 	}
+}
+
+void exiting()
+{
+	//neatStats->printInfo();
 }

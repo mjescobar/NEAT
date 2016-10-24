@@ -18,36 +18,48 @@ void Life::deleteExtinctedSpicies()
 
 void Life::createDecendence()
 {
-	vector <float> fitnessVector;
-	fillFitnessVector (fitnessVector);
-	vector <uint> childrensPerSpicie;
-	// Se obtendran la cantidad de hijos por raza a traves de una distribuion discreta segun los fitness de cada especie
+	// Existen dos tipos de razas, las nuevas que tienen asegurado una cantidad de hijos (establecido por el usuario) y las viejas.
 
-	for (uint i = 0; i < spicies.size(); ++i)
+	// Primero las razas viejas se reparten los hijos.
+
+	// Se pasan todos los organismos a un vector llamado organisms y se mantiene un mapeo entre este vector y su posicion en la especie y raza correspondiente.
+	map <uint, vector <uint> > organismsToStructure_map;
+	vector < Organism *  > organisms;
+	for ( uint i = 0; i < spicies.size(); i++){ 
+		for( uint j = 0; j < spicies.at(i)->oldRaces.size(); j++){
+			for( uint k = 0; k < spicies.at(i)->oldRaces.at(j)->oldOrganisms.size(); k++){
+				organisms.push_back( spicies.at(i)->oldRaces.at(j)->oldOrganisms.at(k).get() );
+				vector <uint> structurePosition = {i,j,k};
+				organismsToStructure_map.emplace(organisms.size()-1,structurePosition);
+	}	}	}
+
+	// Se crea un vector con los fitness de cada uno de los organismos para ser usado como distribucion de probabilidad discreta mas adelante.
+	vector <float> fitnessVector;
+	for (uint i = 0; i < organisms.size(); ++i)
 	{
-		childrensPerSpicie.push_back(0);
+		fitnessVector.push_back( organisms.at(i)->getAdjustedFitness() );
 	}
-	discrete_distribution<uint> obtainSpicie(fitnessVector.begin(), fitnessVector.end());
-	uint selected = 0;
+	// se crea la funcion de probabilidad asociada a los fitness.
+	discrete_distribution<uint> obtainFatherOrganism(fitnessVector.begin(), fitnessVector.end());
+
+
+	//Segun la probabilidad anterior se obtienen los padres para los nuevos hijos.
 	for (uint i = 0; i < maxAmountOrganismInAllOldRaces; ++i)
 	{
-		selected = obtainSpicie(*generator);
-		childrensPerSpicie.at(selected) += 1;
+		uint father = obtainFatherOrganism(*generator);
+		vector <uint> structurePositionFather = organismsToStructure_map.at(father);
+		uint specieOfFather = structurePositionFather.at(0);
+		uint raceOfFather = structurePositionFather.at(1);
+		uint organismPositionOfFather = structurePositionFather.at(2);
+		spicies.at(specieOfFather)->oldRaces.at(raceOfFather)->getChildFromParentAt(organismPositionOfFather);
 	}	
-	// Ahora dado que ya se sabe la cantidad de hijos se procede a asignarlos a cada especie.
-	for (uint i = 0; i < spicies.size(); ++i)
-	{
-		spicies.at(i)->epoch( childrensPerSpicie.at(i) );
+
+	// Luego las razas nuevas pasaran de epoca
+	for( auto& specie : spicies ){
+		specie->newRacesDecendece(); // tienen asegurado una cantidad de hijos
 	}
 }
-void Life::fillFitnessVector (vector <float> & fitnessVector)
-{
-	fitnessVector.clear();
-	for( const auto& spicie : spicies )
-	{
-		fitnessVector.push_back( spicie->getMeanFitnessOfOldRaces() );
-	}
-}
+
 void Life::createSpiciesFromOrganismCandidates()
 {
 	if(spicies.size() >= maxAmountOfSpicies) {return ;}
@@ -164,7 +176,6 @@ std::shared_ptr<Organism> Life::getOrganism(int i) {
 		}
 	}
 	return nullptr;
-
 }
 
 

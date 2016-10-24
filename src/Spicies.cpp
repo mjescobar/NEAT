@@ -7,10 +7,7 @@ using namespace std;
 namespace NEAT
 {
 
-Spicies::~Spicies()
-{
-	
-}
+Spicies::~Spicies(){}
 
 Spicies::Spicies( shared_ptr <Race> founderRace  ): Spicies(SpiciesUserDefinitions(), move(founderRace)){}
 
@@ -25,21 +22,35 @@ Spicies::Spicies( const SpiciesUserDefinitions& userdef, shared_ptr <Race> found
 }
 
 // Only old Races hava to fight for childrens the young races have not.
-void Spicies::epoch( const uint childrenAmount )
+void Spicies::epoch()
 {
-	if(childrenAmount == 0 && oldRaces.size() >= 1){ 
-		extincted = true; 
-		return; 
-	}
 	if(years >= maxYears){ extincted = true; return; }
-	createDecendence(childrenAmount);
 	deleteExtinctedRaces();
 	if(youngRaces.size() + oldRaces.size() == 0) {
 		extincted = true; 
 		return;
 	}
+
+	for (uint i = 0; i < oldRaces.size(); ++i)
+	{
+		oldRaces.at(i)->epoch( );
+	}
+
+	for (uint i = 0; i < youngRaces.size(); ++i)
+	{
+		youngRaces.at(i)->epoch( );
+	}
+
 	createRacesFromOrganismCandidates();
 	years ++;
+}
+
+void Spicies::newRacesDecendece()
+{
+	for (uint i = 0; i < youngRaces.size(); ++i)
+	{
+		youngRaces.at(i)->newRaceDecendece( );
+	}
 }
 
 shared_ptr <Organism> Spicies::getOrganismNewSpiciesCandidate()

@@ -70,7 +70,7 @@ void sendAllOrganismToExperiment( Life& life ); // function prototype
 int main()
 {
 	srand(time(0)); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
-	auto BNseed = make_unique < BasicNeuron > ( );  
+	auto BNseed = make_unique < CPPNNeuron > ( );  
 	// auto BSWseed = make_unique < BasicSynapticWeight > ( ); 
 	// auto ann1  = make_unique < ANN > ( move(BNseed), move(BSWseed) );
 	auto TSWseed = make_unique <TauSynapticWeight>();
@@ -86,7 +86,6 @@ int main()
 		life->epoch();
 		std::cout << "MG: " << maxGeneration << std::endl;
 		maxGeneration = 0.f;
-
 	}
 	std::cout << "================================================" << std::endl;
 	life->printInfo();

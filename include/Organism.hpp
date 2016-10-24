@@ -21,6 +21,7 @@ public:
 	std::shared_ptr <Organism> createSimilar() const;
 	void setFitness( const float fitness );
 	float getFitness () const;
+	float getAdjustedFitness() const;
 	float getDistance(const Organism& other ) const;
 	void printInfo();
 
@@ -30,6 +31,7 @@ private:
 	uint years;
 	uint lifeExpectative;
 	float fitness;
+	float adjustedFitness; 
 };
 
 }

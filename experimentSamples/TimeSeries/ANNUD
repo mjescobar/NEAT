@@ -4,4 +4,4 @@ probabilityOfNewUniqueSynapticWeight 0.09
 probabilityOfNewLayer 0.09
 inputsAmount 1
 outputsAmount 1
-useBackwardConnections 1
+useBackwardConnections 0

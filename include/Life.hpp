@@ -31,7 +31,6 @@ private:
 	void deleteExtinctedSpicies();
 	void createSpiciesFromOrgmCandidates();
 	void createDecendence();
-	void fillFitnessVector (std::vector <float> & fitnessVector);
 	void createSpiciesFromOrganismCandidates();
 	//void getStatisticsOfCurrentGeneration();
 	void eliminateWorseSpecies();

@@ -99,41 +99,31 @@ void Spicies::createRacesFromOrganismCandidates()
 	}
 }
 
-void Spicies::createDecendence(const uint childrenAmount )
-{
-	if(oldRaces.size() >= 1 )
-	{
-		vector <float> fitnessVector;
-		fillFitnessVector (fitnessVector);
-		vector <uint> childrensPerRace;
-		for (uint i = 0; i < oldRaces.size(); ++i)
-		{
-			childrensPerRace.push_back(0);
-		}
-		discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
-		uint selected = 0;
-		for (uint i = 0; i < childrenAmount; ++i)
-		{
-			selected = obtainOrganism(*generator);
-			childrensPerRace.at(selected) += 1;
-		}	
-		for (uint i = 0; i < oldRaces.size(); ++i)
-		{
-			oldRaces.at(i)->epoch( childrensPerRace.at(i) );
-		}
+// void Spicies::createDecendence(const uint childrenAmount )
+// {
+// 	if(oldRaces.size() >= 1 )
+// 	{
+// 		vector <float> fitnessVector;
+// 		fillFitnessVector (fitnessVector);
+// 		vector <uint> childrensPerRace;
+// 		for (uint i = 0; i < oldRaces.size(); ++i)
+// 		{
+// 			childrensPerRace.push_back(0);
+// 		}
+// 		discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
+// 		uint selected = 0;
+// 		for (uint i = 0; i < childrenAmount; ++i)
+// 		{
+// 			selected = obtainOrganism(*generator);
+// 			childrensPerRace.at(selected) += 1;
+// 		}	
+// 		for (uint i = 0; i < oldRaces.size(); ++i)
+// 		{
+// 			oldRaces.at(i)->epoch( childrensPerRace.at(i) );
+// 		}
 
-	}
-	for (uint i = 0; i < youngRaces.size(); ++i)
-	{
-		youngRaces.at(i)->epoch();
-		if( youngRaces.at(i)->isYoung() == false  ) // Si la raza ha crecido entonces se tiene que cambiar de vector que lo maneja.
-		{
-			oldRaces.push_back( move(youngRaces.at(i)) );
-			youngRaces.erase(youngRaces.begin()+i);
-			i--;
-		}
-	}
-}
+// 	}
+// }
 
 void Spicies::deleteExtinctedRaces()
 {

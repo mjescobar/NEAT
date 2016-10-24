@@ -21,8 +21,7 @@ public:
 	Race( const Race& other, std::shared_ptr <Organism>  founderOrganism );
 	virtual ~Race();
 	//void populate( );
-	void epoch( uint childrensAmount ); 
-	void epoch(); // for new races
+	void epoch(  ); 
 	float getFitnessMean();
 	bool belongsAtThisRace(const Organism& orgm ); // Distancia entre organismo y raza
 	std::shared_ptr <Race> createNew( std::shared_ptr <Organism> organism );
@@ -31,11 +30,13 @@ public:
 	std::vector < std::shared_ptr< Organism > > & getNewOrganisms_ref();
 	void printInfo()const;
 	void eliminateWorseOrganisms();
+	void getChildFromParentAt(const uint & placeOfFather);
+	void newRaceDecendece();
 	
 	std::vector <std::shared_ptr<Organism>> newOrganisms;
+	std::vector <std::shared_ptr<Organism>> oldOrganisms;
 	std::vector <std::shared_ptr<Organism>> newRaceOrgmCandidate;
 	std::vector <std::shared_ptr<Organism>> newSpicieOrgmCandidate;
-
 	std::vector <float> fitnessPerYear;
 
 private:
@@ -46,9 +47,9 @@ private:
 	void fillFitnessVector (std::vector <float> & fitnessVector);
 	void populateFromCurrentsOrganisms( uint amountOfChildrens );
 	void organismsGrowUp();
-	void createDecendence(const uint amountOfChildrens );
+	void createNewRaceDecendence();
+	void eliminateWorseOrganism();
 
-	std::vector <std::shared_ptr<Organism>> oldOrganisms;
 
 	bool extincted;
 	uint years;

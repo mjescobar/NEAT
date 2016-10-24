@@ -18,13 +18,14 @@ public:
 	virtual ~Spicies();
 	Spicies( std::shared_ptr <Race> founderRace );
 	Spicies( const SpiciesUserDefinitions& userdef, std::shared_ptr <Race> founderRace  );
-	void epoch( const uint childrenAmount );
+	void epoch( );
 	std::shared_ptr <Organism> getOrganismNewSpiciesCandidate();
 	bool isExtinct();
 	float getMeanFitnessOfOldRaces();
 	void printInfo() const;
 	void eliminateWorseOrganisms();
 	void eliminateWorseRaces();
+	void newRacesDecendece();
 
 	std::vector< std::shared_ptr<Race> > oldRaces;
 	std::vector< std::shared_ptr<Race> > youngRaces;
@@ -33,7 +34,7 @@ private:
 	bool detectRepeatedInnovation( const Organism & orgm );
 	Race& getRandomRace_ref();
 	void createRacesFromOrganismCandidates();
-	void createDecendence(const uint amountOfChildrens ); 
+	// void createDecendence(const uint amountOfChildrens ); 
 	void deleteExtinctedRaces();
 
 	bool extincted;
