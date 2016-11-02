@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <cmath> //fabs
-#include <fstream>
 
 using namespace std;
 
@@ -109,6 +108,8 @@ void TauSynapticWeight::save( const string path) const
 		file << 
 			"weight " << weight->value  << endl <<
 			"bufferSize " << bufferSize << endl;
+		saveBaseData(file);	
+
 		file.close();
 	}
 	else

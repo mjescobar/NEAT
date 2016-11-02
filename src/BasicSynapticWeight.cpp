@@ -3,7 +3,6 @@
 #include <iostream>
 #include <cmath> //fabs
 #include <iomanip>
-#include <fstream>
 
 using namespace std;
 namespace NEAT
@@ -84,6 +83,7 @@ void BasicSynapticWeight::save( const string path) const
 	{
 		file << 
 		"weight " << weight->value  << endl;
+		saveBaseData(file);
 		file.close();
 	}
 	else

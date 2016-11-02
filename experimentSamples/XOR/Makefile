@@ -14,8 +14,10 @@ compileNEATSpikes:
 installNEATSpikes:
 	cd ../../../; sudo make install
 
-run: 
+run:
+	@rm -rf save/*
+	@mkdir -p save  
 	@./testapp
 
 clean:
-	rm testapp
+	rm -f testapp

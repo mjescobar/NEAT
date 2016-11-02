@@ -9,6 +9,7 @@ namespace NEAT
 class Organism
 {
 public:
+	Organism(){};
 	Organism( std::shared_ptr <ANN> annSeed );
 	Organism( const OrganismUserDefinitions& userDef, std::shared_ptr <ANN> annSeed );
 	Organism( const ANN& ann, uint lifeExpectative );

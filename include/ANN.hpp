@@ -83,7 +83,10 @@ public:
 	
 	std::string innovationMsg; // Is used to prevent produce two similar species with the same topologie. (this could ocur but from diferent species and is unlikely and is not dangerous but cpu cost because find two times the same topology and could be two diferent in the same time.)
 	bool isNewSpecies; // Is set to true if have a topologie mutation
-
+	/**
+		\brief {Save all ANN to be reconstructed before.}
+		\param [In] {path: the place to save the ANN.}
+	*/
 	void save(const std::string path) const;
 
 	void load(const std::string path, std::unique_ptr<Neuron> seedNeuron, std::unique_ptr <SynapticWeight> seedSynapticWeihgt );

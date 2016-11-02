@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <tuple>
+#include <fstream>
 
 namespace NEAT
 {
@@ -25,6 +26,7 @@ public:
 	virtual void setInput( float inputVoltage );
 	virtual std::shared_ptr < SynapticWeight > crossOver( const SynapticWeight& other ) const;
 
+	void saveBaseData( std::ofstream & file ) const;
 
 	void cloneBaseData( const SynapticWeight& other );
 

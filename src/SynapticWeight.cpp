@@ -1,6 +1,8 @@
 #include "SynapticWeight.hpp"
 #include <cstdlib> //rand
 #include <iostream>
+
+using namespace std;
 namespace NEAT
 {
 
@@ -34,14 +36,14 @@ void SynapticWeight::setMark( uint neuronPlaceInLayerVector_IN,
 	this->layerOutput = layerOutput;
 }
 
-std::tuple < uint, uint, uint, uint > SynapticWeight::getMark() const
+tuple < uint, uint, uint, uint > SynapticWeight::getMark() const
 {
-	return std::make_tuple(neuronPlaceInLayerVector_IN, layerInput, neuronPlaceInLayerVector_OUT, layerOutput);
+	return make_tuple(neuronPlaceInLayerVector_IN, layerInput, neuronPlaceInLayerVector_OUT, layerOutput);
 }
 
-std::shared_ptr < SynapticWeight > SynapticWeight::crossOver( const SynapticWeight& other ) const
+shared_ptr < SynapticWeight > SynapticWeight::crossOver( const SynapticWeight& other ) const
 {
-	return std::move( ( rand()/(double)RAND_MAX > 0.5 ) ? this->clone(): other.clone()); // 50% de probabilidades
+	return move( ( rand()/(double)RAND_MAX > 0.5 ) ? this->clone(): other.clone()); // 50% de probabilidades
 }
 
 float SynapticWeight::getOutput() const
@@ -54,5 +56,13 @@ void SynapticWeight::setInput( float inputVoltage )
 	input = inputVoltage;
 } 
 
-
+void SynapticWeight::saveBaseData( ofstream & file ) const
+{
+	file << 
+	"neuronPlaceInLayerVector_IN " << neuronPlaceInLayerVector_IN << endl
+	<< "layerInput " << layerInput << endl
+	<< "neuronPlaceInLayerVector_OUT " << neuronPlaceInLayerVector_OUT << endl
+	<< "layerOutput " << layerOutput << endl;
 }
+
+}// END NAMESPACE NEAT
