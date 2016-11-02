@@ -27,6 +27,8 @@ public:
 	void spike();
 	void simulateNextCurrent();
 	float getMembraneVoltage();
+	void save( const std::string path) const;
+
 
 private:
 	std::shared_ptr < Parameter > resistence;

@@ -3,7 +3,9 @@
 #include <cmath> // exp fabs
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 
+using namespace std;
 namespace NEAT
 {
 
@@ -21,13 +23,13 @@ BasicNeuron::BasicNeuron( const BasicNeuronUserDefinitions& basicNeuronUserDefin
 	constantDistanceOfBias = basicNeuronUserDefinitions.constantDistanceOfBias;
 	constantDistanceOfSigmoidConstant = basicNeuronUserDefinitions.constantDistanceOfSigmoidConstant;
 
-	bias = std::make_unique < Parameter > ( basicNeuronUserDefinitions.probabilityOfBiasRandomMutation,
+	bias = make_unique < Parameter > ( basicNeuronUserDefinitions.probabilityOfBiasRandomMutation,
 		basicNeuronUserDefinitions.maximumBiasPercentVariation,
 		basicNeuronUserDefinitions.maxBias,
 		basicNeuronUserDefinitions.minBias
 		 );
 	
-	sigmoidConstant = std::make_unique < Parameter > ( basicNeuronUserDefinitions.probabilityOfSigmoidConstantRandomMutation,
+	sigmoidConstant = make_unique < Parameter > ( basicNeuronUserDefinitions.probabilityOfSigmoidConstantRandomMutation,
 		basicNeuronUserDefinitions.maximumSigmoidConstantPercentVariation,
 		basicNeuronUserDefinitions.maxSigmoidConstant,
 		basicNeuronUserDefinitions.minSigmoidConstant
@@ -63,7 +65,7 @@ float BasicNeuron::getDistance( const Neuron * otherNeuron ) const
 	const BasicNeuron * otherBasicNeuron = dynamic_cast < const BasicNeuron *  > (  otherNeuron );
 	if(otherBasicNeuron == NULL)
 	{
-		std::cerr << "BasicNeuron::getDistance::otherNeuron is not BasicNeuron type." << std::endl;
+		cerr << "BasicNeuron::getDistance::otherNeuron is not BasicNeuron type." << endl;
 		exit( EXIT_FAILURE );
 	}
 
@@ -83,20 +85,39 @@ void BasicNeuron::spread()
 
 void BasicNeuron::printInfo() const
 {
-	std::cout << "Bias: " << bias->value << "\tSigmoidConstant: " << sigmoidConstant->value << std::setprecision(3) << "\tlastInputAccum: "<< lastInputAccum << "\tinputVoltageAccum: " << inputVoltageAccum << "\toutput: " << output << "\tmutationProbability: "<< mutationProbability<< std::endl;
+	cout << "Bias: " << bias->value << "\tSigmoidConstant: " << sigmoidConstant->value << setprecision(3) << "\tlastInputAccum: "<< lastInputAccum << "\tinputVoltageAccum: " << inputVoltageAccum << "\toutput: " << output << "\tmutationProbability: "<< mutationProbability<< endl;
 }
 
-std::shared_ptr < Neuron > BasicNeuron::clone() const 
+shared_ptr < Neuron > BasicNeuron::clone() const 
 {
-	return std::move( std::make_unique < BasicNeuron > (*this) );
+	return move( make_unique < BasicNeuron > (*this) );
 }
 
-std::shared_ptr < Neuron > BasicNeuron::createNew() const
+shared_ptr < Neuron > BasicNeuron::createNew() const
 {
-	auto tmp = std::make_unique < BasicNeuron > (*this);
+	auto tmp = make_unique < BasicNeuron > (*this);
 	tmp->bias->random();
 	tmp->sigmoidConstant->random();
-	return std::move( tmp );
+	return move( tmp );
 }
+
+void BasicNeuron::save( const string path) const 
+{
+	ofstream file(path);
+	if(file.is_open())
+	{
+		file << 
+		"bias " << bias->value << endl << 
+		"sigmoidConstant " << sigmoidConstant->value << endl;
+		file.close();
+	}
+	else
+	{
+		cerr << "BasicNeuron::save::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
+
+}
+
 
 } // End namespace NEAT

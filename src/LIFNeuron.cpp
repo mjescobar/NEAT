@@ -2,6 +2,7 @@
 
 #include <cmath> // exp fabs
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -158,7 +159,27 @@ float LIFNeuron::getMembraneVoltage()
 	return membranVoltage;
 }
 
+void LIFNeuron::save( const std::string path ) const 
+{
+	ofstream file;
+	file.open(path);
+	if(file.is_open())
+	{
+		file << 
+		"samplingDelaTime " << samplingDelaTime << endl <<
+		"membraneTimeConstant " << membraneTimeConstant->value << endl <<
+		"resistence " << resistence->value << endl <<
+		"spikeThreshold " << spikeThreshold << endl <<
+		"resetVoltage " << resetVoltage << endl;
+		file.close();
+	}
+	else
+	{
+		cerr << "CPPNNeuron::save::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
 
+}
 
 
 } // End namespace NEAT

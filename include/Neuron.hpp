@@ -4,6 +4,7 @@
 #include "SynapticWeight.hpp"
 #include <vector>
 #include <memory>
+#include <string>
 
 namespace NEAT
 {
@@ -20,6 +21,7 @@ public:
 	virtual void spread() = 0;
 	virtual std::shared_ptr < Neuron > clone() const = 0;
 	virtual std::shared_ptr < Neuron > createNew() const = 0; 
+	virtual void save( const std::string path) const = 0;
 
 	// Las siguientes son opcionales si se desea o no sobre escribirlas
 	virtual void printInfo() const {};

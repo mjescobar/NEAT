@@ -24,6 +24,9 @@ public:
 	void mightMutate();
 	std::shared_ptr <Layer> clone();
 
+
+	void save(const std::string path) const;
+
 	std::vector < std::shared_ptr < Neuron > > neurons; // Por simplicidad y una mejor notacion se deje neurons en publico
 
 private:

@@ -26,6 +26,7 @@ public:
 	std::shared_ptr < Neuron > clone()  const override; //usado en cruzamiento
 	void printInfo() const override;
 	std::shared_ptr < Neuron > createNew() const override; // usado en mutacion
+	void save( const std::string path) const ;
 
 private:
 	std::shared_ptr < Parameter > bias;

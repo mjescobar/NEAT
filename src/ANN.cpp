@@ -1,4 +1,5 @@
 #include "ANN.hpp"
+#include <fstream>
 #include <climits>
 #include <tuple>
 #include <iostream>
@@ -107,7 +108,7 @@ void ANN::printInfo() const{
 	}
 }
 
-void ANN::setInputs( const std::vector<float>& inputs ) const{
+void ANN::setInputs( const vector<float>& inputs ) const{
 	if( inputs.size() !=  inputsAmount )
 	{
 		cerr << "Error::ANN::setInputs:: input size is not correct." << endl;
@@ -181,4 +182,37 @@ bool ANN::getIsNewSpicie() const
 	return isNewSpecies;
 }
 
+
+void ANN::save(const string path) const
+{
+	uint sw_id = 0;
+	ofstream file;
+	file.open(path);
+	if(file.is_open())
+	{
+		for(auto const& key_layer : layersMap )
+		{
+			key_layer.second->save(path +"L"+ to_string(key_layer.first) );
+			//Saving in table
+			file << "L" << to_string(key_layer.first) << endl;
+		}
+		for(auto const& sw : synapticWeights)
+		{
+			sw->save(path + "S" + to_string(sw_id) );
+			// Saving in table.
+			file << "S" << to_string(sw_id)  << endl;
+			sw_id++;
+		}
+		file.close();
+	}
+	else
+	{
+		cerr << "ERROR::ANN::save::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
 }
+
+
+} // END NAMESPACE NEAT
+
+

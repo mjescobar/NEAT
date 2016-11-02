@@ -3,7 +3,9 @@
 #include <iostream>
 #include <cmath> //fabs
 #include <iomanip>
+#include <fstream>
 
+using namespace std;
 namespace NEAT
 {
 
@@ -17,7 +19,7 @@ BasicSynapticWeight::BasicSynapticWeight():BasicSynapticWeight(BasicSynapticWeig
 BasicSynapticWeight::BasicSynapticWeight(const BasicSynapticWeightUserDefinitions& userdef )
 {
 	// Se crean los parametros, luego se otorgan los valores iniciales del resto de las variables importantes.
-	weight = std::make_unique < Parameter > (userdef.probabilityOfWeightRandomMutation,
+	weight = make_unique < Parameter > (userdef.probabilityOfWeightRandomMutation,
 		userdef.maximumWeightPercentVariation,
 		userdef.maxWeightValue,
 		userdef.minWeightValue);
@@ -40,7 +42,7 @@ BasicSynapticWeight::BasicSynapticWeight( const BasicSynapticWeight& other )
 float BasicSynapticWeight::getDistance( const SynapticWeight * sw ) const
 {
 	const BasicSynapticWeight *  bsw = dynamic_cast < const BasicSynapticWeight * > ( sw );
-	if(bsw == NULL){std::cerr << "BasicSynapticWeight::getDistance::sw is not type BasicSynapticWeight" << std::endl; exit(EXIT_FAILURE);}
+	if(bsw == NULL){cerr << "BasicSynapticWeight::getDistance::sw is not type BasicSynapticWeight" << endl; exit(EXIT_FAILURE);}
 	return fabs(bsw->weight->value - this->weight->value) * constantDistanceOfSynapticWeightValue;
 }
 
@@ -59,19 +61,36 @@ void BasicSynapticWeight::spread()
 
 void BasicSynapticWeight::printInfo() const
 {
-	std::cout << "weight: " << weight->value << std::setprecision(6) << "\tHin(L,N): {" << layerInput << "," << neuronPlaceInLayerVector_IN <<"}" << "\tHout(L,N): {" << layerOutput << "," << neuronPlaceInLayerVector_OUT <<"}"  << "\tinput: " << input << "\toutput: " << output << std::endl;
+	cout << "weight: " << weight->value << setprecision(6) << "\tHin(L,N): {" << layerInput << "," << neuronPlaceInLayerVector_IN <<"}" << "\tHout(L,N): {" << layerOutput << "," << neuronPlaceInLayerVector_OUT <<"}"  << "\tinput: " << input << "\toutput: " << output << endl;
 }
 
-std::shared_ptr < SynapticWeight > BasicSynapticWeight::clone() const
+shared_ptr < SynapticWeight > BasicSynapticWeight::clone() const
 {
-	return std::move( std::make_unique < BasicSynapticWeight > ( *this )  );
+	return move( make_unique < BasicSynapticWeight > ( *this )  );
 }
 
-std::shared_ptr < SynapticWeight > BasicSynapticWeight::createNew() const
+shared_ptr < SynapticWeight > BasicSynapticWeight::createNew() const
 {
-	auto tmp = std::make_unique < BasicSynapticWeight > ( *this );
+	auto tmp = make_unique < BasicSynapticWeight > ( *this );
 	tmp->weight->random();
-	return std::move( tmp );
+	return move( tmp );
+}
+
+void BasicSynapticWeight::save( const string path) const
+{
+	ofstream file;
+	file.open(path);
+	if(file.is_open())
+	{
+		file << 
+		"weight " << weight->value  << endl;
+		file.close();
+	}
+	else
+	{
+		cerr << "BasicNeuron::save::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
 }
 
 } // end namespace NEAT

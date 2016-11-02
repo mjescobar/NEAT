@@ -22,7 +22,7 @@ public:
 	std::shared_ptr < SynapticWeight > clone() const override;
 	std::shared_ptr < SynapticWeight > createNew() const override;
 	void printInfo() const;
-
+	void save( const std::string path) const;
 private:
 	std::deque <float> voltageQueue;
 	std::shared_ptr < Parameter > weight;

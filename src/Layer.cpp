@@ -1,8 +1,9 @@
 #include "Layer.hpp"
 #include <iostream>
-
+#include <fstream>
 //Para simplificar la notacion se definira el preambulo completo en una notacion mas corta.
 
+using namespace std;
 
 namespace NEAT
 {
@@ -12,9 +13,9 @@ Layer::~Layer()
 
 }
 
-Layer::Layer ( std::shared_ptr < Neuron > seedNeuron, unsigned int layerId) 
+Layer::Layer ( shared_ptr < Neuron > seedNeuron, unsigned int layerId) 
 {
-	this->seedNeuron = std::move( seedNeuron );
+	this->seedNeuron = move( seedNeuron );
 	this->layerId = layerId;
 }
 
@@ -33,33 +34,33 @@ void Layer::addNewNeuron()
 }
 
 
-void Layer::addNeuron( std::shared_ptr < Neuron > neuron)
+void Layer::addNeuron( shared_ptr < Neuron > neuron)
 {
-	neurons.push_back( std::move( neuron ) );
+	neurons.push_back( move( neuron ) );
 }
 
 
 void Layer::printInfo() const
 {
-	std::cout << "LAYER ID: " << layerId << std::endl;
+	cout << "LAYER ID: " << layerId << endl;
 	for (unsigned int i = 0; i < neurons.size(); ++i)
 	{
-		std::cout << "Neuron place: " << i << std::endl;
+		cout << "Neuron place: " << i << endl;
 		neurons.at(i)->printInfo();
 	}
 }
 
 
-std::shared_ptr < Layer > Layer::crossOver( const Layer& other) const // has to be exact equals, not possible crossOver with another species
+shared_ptr < Layer > Layer::crossOver( const Layer& other) const // has to be exact equals, not possible crossOver with another species
 {
-	auto result = std::make_unique <Layer>( std::move(seedNeuron->clone()), layerId );
+	auto result = make_unique <Layer>( move(seedNeuron->clone()), layerId );
 
 	// 50% probabilidad de heredar la neurona de cualquiera de sus padres. neurona a neurona.
 	for (uint i = 0; i < this->neurons.size(); ++i)
 	{
-		( rand()/(double)RAND_MAX > 0.5 ) ? result->neurons.push_back(std::move(this->neurons.at(i)->clone())) : result->neurons.push_back(std::move(other.neurons.at(i)->clone()));
+		( rand()/(double)RAND_MAX > 0.5 ) ? result->neurons.push_back(move(this->neurons.at(i)->clone())) : result->neurons.push_back(move(other.neurons.at(i)->clone()));
 	}	
-	return std::move(result);
+	return move(result);
 }
 
 
@@ -79,21 +80,45 @@ float Layer::getDistance( const Layer& other ) const
 	{
 		result += this->neurons.at(i)->getDistance( other.neurons.at(i).get() );
 	}	
-	return std::move(result);
+	return move(result);
 }
 
-std::shared_ptr <Layer> Layer::clone()
+shared_ptr <Layer> Layer::clone()
 {
-	auto result = std::make_unique <Layer>( std::move(seedNeuron->clone()), layerId );
+	auto result = make_unique <Layer>( move(seedNeuron->clone()), layerId );
 
 	// 50% probabilidad de heredar la neurona de cualquiera de sus padres. neurona a neurona.
 	for (uint i = 0; i < this->neurons.size(); ++i)
 	{
-		result->neurons.push_back(std::move(this->neurons.at(i)->clone())) ;
+		result->neurons.push_back(move(this->neurons.at(i)->clone())) ;
 	}	
-	return std::move(result);
+	return move(result);
 }
 
+void Layer::save(const string path) const
+{
+	ofstream file;
+	file.open(path);
+	if(file.is_open())
+	{
+		uint n_id = 0;
+		for( auto& neuron : neurons  )
+		{
+			neuron->save( path + "N" + to_string(n_id));
+			//Adding to de table
+			file << "N" << n_id << endl;
+			n_id++;	
+		}
+	}
+	else
+	{
+		cerr << "Layer::save::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
+
+	file.close();
+
+}
 
 
 }

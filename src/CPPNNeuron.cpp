@@ -3,6 +3,7 @@
 #include <cmath> // exp fabs
 #include <iostream>
 #include <memory>
+#include <fstream>
 using namespace std;
 namespace NEAT
 {
@@ -117,5 +118,26 @@ shared_ptr < Neuron > CPPNNeuron::createNew() const
 	tmp->cppnFunction->amplifier = tmp->Amplifier->value;
 	return move( tmp );
 }
+
+
+void CPPNNeuron::save( const std::string path ) const 
+{
+	ofstream file;
+	file.open(path);
+	if(file.is_open())
+	{
+		file << 
+		"bias " << bias->value <<  endl << 
+		"Amplifier" << Amplifier->value <<  endl << 
+		"functionId" << cppnFunction->functionId <<  endl;
+		file.close();
+	}
+	else
+	{
+		cerr << "CPPNNeuron::save::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
+}
+
 
 } // End namespace NEAT

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cmath> //fabs
+#include <fstream>
 
 using namespace std;
 
@@ -98,6 +99,23 @@ shared_ptr < SynapticWeight > TauSynapticWeight::createNew() const
 	tmp->weight->random();
 	tmp->bufferSize = round(maxBufferSize*( rand()/(double)RAND_MAX ) );
 	return move( tmp );
+}
+
+void TauSynapticWeight::save( const string path) const
+{
+	ofstream file(path);
+	if(file.is_open())
+	{
+		file << 
+			"weight " << weight->value  << endl <<
+			"bufferSize " << bufferSize << endl;
+		file.close();
+	}
+	else
+	{
+		cerr << "BasicNeuron::save::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
 }
 
 } // end namespace NEAT

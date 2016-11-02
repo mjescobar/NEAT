@@ -1,5 +1,5 @@
 COMPILER=g++ -std=c++14
-CFLAGS=-g -Wall -fPIC -I./include -I./objects -I./src -O3
+CFLAGS=-g -Wall -fPIC -I./include -I./objects -I./src 
 
 all: testapp
 
