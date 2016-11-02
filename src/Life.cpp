@@ -36,8 +36,8 @@ void Life::epoch()
 	{
 		spicies.at(i)->epoch();
 	}
-	createDecendence();
 	deleteExtinctedSpicies();
+	createDecendence();
 	createSpiciesFromOrganismCandidates();
 	currentGeneration++;
 }

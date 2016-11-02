@@ -23,39 +23,46 @@ void Life::createDecendence()
 	// Primero las razas viejas se reparten los hijos.
 
 	// Se pasan todos los organismos a un vector llamado organisms y se mantiene un mapeo entre este vector y su posicion en la especie y raza correspondiente.
-	map <uint, vector <uint> > organismsToStructure_map;
-	vector < Organism *  > organisms;
+	vector < Organism *  > allOrganisms_ref;
+	map <uint, vector <uint> > allOrganisms_ref_To_StructurePosition_map;
+	// Con structure position queremos decir la posicion en la especie y raza correspondiente.
 	for ( uint i = 0; i < spicies.size(); i++){ 
 		for( uint j = 0; j < spicies.at(i)->oldRaces.size(); j++){
 			for( uint k = 0; k < spicies.at(i)->oldRaces.at(j)->oldOrganisms.size(); k++){
-				organisms.push_back( spicies.at(i)->oldRaces.at(j)->oldOrganisms.at(k).get() );
+				allOrganisms_ref.push_back( spicies.at(i)->oldRaces.at(j)->oldOrganisms.at(k).get() );
 				vector <uint> structurePosition = {i,j,k};
-				organismsToStructure_map.emplace(organisms.size()-1,structurePosition);
+				allOrganisms_ref_To_StructurePosition_map.emplace(allOrganisms_ref.size()-1,structurePosition);
 	}	}	}
 
-	// Se crea un vector con los fitness de cada uno de los organismos para ser usado como distribucion de probabilidad discreta mas adelante.
-	vector <float> fitnessVector;
-	for (uint i = 0; i < organisms.size(); ++i)
+	if(allOrganisms_ref.size() > 0) // En caso, por ejemplo, como el principio donde no hay razas antiguas.
 	{
-		fitnessVector.push_back( organisms.at(i)->getAdjustedFitness() );
+		// Se crea un vector con los fitness de cada uno de los organismos para ser usado como distribucion de probabilidad discreta mas adelante.
+		vector <float> fitnessVector;
+		for (uint i = 0; i < allOrganisms_ref.size(); ++i)
+		{
+			fitnessVector.push_back( allOrganisms_ref.at(i)->getAdjustedFitness() );
+		}
+
+		// se crea la funcion de probabilidad asociada a los fitness.
+		discrete_distribution<uint> obtainFatherOrganism(fitnessVector.begin(), fitnessVector.end());
+
+
+		//Segun la probabilidad anterior se obtienen los padres para los nuevos hijos.
+		for (uint i = 0; i < maxAmountOrganismInAllOldRaces; ++i)
+		{
+			uint father = obtainFatherOrganism(*generator);
+			vector <uint> structurePositionFather = allOrganisms_ref_To_StructurePosition_map.at(father);
+			uint specieOfFather = structurePositionFather.at(0);
+			uint raceOfFather = structurePositionFather.at(1);
+			uint organismPositionOfFather = structurePositionFather.at(2);
+			spicies.at(specieOfFather)->oldRaces.at(raceOfFather)->getChildFromParentAt(organismPositionOfFather);
+		}	
 	}
-	// se crea la funcion de probabilidad asociada a los fitness.
-	discrete_distribution<uint> obtainFatherOrganism(fitnessVector.begin(), fitnessVector.end());
-
-
-	//Segun la probabilidad anterior se obtienen los padres para los nuevos hijos.
-	for (uint i = 0; i < maxAmountOrganismInAllOldRaces; ++i)
-	{
-		uint father = obtainFatherOrganism(*generator);
-		vector <uint> structurePositionFather = organismsToStructure_map.at(father);
-		uint specieOfFather = structurePositionFather.at(0);
-		uint raceOfFather = structurePositionFather.at(1);
-		uint organismPositionOfFather = structurePositionFather.at(2);
-		spicies.at(specieOfFather)->oldRaces.at(raceOfFather)->getChildFromParentAt(organismPositionOfFather);
-	}	
+	
 
 	// Luego las razas nuevas pasaran de epoca
-	for( auto& specie : spicies ){
+	for( auto& specie : spicies )
+	{
 		specie->newRacesDecendece(); // tienen asegurado una cantidad de hijos
 	}
 }

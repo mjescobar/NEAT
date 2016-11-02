@@ -43,6 +43,7 @@ void Spicies::epoch()
 
 	createRacesFromOrganismCandidates();
 	years ++;
+	deleteExtinctedRaces();
 }
 
 void Spicies::newRacesDecendece()

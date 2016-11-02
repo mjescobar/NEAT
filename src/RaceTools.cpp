@@ -121,6 +121,11 @@ void Race::getChildFromParentAt(const uint & placeOfFather)
 }
 void Race::createNewRaceDecendence()
 {
+	if(oldOrganisms.size() == 0)
+	{
+		return;
+	}
+
 	vector <float> fitnessVector;
 	fillFitnessVector (fitnessVector); // Se llenaron los fitness en orden.
 	discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
