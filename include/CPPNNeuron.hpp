@@ -27,6 +27,7 @@ public:
 	void printInfo() const override;
 	std::shared_ptr < Neuron > createNew() const override; // usado en mutacion
 	void save( const std::string path) const;
+	void load( const std::string path);
 
 private:
 	std::shared_ptr < CPPNFunction > cppnFunction;

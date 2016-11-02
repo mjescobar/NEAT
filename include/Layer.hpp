@@ -23,7 +23,7 @@ public:
 	float getDistance( const Layer& other ) const;
 	void mightMutate();
 	std::shared_ptr <Layer> clone();
-
+	void load(std::string path);
 
 	void save(const std::string path) const;
 

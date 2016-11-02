@@ -22,6 +22,7 @@ public:
 	virtual std::shared_ptr < Neuron > clone() const = 0;
 	virtual std::shared_ptr < Neuron > createNew() const = 0; 
 	virtual void save( const std::string path) const = 0;
+	virtual void load( const std::string path) = 0;
 
 	// Las siguientes son opcionales si se desea o no sobre escribirlas
 	virtual void printInfo() const {};

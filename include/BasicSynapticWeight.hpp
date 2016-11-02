@@ -22,7 +22,7 @@ public:
 	std::shared_ptr < SynapticWeight > createNew() const override;
 	void printInfo() const;
 	void save( const std::string path) const;
-
+	void load( const std::string path );
 private:
 
 	std::shared_ptr < Parameter > weight;

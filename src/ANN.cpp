@@ -18,7 +18,6 @@ ANN::ANN()
 	isNewSpecies = false;
 }
 
-
 // En caso de no definir ANNUserDefinitions, entonces se usa el constructor por defecto de ANNUSERDEF
 ANN::ANN( shared_ptr <Neuron> seedNeuron, shared_ptr <SynapticWeight> seedSynapticWeihgt)
 :ANN(ANNUserDefinitions(), move(seedNeuron), move(seedSynapticWeihgt))
@@ -194,13 +193,13 @@ void ANN::save(const string path) const
 		{
 			key_layer.second->save(path +"L"+ to_string(key_layer.first) );
 			//Saving in table
-			file << "L" << to_string(key_layer.first) << endl;
+			file << "L " << to_string(key_layer.first) << endl;
 		}
 		for(auto const& sw : synapticWeights)
 		{
 			sw->save(path + "S" + to_string(sw_id) );
 			// Saving in table.
-			file << "S" << to_string(sw_id)  << endl;
+			file << "S " << to_string(sw_id)  << endl;
 			sw_id++;
 		}
 		file.close();
@@ -208,6 +207,46 @@ void ANN::save(const string path) const
 	else
 	{
 		cerr << "ERROR::ANN::save::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
+}
+
+void ANN::load(const string path, unique_ptr<Neuron> seedNeuron, unique_ptr <SynapticWeight> seedSynapticWeihgt )
+{
+	uint layerIn, layerOut, neuronOut, neuronIn;
+	ifstream file;
+	file.open(path, ios::in);
+	string line;
+	if (file.is_open())
+	{
+		while ( getline (file,line, char(' ') ) )
+		{
+			if (line.compare("L") == 0)
+			{
+				getline (file,line, char('\n') );
+				uint layerId = stoul(line);
+				auto layer = make_unique<Layer>(move(seedNeuron->clone()), layerId);
+				layer->load(path+"L"+to_string(layerId));
+				layersMap.emplace ( layerId, move(layer)  );
+			}
+			else if (line.compare("S") == 0)
+			{
+				getline (file,line, char('\n') );
+				uint sw_id = stoul(line);
+				auto SW = seedSynapticWeihgt->clone();
+				SW->load(path+"S"+to_string(sw_id));
+				tie(neuronIn,layerIn, neuronOut, layerOut) = SW->getMark();
+				synapticWeights.push_back(move(SW));
+				layersMap.at(layerOut)->neurons.at(neuronOut)->addIncomingSynapticWeight( synapticWeights.back() );
+				layersMap.at(layerIn)->neurons.at(neuronIn)->addOutcomingSynapticWeight( synapticWeights.back() );
+			}
+		}
+		inputsAmount = layersMap.at(0)->neurons.size();
+		file.close();
+	}
+	else
+	{
+		cerr << "ERROR::ANN::load::File could not be opened" << endl;
 		exit(EXIT_FAILURE);
 	}
 }

@@ -181,5 +181,50 @@ void LIFNeuron::save( const std::string path ) const
 
 }
 
+void LIFNeuron::load( const string path)
+{
+	ifstream file;
+	file.open(path, ios::in);
+	string line;
+	if (file.is_open())
+	{
+		while ( getline (file,line, char(' ') ) )
+		{
+			if (line.compare("samplingDelaTime") == 0)
+			{
+				getline (file,line, char('\n') );
+				samplingDelaTime =  stof(line);
+			}
+			else if(line.compare("membraneTimeConstant") == 0)
+			{
+				getline (file,line, char('\n') );
+				membraneTimeConstant->value =  stof(line);
+			}
+			else if(line.compare("resistence") == 0)
+			{
+				getline (file,line, char('\n') );
+				resistence->value =  stof(line);
+			}
+			else if(line.compare("spikeThreshold") == 0)
+			{
+				getline (file,line, char('\n') );
+				spikeThreshold =  stof(line);
+			}
+			else if(line.compare("resetVoltage") == 0)
+			{
+				getline (file,line, char('\n') );
+				resetVoltage =  stof(line);
+			}
+		}
+		file.close();
+	}
+	else
+	{
+		cerr << "ERROR::LIFNeuron::load::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
+}
+
+
 
 } // End namespace NEAT

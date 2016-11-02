@@ -28,6 +28,7 @@ public:
 	void simulateNextCurrent();
 	float getMembraneVoltage();
 	void save( const std::string path) const;
+	void load( const std::string path);
 
 
 private:

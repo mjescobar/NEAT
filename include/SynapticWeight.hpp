@@ -20,6 +20,7 @@ public:
 	virtual std::shared_ptr < SynapticWeight > clone() const = 0;
 	virtual std::shared_ptr < SynapticWeight > createNew() const = 0;
 	virtual void save( const std::string path) const = 0;
+	virtual void load( const std::string path ) = 0;
 
 	//Las que pueden ser sobre escritas
 	virtual float getOutput() const ;

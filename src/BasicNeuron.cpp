@@ -119,5 +119,36 @@ void BasicNeuron::save( const string path) const
 
 }
 
+void BasicNeuron::load( const string path)
+{
+	ifstream file;
+	file.open(path, ios::in);
+	string line;
+	if (file.is_open())
+	{
+		while ( getline (file,line, char(' ') ) )
+		{
+			if (line.compare("bias") == 0)
+			{
+				getline (file,line, char('\n') );
+				bias->value =  stof(line);
+			}
+			else if(line.compare("sigmoidConstant") == 0)
+			{
+				getline (file,line, char('\n') );
+				sigmoidConstant->value =  stof(line);
+			}
+		}
+		file.close();
+	}
+	else
+	{
+		cerr << "ERROR::BasicNeuron::load::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
+
+}
+
+
 
 } // End namespace NEAT

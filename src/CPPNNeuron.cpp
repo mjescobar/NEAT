@@ -128,8 +128,8 @@ void CPPNNeuron::save( const std::string path ) const
 	{
 		file << 
 		"bias " << bias->value <<  endl << 
-		"Amplifier" << Amplifier->value <<  endl << 
-		"functionId" << cppnFunction->functionId <<  endl;
+		"Amplifier " << Amplifier->value <<  endl << 
+		"functionId " << cppnFunction->functionId <<  endl;
 		file.close();
 	}
 	else
@@ -139,5 +139,41 @@ void CPPNNeuron::save( const std::string path ) const
 	}
 }
 
+void CPPNNeuron::load( const string path)
+{
+	ifstream file;
+	file.open(path, ios::in);
+	string line;
+	if (file.is_open())
+	{
+		while ( getline (file,line, char(' ') ) )
+		{
+			if (line.compare("bias") == 0)
+			{
+				getline (file,line, char('\n') );
+				bias->value =  stof(line);
+				cppnFunction->bias = bias->value ;
+
+			}
+			else if(line.compare("Amplifier") == 0)
+			{
+				getline (file,line, char('\n') );
+				Amplifier->value =  stof(line);
+				cppnFunction->amplifier = Amplifier->value ;
+			}
+			else if(line.compare("functionId") == 0)
+			{
+				getline (file,line, char('\n') );
+				cppnFunction->functionId =  stoul(line);
+			}
+		}
+		file.close();
+	}
+	else
+	{
+		cerr << "ERROR::CPPNNeuron::load::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
+}
 
 } // End namespace NEAT

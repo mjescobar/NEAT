@@ -106,7 +106,7 @@ void Layer::save(const string path) const
 		{
 			neuron->save( path + "N" + to_string(n_id));
 			//Adding to de table
-			file << "N" << n_id << endl;
+			file << "N " << n_id << endl;
 			n_id++;	
 		}
 	}
@@ -120,5 +120,31 @@ void Layer::save(const string path) const
 
 }
 
-
+void Layer::load(std::string path)
+{
+	ifstream file;
+	file.open(path, ios::in);
+	string line;
+	if (file.is_open())
+	{
+		while ( getline (file,line, char(' ') ) )
+		{
+			if (line.compare("N") == 0)
+			{
+				getline (file,line, char('\n') );
+				uint neuronId = stoul(line);
+				auto neuron = seedNeuron->clone();
+				neuron->load(path+"N"+to_string(neuronId));
+				addNeuron(move(neuron));
+			}
+		}
+		file.close();
+	}
+	else
+	{
+		cerr << "ERROR::Layer::load::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
 }
+
+} // END NAMESPACE NEAT

@@ -6,6 +6,11 @@ using namespace std;
 namespace NEAT
 {
 
+Organism::Organism()
+{
+	ann = make_unique<ANN>();
+}
+
 Organism::~Organism()
 {
 }

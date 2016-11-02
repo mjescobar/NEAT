@@ -93,4 +93,48 @@ void BasicSynapticWeight::save( const string path) const
 	}
 }
 
+void BasicSynapticWeight::load( const std::string path )
+{
+	ifstream file;
+	file.open(path, ios::in);
+	string line;
+	if (file.is_open())
+	{
+		while ( getline (file,line, char(' ') ) )
+		{
+			if (line.compare("weight") == 0)
+			{
+				getline (file,line, char('\n') );
+				weight->value =  stof(line);
+			}
+			else if (line.compare("neuronPlaceInLayerVector_IN") == 0)
+			{
+				getline (file,line, char('\n') );
+				neuronPlaceInLayerVector_IN =  stoul(line);
+			}
+			else if (line.compare("layerInput") == 0)
+			{
+				getline (file,line, char('\n') );
+				layerInput =  stoul(line);
+			}
+			else if (line.compare("neuronPlaceInLayerVector_OUT") == 0)
+			{
+				getline (file,line, char('\n') );
+				neuronPlaceInLayerVector_OUT =  stoul(line);
+			}
+			else if (line.compare("layerOutput") == 0)
+			{
+				getline (file,line, char('\n') );
+				layerOutput =  stoul(line);
+			}
+		}
+		file.close();
+	}
+	else
+	{
+		cerr << "ERROR::BasicSynapticWeight::load::File could not be opened" << endl;
+		exit(EXIT_FAILURE);
+	}
+}
+
 } // end namespace NEAT
