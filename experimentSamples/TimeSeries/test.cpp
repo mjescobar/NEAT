@@ -13,6 +13,8 @@ float maxFitness = 0.f;
 float fitnessAcumm = 0.f;
 uint contador = 0;
 float maxGeneration = 0.f;
+Organism champion;
+unique_ptr <NEATStatistics> neatStats ;
 
 // Serie de tiempo 
 // X[k+1] = r*X[k]*(1-X[k])
@@ -54,6 +56,7 @@ void experiment( Organism& orgm )
 
 	if(fitness > maxFitness){
 		maxFitness = fitness; 
+		champion = orgm;
 	} 
 
 	if(fitness > maxGeneration){
@@ -76,6 +79,7 @@ int main()
 	auto TSWseed = make_unique <TauSynapticWeight>();
 	auto ann1 = make_unique <ANN> ( move(BNseed), move(TSWseed) );
 	auto life = make_unique <Life>( move(ann1) );
+	neatStats = make_unique <NEATStatistics>();
 
 	for (int i = 0; i < 1000; ++i)
 	{
@@ -83,12 +87,17 @@ int main()
 		//std::cout << "Gen " << i << "\t" << fitnessAcumm/(float)contador  <<"\t" << contador << "\t" << life->spicies.size()<< std::endl;
 		fitnessAcumm = 0.f;
 		contador = 0;
+		neatStats->takeInformationOfTheCurrentGeneration(*life);
 		life->epoch();
 		std::cout << "MG: " << maxGeneration << std::endl;
 		maxGeneration = 0.f;
 	}
 	std::cout << "================================================" << std::endl;
 	life->printInfo();
+	neatStats->printStatisticsToFile("./save/NEATStatistics");
+	neatStats->getAverageFitnessOfAllGenerationInFile("./save/fitessPerGeneration");
+	neatStats->getChampionFitnessOfAllGenerationInFile("./save/championPerGeneration");
+	champion.ann->save("./save/champion");
 	std::cout << "maxFitness: " << maxFitness << std::endl;
 	return 0;
 }

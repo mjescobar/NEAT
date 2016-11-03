@@ -57,6 +57,8 @@ void Spicies::epoch()
 	deleteExtinctedRaces();
 }
 
+
+
 void Spicies::newRacesDecendece()
 {
 	for (uint i = 0; i < youngRaces.size(); ++i)

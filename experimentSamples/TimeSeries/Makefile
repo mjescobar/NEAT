@@ -15,6 +15,8 @@ installNEATSpikes:
 	cd ../../../; sudo make install
 
 run: 
+	@mkdir -p save
+	@rm -rf /save/*
 	@./testapp
 
 clean:
