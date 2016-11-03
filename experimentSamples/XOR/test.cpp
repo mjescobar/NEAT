@@ -105,7 +105,9 @@ int main( int argc, char ** argv )
 	life->printInfo();
 	cout << "maxFitness: " << maxFitness << endl;
 	cout << "================================================" << endl;
-	//neatStats->printInfo();
+	neatStats->printStatisticsToFile("./save/NEATStatistics");
+	neatStats->getAverageFitnessOfAllGenerationInFile("./save/fitessPerGeneration");
+	neatStats->getChampionFitnessOfAllGenerationInFile("./save/championPerGeneration");
 	champion.ann->save("./save/champion");
 	cout << "===LOADING==="<< endl;
 

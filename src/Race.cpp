@@ -9,7 +9,6 @@ namespace NEAT
 
 Race::~Race()
 {
-
 }
 
 Race::Race(shared_ptr <Organism>  founderOrganism ): Race( RaceUserDefinitions(), move(founderOrganism) ){}
@@ -58,11 +57,10 @@ void Race::epoch( ) // no se especifica en caso de ser young
 	// Primero se pasa de epoca a cada organismo de la raza (pudiendo morir algunos de ellos en el camino)
 	organismsGrowUp(); // Todos los nuevos organismos son pasados a viejos organismos
 						// en este momento newOrganism esta vacio y sera vuelto a llenar al final
-	if(oldOrganisms.size() == 0 && newOrganisms.size() == 0){ 
-		extincted = true; 
-		return; 
+	if( ++years >= maxYearsYoungRace )	
+	{	
+		youngRace = false; 
 	}
-	if( ++years >= maxYearsYoungRace ){	youngRace = false; }
 	// los que quedan tienen derecho a aparearse, tomando en cuenta la posibilidad que exista tan solo un organismo en la raza es que se chequea tal.
 }
 
@@ -97,7 +95,7 @@ shared_ptr <Race> Race::createNew( shared_ptr <Organism> organism )
 
 bool Race::isExtinct()
 {
-	extincted = extincted || ( ( newOrganisms.size() + oldOrganisms.size() == 0 )? true : false ); // Because can be extincted from the epoch method if have 0 childs mean that is a bad race and is extincted inmediatly
+	extincted = ( ( newOrganisms.size() + oldOrganisms.size() ) == 0 ) ; // Because can be extincted from the epoch method if have 0 childs mean that is a bad race and is extincted inmediatly
 	return extincted;
 }
 

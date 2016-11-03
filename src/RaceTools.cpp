@@ -73,7 +73,7 @@ Organism& Race::getRandomOrganism_ref()
 	const uint amountOfOrganisms = newOrganisms.size() + oldOrganisms.size();
 	if( amountOfOrganisms == 0 ) {cerr << "ERROR::getRandomOrganism_ref:: no Organisms to select" << endl;}
 	uniform_int_distribution<uint> randomOrganism(0, amountOfOrganisms-1);
-	const uint orgmSelct =randomOrganism(*generator);
+	const uint orgmSelct = randomOrganism(*generator);
 	if(orgmSelct >= newOrganisms.size())
 	{
 		return *oldOrganisms.at( orgmSelct - newOrganisms.size() ).get();
@@ -168,7 +168,7 @@ void Race::eliminateWorseOrganisms()
 
 	if(newOrganisms.size() > minSafeOrganismsInRace)
 	{
-		auto amountOrganismsToEliminate = round(worseOrganismEliminationRate*newOrganisms.size());
+		auto amountOrganismsToEliminate = (uint)lround(worseOrganismEliminationRate*newOrganisms.size());
 		if(newOrganisms.size() -amountOrganismsToEliminate < minSafeOrganismsInRace)
 		{
 			amountOrganismsToEliminate = newOrganisms.size() - minSafeOrganismsInRace; // To assure that at least minSafeOrganismsInRace will survive.

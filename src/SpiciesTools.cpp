@@ -99,32 +99,6 @@ void Spicies::createRacesFromOrganismCandidates()
 	}
 }
 
-// void Spicies::createDecendence(const uint childrenAmount )
-// {
-// 	if(oldRaces.size() >= 1 )
-// 	{
-// 		vector <float> fitnessVector;
-// 		fillFitnessVector (fitnessVector);
-// 		vector <uint> childrensPerRace;
-// 		for (uint i = 0; i < oldRaces.size(); ++i)
-// 		{
-// 			childrensPerRace.push_back(0);
-// 		}
-// 		discrete_distribution<uint> obtainOrganism(fitnessVector.begin(), fitnessVector.end());
-// 		uint selected = 0;
-// 		for (uint i = 0; i < childrenAmount; ++i)
-// 		{
-// 			selected = obtainOrganism(*generator);
-// 			childrensPerRace.at(selected) += 1;
-// 		}	
-// 		for (uint i = 0; i < oldRaces.size(); ++i)
-// 		{
-// 			oldRaces.at(i)->epoch( childrensPerRace.at(i) );
-// 		}
-
-// 	}
-// }
-
 void Spicies::deleteExtinctedRaces()
 {
 	oldRaces.erase(  remove_if(oldRaces.begin(), oldRaces.end(),

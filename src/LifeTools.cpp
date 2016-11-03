@@ -3,6 +3,8 @@
 #include <chrono>
 #include <iostream>
 #include <algorithm>
+#include <cfloat>
+#include <cmath>
 
 using namespace std;
 
@@ -93,14 +95,19 @@ void Life::createSpiciesFromOrganismCandidates()
 
 void Life::eliminateWorseSpecies()
 {  // Only old species could be eliminated
-	uint protectedSpeciesAmount = round(0.5*maxAmountOfSpicies);
-	if(protectedSpeciesAmount == 0) 
+	uint protectedSpeciesAmount = std::max( 1u, (uint)lround(0.3*maxAmountOfSpicies));
+	uint oldSpeciesCounter = 0u;
+	for (uint i = 0; i < spicies.size(); ++i)
 	{
-		protectedSpeciesAmount = 1;
+		if(spicies.at(i)->oldRaces.size() > 0)
+		{
+			oldSpeciesCounter++;
+		}
 	}
-	if(  protectedSpeciesAmount < spicies.size() )
+
+	if(  protectedSpeciesAmount < oldSpeciesCounter )
 	{
-		float min = spicies.at(0)->getMeanFitnessOfOldRaces();;
+		float min = FLT_MAX;
 		int min_position = -1;
 		float fitness;
 		float eraseWorseSpicieRate = 0.5;
@@ -109,6 +116,8 @@ void Life::eliminateWorseSpecies()
 		{
 			for (uint i = 0; i < spicies.size(); ++i)
 			{
+				if(spicies.at(i)->oldRaces.size() == 0){continue;}
+				
 				fitness = spicies.at(i)->getMeanFitnessOfOldRaces();
 				if( fitness <= min )
 				{
@@ -116,12 +125,10 @@ void Life::eliminateWorseSpecies()
 					min_position = i;
 				}
 			}	
-			if(min_position < 0)
+			if(min_position >= 0)
 			{
-				cerr << "ERROR::Life::eliminateWorseSpecies:: position of worse specie is impossible."  << min_position<< endl;
-				exit(EXIT_FAILURE);
+				spicies.erase (spicies.begin() + min_position);
 			}
-			spicies.erase (spicies.begin() + min_position);
 		}
 	}
 }

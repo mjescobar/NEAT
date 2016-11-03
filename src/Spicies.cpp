@@ -41,6 +41,17 @@ void Spicies::epoch()
 		youngRaces.at(i)->epoch( );
 	}
 
+	for (uint i = 0; i < youngRaces.size(); ++i)
+	{
+		if( youngRaces.at(i)->isYoung() == false  ) // Si la raza ha crecido entonces se tiene que cambiar de vector que lo maneja.
+		{
+			oldRaces.push_back( move(youngRaces.at(i)) );
+			youngRaces.erase(youngRaces.begin()+i);
+			i--;
+		}
+	}
+
+	deleteExtinctedRaces();
 	createRacesFromOrganismCandidates();
 	years ++;
 	deleteExtinctedRaces();
@@ -123,12 +134,7 @@ void Spicies::eliminateWorseOrganisms()
 
 void Spicies::eliminateWorseRaces()
 {
-
-	uint protectedRacesAmount = round(0.5 * maxAmountOfRacesPerSpicie);
-	if (protectedRacesAmount == 0) 
-	{
-		protectedRacesAmount++;
-	} 
+	uint protectedRacesAmount = max(1u, (uint)lround(0.5 * maxAmountOfRacesPerSpicie));
 	if(  protectedRacesAmount < oldRaces.size() )
 	{
 		float min = oldRaces.at(0)->getFitnessMean();
