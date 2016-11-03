@@ -50,6 +50,8 @@ void Spicies::fillFitnessVector (vector <float> & fitnessVector)
 void Spicies::createRacesFromOrganismCandidates()
 {
 	if( oldRaces.size() + youngRaces.size() > maxAmountOfRacesPerSpicie ){return;} // Nunca superar el limite de razas admisibles.
+	if(oldRaces.size() +youngRaces.size() == 0){return ;}
+	
 	uint attempts = 3;
 	bool flagIsNewRace;
 	for (uint k = oldRaces.size() + youngRaces.size(); k < maxAmountOfRacesPerSpicie; ++k)

@@ -26,6 +26,7 @@ public:
 	void eliminateWorseOrganisms();
 	void eliminateWorseRaces();
 	void newRacesDecendece();
+	void deleteExtinctedRaces();
 
 	std::vector< std::shared_ptr<Race> > oldRaces;
 	std::vector< std::shared_ptr<Race> > youngRaces;
@@ -35,7 +36,6 @@ private:
 	Race& getRandomRace_ref();
 	void createRacesFromOrganismCandidates();
 	// void createDecendence(const uint amountOfChildrens ); 
-	void deleteExtinctedRaces();
 
 	bool extincted;
 	uint maxYears;

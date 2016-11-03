@@ -72,7 +72,6 @@ void Life::createDecendence()
 void Life::createSpiciesFromOrganismCandidates()
 {
 	if(spicies.size() >= maxAmountOfSpicies) {return ;}
-	if(oldRaces.size() +youngRaces.size() == 0){return ;}
 	uniform_int_distribution<uint> randomSpicie(0, 
 							spicies.size() -1);
 	for (uint k = spicies.size(); k < maxAmountOfSpicies; ++k)
