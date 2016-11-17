@@ -114,6 +114,22 @@ void NEATStatistics::getAverageFitnessOfAllGenerationInFile(const string path) c
 
 	file.close();
 }
+
+
+void NEATStatistics::getAverageFitnessAndVarianceOfAllGenerationInFile(const string path) const
+{
+	ofstream file;
+	file.open(path);
+
+	for(auto& generation : generationStatistics)
+	{
+		file << generation->getAverageFitness() << "\t" << generation->getVariance()  << endl;
+	}
+
+	file.close();
+}
+
+
 void NEATStatistics::getChampionFitnessOfAllGenerationInFile(const string path) const
 {
 	ofstream file;

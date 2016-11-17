@@ -87,6 +87,7 @@ public:
 						{
 							counter_2++;
 							onlySurvivorsAverageFitness += orgm_s->fitness;
+
 						}
 					}	
 				}
@@ -95,6 +96,65 @@ public:
 			{			
 				onlySurvivorsAverageFitness = onlySurvivorsAverageFitness / (float)counter_2;
 				return onlySurvivorsAverageFitness;
+			}
+		}
+		return 0.0f;
+	}
+
+	float getVariance() const 
+	{
+		float allOrganismFitness = 0.0f;
+		float onlySurvivorsAverageFitness = 0.0f;
+		float variance = 0.0f;
+		uint counter = 0;
+		for (auto& specie_s : spiciesStatistics)
+		{
+			for (auto& oldRace_s : specie_s->oldRacesStatistics)
+			{
+				for (auto& orgm_s : oldRace_s->organismsStatistics)
+				{
+					counter++;
+					allOrganismFitness += orgm_s->fitness;
+				}	
+			}
+		}
+		if (counter > 0)
+		{
+			allOrganismFitness = allOrganismFitness / (float)counter;
+			uint counter_2 = 0;
+			for (auto& specie_s : spiciesStatistics)
+			{
+				for (auto& oldRace_s : specie_s->oldRacesStatistics)
+				{
+					for (auto& orgm_s : oldRace_s->organismsStatistics)
+					{
+						if(orgm_s->fitness > allOrganismFitness)
+						{
+							counter_2++;
+							onlySurvivorsAverageFitness += orgm_s->fitness;
+						}
+					}	
+				}
+			}
+			if(counter_2 > 0)
+			{			
+				onlySurvivorsAverageFitness = onlySurvivorsAverageFitness / (float)counter_2;
+				for (auto& specie_s : spiciesStatistics)
+				{
+					for (auto& oldRace_s : specie_s->oldRacesStatistics)
+					{
+						for (auto& orgm_s : oldRace_s->organismsStatistics)
+						{
+							if(orgm_s->fitness > allOrganismFitness)
+							{
+								variance += pow( orgm_s->fitness - onlySurvivorsAverageFitness,2);
+							}
+						}	
+					}
+				}
+				variance = variance / (float) counter_2;
+
+				return variance;
 			}
 		}
 		return 0.0f;
@@ -128,6 +188,7 @@ public:
 	float getAverageFitnessOfGenerationAt(const uint place) const;
 	void getAverageFitnessOfAllGenerationInFile(const std::string path) const;
 	void getChampionFitnessOfAllGenerationInFile(const std::string path) const;
+	void getAverageFitnessAndVarianceOfAllGenerationInFile(const std::string path) const;
 private:
 	std::vector< std::shared_ptr<GenerationsStatistics> > generationStatistics;
 };

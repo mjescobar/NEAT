@@ -5,9 +5,9 @@ VPATH=include:src:objects
 
 COMPILER=g++ -std=c++14
 
-DEBUG=
+DEBUG=-g
 
-OPTMZ=-O3 
+OPTMZ=
 
 CFLAGS=$(DEBUG) -Wall -fPIC -I./include -I./objects -I./src $(OPTMZ)
 

@@ -1,0 +1,6 @@
+weight -0.157455
+bufferSize 4
+neuronPlaceInLayerVector_IN 0
+layerInput 2
+neuronPlaceInLayerVector_OUT 0
+layerOutput 4294967295
