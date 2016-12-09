@@ -1,4 +1,4 @@
-#include "LIFNeuron.hpp"
+	#include "LIFNeuron.hpp"
 
 #include <cmath> // exp fabs
 #include <iostream>
@@ -11,6 +11,7 @@ namespace NEAT
 
 LIFNeuron::~LIFNeuron()
 {
+	
 }
 
 LIFNeuron::LIFNeuron(float samplingDelaTime) : LIFNeuron(  LIFNeuronUserDefinitions(), samplingDelaTime ){}

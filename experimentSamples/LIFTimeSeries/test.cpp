@@ -23,6 +23,9 @@ float r = 4.f;
 unsigned int dataSetLarge = 1000;
 unsigned int waitToFill = 50; // Time to wait while buffer filling
 
+map< float, Organism* > map_fitness_organism; 
+unique_ptr <NEATStatistics> neatStats ;
+
 
 float vectorSum( const vector <float> & vec )
 {
@@ -88,22 +91,26 @@ void experiment( Organism& orgm )
 }
 
 void sendAllOrganismToExperiment( Life& life ); // function prototype
+void elitism( Life& life );
 
 int main()
 {
 	srand(time(0)); //  Para que cada vez que se use el método random tenga una piscina de números randoms diferentes.
 	float sampleTime = 0.001f;
 	auto lifn = make_unique < LIFNeuron > ( sampleTime );  
-	auto TSWseed = make_unique <TauSynapticWeight>();
+	auto TSWseed = make_unique <BasicSynapticWeight>();
 	auto ann1 = make_unique <ANN> ( move(lifn), move(TSWseed) );
 	auto life = make_unique <Life>( move(ann1) );
+	neatStats = make_unique <NEATStatistics>();
 
 	for (int i = 0; i < 1000; ++i)
 	{
 		sendAllOrganismToExperiment(*life);
+		elitism(*life);
 		//std::cout << "Gen " << i << "\t" << fitnessAcumm/(float)contador  <<"\t" << contador << "\t" << life->spicies.size()<< std::endl;
 		fitnessAcumm = 0.f;
 		contador = 0;
+		neatStats->takeInformationOfTheCurrentGeneration(*life);
 		life->epoch();
 		std::cout << "MG: " << maxGeneration << std::endl;
 		maxGeneration = 0.f;
@@ -111,6 +118,9 @@ int main()
 	}
 	std::cout << "================================================" << std::endl;
 	life->printInfo();
+	neatStats->printStatisticsToFile("./save/NEATStatistics");
+	neatStats->getAverageFitnessOfAllGenerationInFile("./save/fitessPerGeneration");
+	neatStats->getChampionFitnessOfAllGenerationInFile("./save/championPerGeneration");
 	std::cout << "maxFitness: " << maxFitness << std::endl;
 	return 0;
 }
@@ -135,3 +145,64 @@ void sendAllOrganismToExperiment( Life& life )
 		}
 	}
 }
+
+
+void elitism( Life& life )
+{
+	uint counter = 0;
+	uint counter_1 = 0;
+	uint counter_2 = 0;
+	map_fitness_organism.clear();
+	for ( auto& spicie : life.spicies)
+	{
+		for( auto& race: spicie->youngRaces)
+		{
+			for( auto& orgm : race->newOrganisms )
+			{
+	 			counter++;
+	 			counter_1++;
+	 			float new_fitness = orgm->getFitness() + (rand()/(double)RAND_MAX)/100.f;
+	 			while( map_fitness_organism.find(new_fitness) != map_fitness_organism.end() )
+	 			{
+	 				new_fitness = orgm->getFitness() + (rand()/(double)RAND_MAX)/100.f;	
+	 				cout << "new_fitness exists " << new_fitness << endl;
+	 			}
+	 			map_fitness_organism.emplace( new_fitness,  orgm.get()); // el rand es para minimizar probabilidad de colision en el mapa
+			}
+		}
+		for( auto& race: spicie->oldRaces)
+		{
+			for( auto& orgm : race->newOrganisms )
+			{
+	 			counter++;
+	 			counter_2++;
+	 			float new_fitness = orgm->getFitness() + (rand()/(double)RAND_MAX)/100.f;
+	 			while( map_fitness_organism.find(new_fitness) != map_fitness_organism.end() )
+	 			{
+	 				new_fitness = orgm->getFitness() + (rand()/(double)RAND_MAX)/100.f;	
+	 				cout << "new_fitness exists " << new_fitness << endl;
+	 			}
+	 			map_fitness_organism.emplace(orgm->getFitness() + (rand()/(double)RAND_MAX)/100.f,  orgm.get()); // el rand es para minimizar probabilidad de colision en el mapa
+			}
+		}
+	}
+
+	uint large = map_fitness_organism.size();
+	if(counter == large)
+	{	
+		uint counter = 0; // Este vive solo en este scope fijarse.
+		for( auto& item : map_fitness_organism )
+		{
+			item.second->setFitness( pow(counter/(float)large*4.0,2.0) );
+			counter++;
+		}
+	}
+	else
+	{
+		cout << "WARNING::elitism was not posible; "  << large <<  "\t" << counter<< endl; 
+		cout << "c1: " << counter_1 << "\t" << "c2: " << counter_2 << endl;
+	}
+	map_fitness_organism.clear();
+		
+}
+

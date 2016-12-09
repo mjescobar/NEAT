@@ -27,7 +27,7 @@ Life::Life( shared_ptr<Spicies> specie, shared_ptr<LifeUserDefinitions> lud)
 }
 
 void Life::epoch()
-{ // private function method of Life class in LifeTooks.cpp.
+{ 	// private function methods of Life class are in LifeTooks.cpp.
 	eliminateWorseOrganisms();
 	eliminateWorseRaces();
 	eliminateWorseSpecies();
@@ -36,7 +36,9 @@ void Life::epoch()
 	{
 		spicies.at(i)->epoch();
 	}
-	createDecendence();
+	// =========================
+	createDecendence(); // Creacion de hijos unicamente es realizada aqui.
+	// ========================
 	for (uint i = 0; i < spicies.size(); ++i)
 	{
 		spicies.at(i)->deleteExtinctedRaces();

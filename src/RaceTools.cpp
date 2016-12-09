@@ -121,6 +121,7 @@ void Race::getChildFromParentAt(const uint & placeOfFather)
 		}
 	}
 }
+
 void Race::createNewRaceDecendence()
 {
 	if(oldOrganisms.size() == 0)

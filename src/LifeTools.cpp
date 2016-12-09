@@ -36,7 +36,7 @@ void Life::createDecendence()
 				allOrganisms_ref_To_StructurePosition_map.emplace(allOrganisms_ref.size()-1,structurePosition);
 	}	}	}
 
-	if(allOrganisms_ref.size() > 0) // En caso, por ejemplo, como el principio donde no hay razas antiguas.
+	if(allOrganisms_ref.size() > 0) // En caso, por ejemplo, como el principio donde no hay razas antiguas no se entra.
 	{
 		// Se crea un vector con los fitness de cada uno de los organismos para ser usado como distribucion de probabilidad discreta mas adelante.
 		vector <float> fitnessVector;
@@ -52,7 +52,7 @@ void Life::createDecendence()
 		//Segun la probabilidad anterior se obtienen los padres para los nuevos hijos.
 		for (uint i = 0; i < maxAmountOrganismInAllOldRaces; ++i)
 		{
-			uint father = obtainFatherOrganism(*generator);
+			uint father = obtainFatherOrganism( *generator );
 			vector <uint> structurePositionFather = allOrganisms_ref_To_StructurePosition_map.at(father);
 			uint specieOfFather = structurePositionFather.at(0);
 			uint raceOfFather = structurePositionFather.at(1);

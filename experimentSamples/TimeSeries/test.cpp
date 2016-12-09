@@ -15,6 +15,7 @@ uint contador = 0;
 float maxGeneration = 0.f;
 Organism champion;
 unique_ptr <NEATStatistics> neatStats ;
+map< float, Organism* > map_fitness_organism; 
 
 // Serie de tiempo 
 // X[k+1] = r*X[k]*(1-X[k])
@@ -69,6 +70,7 @@ void experiment( Organism& orgm )
 }
 
 void sendAllOrganismToExperiment( Life& life ); // function prototype
+void elitism( Life& life );
 
 int main()
 {
@@ -84,6 +86,7 @@ int main()
 	for (int i = 0; i < 1000; ++i)
 	{
 		sendAllOrganismToExperiment(*life);
+		elitism(*life);
 		//std::cout << "Gen " << i << "\t" << fitnessAcumm/(float)contador  <<"\t" << contador << "\t" << life->spicies.size()<< std::endl;
 		fitnessAcumm = 0.f;
 		contador = 0;
@@ -122,3 +125,63 @@ void sendAllOrganismToExperiment( Life& life )
 		}
 	}
 }
+
+void elitism( Life& life )
+{
+	uint counter = 0;
+	uint counter_1 = 0;
+	uint counter_2 = 0;
+	map_fitness_organism.clear();
+	for ( auto& spicie : life.spicies)
+	{
+		for( auto& race: spicie->youngRaces)
+		{
+			for( auto& orgm : race->newOrganisms )
+			{
+	 			counter++;
+	 			counter_1++;
+	 			float new_fitness = orgm->getFitness() + (rand()/(double)RAND_MAX)/100.f;
+	 			while( map_fitness_organism.find(new_fitness) != map_fitness_organism.end() )
+	 			{
+	 				new_fitness = orgm->getFitness() + (rand()/(double)RAND_MAX)/100.f;	
+	 				cout << "new_fitness exists " << new_fitness << endl;
+	 			}
+	 			map_fitness_organism.emplace( new_fitness,  orgm.get()); // el rand es para minimizar probabilidad de colision en el mapa
+			}
+		}
+		for( auto& race: spicie->oldRaces)
+		{
+			for( auto& orgm : race->newOrganisms )
+			{
+	 			counter++;
+	 			counter_2++;
+	 			float new_fitness = orgm->getFitness() + (rand()/(double)RAND_MAX)/100.f;
+	 			while( map_fitness_organism.find(new_fitness) != map_fitness_organism.end() )
+	 			{
+	 				new_fitness = orgm->getFitness() + (rand()/(double)RAND_MAX)/100.f;	
+	 				cout << "new_fitness exists " << new_fitness << endl;
+	 			}
+	 			map_fitness_organism.emplace(orgm->getFitness() + (rand()/(double)RAND_MAX)/100.f,  orgm.get()); // el rand es para minimizar probabilidad de colision en el mapa
+			}
+		}
+	}
+
+	uint large = map_fitness_organism.size();
+	if(counter == large)
+	{	
+		uint counter = 0; // Este vive solo en este scope fijarse.
+		for( auto& item : map_fitness_organism )
+		{
+			item.second->setFitness( pow(counter/(float)large*4.0,2.0) );
+			counter++;
+		}
+	}
+	else
+	{
+		cout << "WARNING::elitism was not posible; "  << large <<  "\t" << counter<< endl; 
+		cout << "c1: " << counter_1 << "\t" << "c2: " << counter_2 << endl;
+	}
+	map_fitness_organism.clear();
+		
+}
+
